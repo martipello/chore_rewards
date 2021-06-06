@@ -1,14 +1,15 @@
 import 'dart:io';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:chore_rewards/models/family_member.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../api/utils/api_response.dart';
 import '../../models/allocation.dart';
 import '../../models/chore.dart';
+import '../../models/family_member.dart';
 import '../../repositories/chore_repository.dart';
 import '../../repositories/image_repository.dart';
+import '../../utils/constants.dart';
 import '../../utils/log.dart';
 
 class ChoreViewModel {
@@ -41,7 +42,7 @@ class ChoreViewModel {
       ..addedDate = DateTime.now()
       ..allocation = Allocation.pending);
     if (imageFile != null) {
-      final uploadResult = await imageRepository.uploadImage(imageFile, '${chore.id}/$familyId/uploads');
+      final uploadResult = await imageRepository.uploadImage(imageFile, '$familyId/chores/${chore.id}/uploads');
       logger('uploadResult $uploadResult');
       if (uploadResult.status == Status.ERROR) {
         saveChoreResult.add(ApiResponse.error('Uploading image failed.'));
@@ -89,7 +90,9 @@ class ChoreViewModel {
   }
 
   void setAllocatedFamilyMember(FamilyMember? familyMember) {
-    final chore = choreStream.value.rebuild((b) => b..allocatedToFamilyMember = familyMember?.toBuilder());
+    final chore = familyMember?.name == Constants.ALL_FAMILY_MEMBERS
+        ? choreStream.value.rebuild((b) => b..allocatedToFamilyMember = null)
+        : choreStream.value.rebuild((b) => b..allocatedToFamilyMember = familyMember?.toBuilder());
     choreStream.add(chore);
   }
 

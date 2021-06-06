@@ -77,54 +77,56 @@ class _CreateUserViewState extends State<CreateUserView> {
         builder: (context, snapshot) {
           return Stack(
             children: [
-              SingleChildScrollView(
-                child: StreamBuilder<User>(
-                  stream: _userViewModel.userStream,
-                  builder: (context, userSnapshot) {
-                    return Stack(
-                      children: [
-                        SizedBox(
-                          height: 370,
-                          width: double.infinity,
-                          child: _buildWave(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                SizedBox(
-                                  height: kToolbarHeight + 16,
-                                ),
-                                _buildProfileHeader(context),
-                                SizedBox(
-                                  height: 16,
-                                ),
-                                _buildName(context),
-                                SizedBox(
-                                  height: 16,
-                                ),
-                                _buildLastName(context),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                _buildDateOfBirth(),
-                                SizedBox(
-                                  height: 72,
-                                )
-                              ],
+              Positioned.fill(
+                child: SingleChildScrollView(
+                  child: StreamBuilder<User>(
+                    stream: _userViewModel.userStream,
+                    builder: (context, userSnapshot) {
+                      return Stack(
+                        children: [
+                          SizedBox(
+                            height: 370,
+                            width: double.infinity,
+                            child: _buildWave(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  SizedBox(
+                                    height: kToolbarHeight + 16,
+                                  ),
+                                  _buildProfileHeader(context),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  _buildName(context),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  _buildLastName(context),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  _buildDateOfBirth(),
+                                  SizedBox(
+                                    height: 72,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
-              if (snapshot.hasData && snapshot.data!.status == Status.LOADING)
-                Expanded(
+              if (snapshot.hasData && snapshot.data!.status != Status.LOADING)
+                Positioned.fill(
                   child: Container(
                     color: Colors.black12,
                     child: Center(
@@ -290,6 +292,7 @@ class _CreateUserViewState extends State<CreateUserView> {
   Widget _buildDateOfBirth() {
     return DateTimeField(
       format: DateFormat('MMMM d, yyyy'),
+      style: ChoresAppText.body4Style,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.zero,
         labelText: 'Your Date of Birth',

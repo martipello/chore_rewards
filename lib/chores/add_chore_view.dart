@@ -171,23 +171,23 @@ class _AddChoreViewState extends State<AddChoreView> {
             borderRadius: BorderRadius.circular(180),
             child: _imageFile?.path != null
                 ? Stack(
-              children: [
-                Image.file(
-                  File(_imageFile!.path),
-                  fit: BoxFit.cover,
-                  height: _profileImageHeight,
-                  width: _profileImageHeight,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: _buildProfileImageBorder(context),
-                  ),
-                  height: _profileImageHeight,
-                  width: _profileImageHeight,
-                )
-              ],
-            )
+                    children: [
+                      Image.file(
+                        File(_imageFile!.path),
+                        fit: BoxFit.cover,
+                        height: _profileImageHeight,
+                        width: _profileImageHeight,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: _buildProfileImageBorder(context),
+                        ),
+                        height: _profileImageHeight,
+                        width: _profileImageHeight,
+                      )
+                    ],
+                  )
                 : _buildAddImageIcon(),
           ),
         ),
@@ -222,7 +222,9 @@ class _AddChoreViewState extends State<AddChoreView> {
         }
       },
       tooltip: 'Save chore',
-      child: Icon(Icons.save),
+      child: Icon(
+        Icons.save,
+      ),
     );
   }
 
@@ -235,8 +237,7 @@ class _AddChoreViewState extends State<AddChoreView> {
     );
   }
 
-  BorderSide _buildBorderSide(BuildContext context) =>
-      BorderSide(
+  BorderSide _buildBorderSide(BuildContext context) => BorderSide(
         width: 5,
         color: colors(context).primary,
       );
@@ -329,7 +330,7 @@ class _AddChoreViewState extends State<AddChoreView> {
                     backgroundColor: colors(context).primary,
                     child: Icon(
                       Icons.remove,
-                      color: Colors.white,
+                      color: colors(context).textOnPrimary,
                     ),
                   ),
                   Text(
@@ -341,7 +342,7 @@ class _AddChoreViewState extends State<AddChoreView> {
                     backgroundColor: colors(context).primary,
                     child: Icon(
                       Icons.add,
-                      color: Colors.white,
+                      color: colors(context).textOnPrimary,
                     ),
                   ),
                 ],
@@ -392,6 +393,9 @@ class _AddChoreViewState extends State<AddChoreView> {
 
   Widget _buildFamilyMemberPicker() {
     return FamilyMemberPicker(
-      familyId: widget.familyId, selectedFamilyMember: _choreViewModel.setAllocatedFamilyMember,);
+      familyId: widget.familyId,
+      formKey: _formKey,
+      selectedFamilyMember: _choreViewModel.setAllocatedFamilyMember,
+    );
   }
 }

@@ -168,9 +168,9 @@ class ChoreDetailView extends StatelessWidget {
         if (reward.isNotEmpty)
           _buildTableRow(
             context,
-            '\$ $reward',
+            '$reward',
             'Reward :',
-            Icons.attach_money_rounded,
+            Icons.star,
           ),
         if (addedDate.isNotEmpty)
           _buildTableRow(

@@ -134,7 +134,7 @@ class RoundedButton extends StatelessWidget {
         width: 16,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation(isFilled ? Colors.white : colors(context).secondary),
+          valueColor: AlwaysStoppedAnimation(isFilled ? colors(context).textOnSecondary : colors(context).secondary),
         ));
   }
 

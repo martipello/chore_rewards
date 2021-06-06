@@ -6,4 +6,5 @@ class Constants {
   static const EMAIL_KEY = 'EMAIL_KEY';
   static const USE_BIOMETRICS = 'USE_BIOMETRICS';
   static const FAMILY_HERO_IMAGE = 'familyHeroImage';
+  static const ALL_FAMILY_MEMBERS = 'All family members';
 }

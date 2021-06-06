@@ -1,3 +1,4 @@
+import 'package:chore_rewards/theme/base_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -30,8 +31,7 @@ class ChoreTile extends StatelessWidget {
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: () async {
-                  final imagePath = await _imageRepository.getImageUrlForImagePath(chore.image ?? '');
-                  _navigateToChoreDetailView(context, chore, imagePath);
+                  _navigateToChoreDetailView(context, chore, snapshot.data ?? '');
                 },
                 child: SizedBox(
                   height: 80,
@@ -39,6 +39,7 @@ class ChoreTile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (snapshot.hasData)
                       Hero(
                         tag: '${chore.id}${chore.image}',
                         child: ClipRRect(
@@ -46,23 +47,34 @@ class ChoreTile extends StatelessWidget {
                             topRight: Radius.circular(90),
                             bottomRight: Radius.circular(90),
                           ),
-                          child: snapshot.data?.isNotEmpty == true
-                              ? Material(
-                                  type: MaterialType.transparency,
-                                  child: Image.network(
-                                    snapshot.data ?? '',
-                                    fit: BoxFit.cover,
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Container(
+                              color: colors(context).primary,
+                              child: Image.network(
+                                snapshot.data ?? 'image.png',
+                                fit: BoxFit.cover,
+                                height: 80,
+                                width: 120,
+                                loadingBuilder: (context, child, progress) {
+                                  if (progress == null) return child;
+                                  return SizedBox(
                                     height: 80,
                                     width: 120,
-                                  ),
-                                )
-                              : SizedBox(
-                                  height: 80,
-                                  width: 120,
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                ),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, object, stacktrace){
+                                  return Image.asset('assets/images/chores_app.png',
+                                    fit: BoxFit.cover,
+                                    height: 80,
+                                    width: 120,);
+                                },
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
@@ -92,9 +104,18 @@ class ChoreTile extends StatelessWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Text(
-                              '\$ ${chore.reward?.toString() ?? '0'}',
-                              style: ChoresAppText.subtitle1Style.copyWith(height: 1),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 3.0),
+                                  child: Icon(Icons.star, size: 18,),
+                                ),
+                                SizedBox(width: 4,),
+                                Text(
+                                  '${chore.reward?.toString() ?? '0'}',
+                                  style: ChoresAppText.subtitle1Style.copyWith(height: 1),
+                                ),
+                              ],
                             ),
                           ),
                         ],
