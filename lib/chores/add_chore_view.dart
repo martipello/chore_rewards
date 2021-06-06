@@ -9,6 +9,7 @@ import 'package:wave/wave.dart';
 
 import '../api/utils/api_response.dart';
 import '../dependency_injection_container.dart';
+import '../family_member/family_member_picker.dart';
 import '../models/chore.dart';
 import '../shared_widgets/image_picker_bottom_sheet.dart';
 import '../theme/base_theme.dart';
@@ -118,6 +119,10 @@ class _AddChoreViewState extends State<AddChoreView> {
                                   ),
                                   _buildRewardCounter(),
                                   SizedBox(
+                                    height: 16,
+                                  ),
+                                  _buildFamilyMemberPicker(),
+                                  SizedBox(
                                     height: 72,
                                   ),
                                 ],
@@ -130,7 +135,7 @@ class _AddChoreViewState extends State<AddChoreView> {
                   ),
                 ),
                 if (snapshot.hasData && snapshot.data!.status == Status.LOADING)
-                Expanded(
+                  Expanded(
                     child: Container(
                       color: Colors.black12,
                       child: Center(
@@ -166,23 +171,23 @@ class _AddChoreViewState extends State<AddChoreView> {
             borderRadius: BorderRadius.circular(180),
             child: _imageFile?.path != null
                 ? Stack(
-                    children: [
-                      Image.file(
-                        File(_imageFile!.path),
-                        fit: BoxFit.cover,
-                        height: _profileImageHeight,
-                        width: _profileImageHeight,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: _buildProfileImageBorder(context),
-                        ),
-                        height: _profileImageHeight,
-                        width: _profileImageHeight,
-                      )
-                    ],
-                  )
+              children: [
+                Image.file(
+                  File(_imageFile!.path),
+                  fit: BoxFit.cover,
+                  height: _profileImageHeight,
+                  width: _profileImageHeight,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: _buildProfileImageBorder(context),
+                  ),
+                  height: _profileImageHeight,
+                  width: _profileImageHeight,
+                )
+              ],
+            )
                 : _buildAddImageIcon(),
           ),
         ),
@@ -230,7 +235,8 @@ class _AddChoreViewState extends State<AddChoreView> {
     );
   }
 
-  BorderSide _buildBorderSide(BuildContext context) => BorderSide(
+  BorderSide _buildBorderSide(BuildContext context) =>
+      BorderSide(
         width: 5,
         color: colors(context).primary,
       );
@@ -382,5 +388,10 @@ class _AddChoreViewState extends State<AddChoreView> {
       size: Size(double.infinity, double.infinity),
       waveAmplitude: 0,
     );
+  }
+
+  Widget _buildFamilyMemberPicker() {
+    return FamilyMemberPicker(
+      familyId: widget.familyId, selectedFamilyMember: _choreViewModel.setAllocatedFamilyMember,);
   }
 }

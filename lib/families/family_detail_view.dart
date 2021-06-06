@@ -201,7 +201,7 @@ class _MyAppSpace extends StatelessWidget {
 
   Widget getImage(Family family, String imagePath) {
     return Hero(
-      tag: '${family.id}${family.image}',
+      tag: '${family.name}${family.image}',
       child: Image.network(
         imagePath,
         height: 250,
@@ -215,7 +215,7 @@ class _MyAppSpace extends StatelessWidget {
     return Padding(
       padding: padding,
       child: Hero(
-        tag: '${family.id}${family.name}',
+        tag: '${family.id}${family.name}${family.image}',
         child: Material(
           type: MaterialType.transparency,
           child: Text(

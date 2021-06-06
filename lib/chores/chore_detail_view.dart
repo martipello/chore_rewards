@@ -79,25 +79,26 @@ class ChoreDetailView extends StatelessWidget {
                   child: Material(
                     type: MaterialType.transparency,
                     child: ClipRRect(
-                        borderRadius: BorderRadius.circular(180),
-                        child: Image.network(
-                          snapshot.data ?? '',
-                          fit: BoxFit.cover,
-                          height: 150,
-                          width: 150,
-                          loadingBuilder: (context, child, chunk) {
-                            if (chunk == null) {
-                              return child;
-                            }
-                            return _buildLoadingImage();
-                          },
-                          errorBuilder: (context, object, stacktrace) {
-                            return Icon(
-                              Icons.person_outline_rounded,
-                              size: 150,
-                            );
-                          },
-                        )),
+                      borderRadius: BorderRadius.circular(180),
+                      child: Image.network(
+                        snapshot.data ?? '',
+                        fit: BoxFit.cover,
+                        height: 150,
+                        width: 150,
+                        loadingBuilder: (context, child, chunk) {
+                          if (chunk == null) {
+                            return child;
+                          }
+                          return _buildLoadingImage();
+                        },
+                        errorBuilder: (context, object, stacktrace) {
+                          return Icon(
+                            Icons.person_outline_rounded,
+                            size: 150,
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ),

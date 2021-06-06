@@ -43,13 +43,19 @@ class FamilyTile extends StatelessWidget {
                           topRight: Radius.circular(90),
                           bottomRight: Radius.circular(90),
                         ),
-                        child: Material(
+                        child: snapshot.data?.isNotEmpty == true ? Material(
                           type: MaterialType.transparency,
                           child: Image.network(
                             snapshot.data ?? '',
                             fit: BoxFit.cover,
                             height: 80,
                             width: 120,
+                          ),
+                        ) : SizedBox(
+                          height: 80,
+                          width: 120,
+                          child: Center(
+                            child: CircularProgressIndicator(),
                           ),
                         ),
                       ),

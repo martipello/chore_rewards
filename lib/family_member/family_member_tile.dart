@@ -1,3 +1,4 @@
+import 'package:chore_rewards/utils/log.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class FamilyMemberTile extends StatelessWidget {
     return FutureBuilder<String>(
         future: _imageRepository.getImageUrlForImagePath(familyMember.image ?? ''),
         builder: (context, snapshot) {
+          logger('${familyMember.id}${familyMember.image}');
           return Card(
             elevation: 2,
             shape: RoundedRectangleBorder(
@@ -36,21 +38,24 @@ class FamilyMemberTile extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Hero(
-                      tag: '${familyMember.id}${familyMember.image}',
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(90),
-                          bottomRight: Radius.circular(90),
+                      ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(90),
+                        bottomRight: Radius.circular(90),
+                      ),
+                      child: snapshot.data?.isNotEmpty == true ? Material(
+                        type: MaterialType.transparency,
+                        child: Image.network(
+                          snapshot.data ?? '',
+                          fit: BoxFit.cover,
+                          height: 80,
+                          width: 120,
                         ),
-                        child: Material(
-                          type: MaterialType.transparency,
-                          child: Image.network(
-                            snapshot.data ?? '',
-                            height: 80,
-                            width: 120,
-                            fit: BoxFit.cover,
-                          ),
+                      ) : SizedBox(
+                        height: 80,
+                        width: 120,
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       ),
                     ),

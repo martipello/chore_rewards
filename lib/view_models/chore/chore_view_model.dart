@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:built_collection/built_collection.dart';
+import 'package:chore_rewards/models/family_member.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../api/utils/api_response.dart';
@@ -85,6 +86,11 @@ class ChoreViewModel {
     if (reward > 0) {
       choreStream.add(chore.rebuild((b) => b..reward = reward - 1));
     }
+  }
+
+  void setAllocatedFamilyMember(FamilyMember? familyMember) {
+    final chore = choreStream.value.rebuild((b) => b..allocatedToFamilyMember = familyMember?.toBuilder());
+    choreStream.add(chore);
   }
 
   void dispose() {

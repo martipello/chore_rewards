@@ -22,6 +22,9 @@ class CircleImage extends StatelessWidget {
         future: _imageRepository.getImageUrlForImagePath(imagePath),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            if (snapshot.data == null || snapshot.data?.isEmpty == true) {
+              return _buildLoadingImage();
+            }
             return ClipRRect(
                 borderRadius: BorderRadius.circular(180),
                 child: Image.network(
