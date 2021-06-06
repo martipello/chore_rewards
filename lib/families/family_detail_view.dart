@@ -30,9 +30,16 @@ class FamilyDetailView extends StatefulWidget {
   _FamilyDetailViewState createState() => _FamilyDetailViewState();
 }
 
-class _FamilyDetailViewState extends State<FamilyDetailView> {
+class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerProviderStateMixin {
   var _selectedIndex = 0;
   final scrollController = ScrollController();
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 1, vsync: this);
+  }
 
   final _bottomNavViews = <WidgetForIdBuilder>[
     (id) => FamilyMemberListView(
@@ -58,24 +65,7 @@ class _FamilyDetailViewState extends State<FamilyDetailView> {
         controller: scrollController,
         headerSliverBuilder: (context, innerScroll) {
           return [
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar(
-                expandedHeight: 200,
-                pinned: true,
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back_rounded),
-                  color: Colors.white,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                flexibleSpace: _MyAppSpace(
-                  imagePath: arguments.imagePath,
-                  family: arguments.family,
-                ),
-              ),
-            ),
+            _buildSliverOverlapAbsorber(context, _buildSliverAppBar(context, arguments)),
           ];
         },
         body: SafeArea(
@@ -83,23 +73,85 @@ class _FamilyDetailViewState extends State<FamilyDetailView> {
           bottom: false,
           child: Builder(
             builder: (nestedScrollViewContext) {
-              return CustomScrollView(
-                slivers: [
-                  SliverOverlapInjector(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(nestedScrollViewContext),
-                  ),
-                  SliverPadding(
-                    padding: EdgeInsets.all(8),
-                    sliver: _bottomNavViews.elementAt(_selectedIndex).call(arguments.family.id ?? ''),
-                  )
-                ],
-              );
+              if (_selectedIndex == 1) {
+                return TabBarView(controller: _tabController, children: [
+                  _buildCustomScrollView(
+                      nestedScrollViewContext, _bottomNavViews.elementAt(_selectedIndex), arguments.family.id ?? '')
+                ]);
+              }
+              return _buildCustomScrollView(
+                  nestedScrollViewContext, _bottomNavViews.elementAt(_selectedIndex), arguments.family.id ?? '');
             },
           ),
         ),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
       floatingActionButton: _bottomNavViewsActionButtons.elementAt(_selectedIndex).call(arguments.family.id ?? ''),
+    );
+  }
+
+  SliverOverlapAbsorber _buildSliverOverlapAbsorber(
+    BuildContext context,
+    Widget sliver,
+  ) {
+    return SliverOverlapAbsorber(
+      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+      sliver: sliver,
+    );
+  }
+
+  SliverAppBar _buildSliverAppBar(BuildContext context, FamilyDetailViewArguments arguments) {
+    return SliverAppBar(
+      expandedHeight: 200,
+      collapsedHeight: kToolbarHeight,
+      pinned: true,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_rounded),
+        color: Colors.white,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+      flexibleSpace: _MyAppSpace(
+        imagePath: arguments.imagePath,
+        family: arguments.family,
+      ),
+    );
+  }
+
+  Widget _buildCustomScrollView(
+      BuildContext nestedScrollViewContext, WidgetForIdBuilder sliverBuilder, String familyId) {
+    return CustomScrollView(
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(nestedScrollViewContext),
+        ),
+        if (_selectedIndex == 1) _buildTabBar(context),
+        SliverPadding(
+          padding: EdgeInsets.all(8),
+          sliver: sliverBuilder.call(familyId),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTabBar(BuildContext context) {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _SliverAppBarDelegate(
+        child: TabBar(
+          controller: _tabController,
+          indicatorColor: colors(context).secondary,
+          tabs: [
+            Tab(
+              child: Text(
+                'AVAILABLE',
+                style: ChoresAppText.body4Style.copyWith(color: colors(context).textOnForeground),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -226,5 +278,29 @@ class _MyAppSpace extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({required this.child});
+
+  final PreferredSizeWidget child;
+
+  @override
+  double get minExtent => child.preferredSize.height;
+
+  @override
+  double get maxExtent => child.preferredSize.height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      child: child,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }

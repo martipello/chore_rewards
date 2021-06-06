@@ -1,9 +1,9 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:chore_rewards/theme/chores_app_text.dart';
 import 'package:flutter/material.dart';
 
 import '../dependency_injection_container.dart';
 import '../models/chore.dart';
+import '../theme/chores_app_text.dart';
 import '../view_models/chore/chore_view_model.dart';
 import 'chore_tile.dart';
 
