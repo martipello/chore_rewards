@@ -1,10 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 import '../bank/bank_list_view.dart';
 import '../chores/add_chore_button.dart';
-import '../chores/chore_list_view.dart';
+import '../chores/chore_view.dart';
 import '../family_member/add_family_member_button.dart';
 import '../family_member/family_member_list_view.dart';
 import '../models/family.dart';
@@ -38,18 +39,8 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 1, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
-
-  final _bottomNavViews = <WidgetForIdBuilder>[
-    (id) => FamilyMemberListView(
-          familyId: id,
-        ),
-    (id) => ChoreListView(
-          familyId: id,
-        ),
-    (id) => BankListView(),
-  ];
 
   final _bottomNavViewsActionButtons = <WidgetForIdBuilder>[
     (id) => AddFamilyMemberButton(familyId: id),
@@ -65,7 +56,15 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
         controller: scrollController,
         headerSliverBuilder: (context, innerScroll) {
           return [
-            _buildSliverOverlapAbsorber(context, _buildSliverAppBar(context, arguments)),
+            _buildSliverOverlapAbsorber(
+              context,
+              MultiSliver(
+                children: [
+                  _buildSliverAppBar(context, arguments),
+                  if (_selectedIndex == 1) _buildSliverPersistentHeaderForTabBar(context),
+                ],
+              ),
+            ),
           ];
         },
         body: SafeArea(
@@ -73,21 +72,33 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
           bottom: false,
           child: Builder(
             builder: (nestedScrollViewContext) {
-              if (_selectedIndex == 1) {
-                return TabBarView(controller: _tabController, children: [
-                  _buildCustomScrollView(
-                      nestedScrollViewContext, _bottomNavViews.elementAt(_selectedIndex), arguments.family.id ?? '')
-                ]);
-              }
-              return _buildCustomScrollView(
-                  nestedScrollViewContext, _bottomNavViews.elementAt(_selectedIndex), arguments.family.id ?? '');
+              return _getBottomNavView(arguments.family.id ?? '');
             },
           ),
         ),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
-      floatingActionButton: _bottomNavViewsActionButtons.elementAt(_selectedIndex).call(arguments.family.id ?? ''),
+      floatingActionButton: _bottomNavViewsActionButtons.elementAt(_selectedIndex).call(
+            arguments.family.id ?? '',
+          ),
     );
+  }
+
+  Widget _getBottomNavView(String id) {
+    if (_selectedIndex == 0) {
+      return FamilyMemberListView(
+        familyId: id,
+      );
+    } else if (_selectedIndex == 1) {
+      return ChoreView(
+        familyId: id,
+        tabController: _tabController,
+      );
+    } else if (_selectedIndex == 2) {
+      return BankListView();
+    } else {
+      return SizedBox();
+    }
   }
 
   SliverOverlapAbsorber _buildSliverOverlapAbsorber(
@@ -102,8 +113,8 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
 
   SliverAppBar _buildSliverAppBar(BuildContext context, FamilyDetailViewArguments arguments) {
     return SliverAppBar(
+      elevation: _selectedIndex == 1 ? 0 : 4,
       expandedHeight: 200,
-      collapsedHeight: kToolbarHeight,
       pinned: true,
       leading: IconButton(
         icon: Icon(Icons.arrow_back_rounded),
@@ -119,37 +130,33 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
     );
   }
 
-  Widget _buildCustomScrollView(
-      BuildContext nestedScrollViewContext, WidgetForIdBuilder sliverBuilder, String familyId) {
-    return CustomScrollView(
-      slivers: [
-        SliverOverlapInjector(
-          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(nestedScrollViewContext),
-        ),
-        if (_selectedIndex == 1) _buildTabBar(context),
-        SliverPadding(
-          padding: EdgeInsets.all(8),
-          sliver: sliverBuilder.call(familyId),
-        ),
+  Widget _buildSliverPersistentHeaderForTabBar(BuildContext context) {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _SliverAppBarDelegate(
+        child: _buildTabBar(context),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildTabBar(BuildContext context) {
+    return TabBar(
+      controller: _tabController,
+      indicatorColor: colors(context).secondary,
+      tabs: [
+        _buildTab('AVAILABLE'),
+        _buildTab('ACCEPTED'),
+        _buildTab('COMPLETED'),
       ],
     );
   }
 
-  Widget _buildTabBar(BuildContext context) {
-    return SliverPersistentHeader(
-      pinned: true,
-      delegate: _SliverAppBarDelegate(
-        child: TabBar(
-          controller: _tabController,
-          indicatorColor: colors(context).secondary,
-          tabs: [
-            Tab(
-              child: Text(
-                'AVAILABLE',
-                style: ChoresAppText.body4Style.copyWith(color: colors(context).textOnForeground),
-              ),
-            ),
-          ],
+  Tab _buildTab(String label) {
+    return Tab(
+      child: Text(
+        label,
+        style: ChoresAppText.subtitle4Style.copyWith(
+          color: colors(context).textOnPrimary,
         ),
       ),
     );
@@ -295,6 +302,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
+      color: colors(context).primary,
       child: child,
     );
   }

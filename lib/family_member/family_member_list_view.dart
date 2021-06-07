@@ -16,41 +16,51 @@ class FamilyMemberListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildFamilyList();
+    return _buildFamilyList(context);
   }
 
-  Widget _buildFamilyList() {
-    return StreamBuilder<DocumentSnapshot<Family>>(
-      stream: _familyViewModel.getFamily(familyId),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data?.data()?.familyMembers.isNotEmpty == true) {
-            return SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return _buildFamilyListItem(context, index, snapshot.data!.data()!.familyMembers[index]);
-                },
-                childCount: snapshot.data?.data()?.familyMembers.length ?? 0,
-              ),
-            );
-          } else {
-            return SliverFillRemaining(
-              child: Center(
-                child: Text(
-                  'No Family members with banks, please create one to get started.',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
-        } else {
-          return SliverFillRemaining(
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-      },
+  Widget _buildFamilyList(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.all(8),
+          sliver: StreamBuilder<DocumentSnapshot<Family>>(
+            stream: _familyViewModel.getFamily(familyId),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data?.data()?.familyMembers.isNotEmpty == true) {
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return _buildFamilyListItem(context, index, snapshot.data!.data()!.familyMembers[index]);
+                      },
+                      childCount: snapshot.data?.data()?.familyMembers.length ?? 0,
+                    ),
+                  );
+                } else {
+                  return SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'No Family members with banks, please create one to get started.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
+              } else {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 

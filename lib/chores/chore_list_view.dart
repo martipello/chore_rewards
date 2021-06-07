@@ -16,7 +16,17 @@ class ChoreListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildChoreList();
+    return CustomScrollView(
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.all(8),
+          sliver: _buildChoreList(),
+        ),
+      ],
+    );
   }
 
   Widget _buildChoreList() {
