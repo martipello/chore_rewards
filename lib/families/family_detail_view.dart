@@ -6,6 +6,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../bank/bank_list_view.dart';
 import '../chores/add_chore_button.dart';
 import '../chores/chore_view.dart';
+import '../extensions/string_extension.dart';
 import '../family_member/add_family_member_button.dart';
 import '../family_member/family_member_list_view.dart';
 import '../models/family.dart';
@@ -278,7 +279,7 @@ class _MyAppSpace extends StatelessWidget {
         child: Material(
           type: MaterialType.transparency,
           child: Text(
-            family.name ?? '',
+            family.name?.capitalize() ?? '',
             textAlign: TextAlign.center,
             style: ChoresAppText.subtitle4Style.copyWith(fontSize: fontSize, color: colors(context).textOnPrimary),
           ),
