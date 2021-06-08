@@ -4,18 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../api/utils/api_response.dart';
-import '../../models/family.dart';
 import '../../models/family_member.dart';
 import '../../models/family_member_type.dart';
 import '../../models/piggy_bank.dart';
-import '../../repositories/family_repository.dart';
+import '../../repositories/family_members_repository.dart';
 import '../../repositories/image_repository.dart';
 import '../../utils/log.dart';
 
 class FamilyMemberViewModel {
-  FamilyMemberViewModel(this.familyRepository, this.imageRepository);
+  FamilyMemberViewModel(this.familyMembersRepository, this.imageRepository);
 
-  final FamilyRepository familyRepository;
+  final FamilyMembersRepository familyMembersRepository;
   final ImageRepository imageRepository;
 
   final BehaviorSubject<ApiResponse> saveFamilyMemberResult = BehaviorSubject();
@@ -23,10 +22,6 @@ class FamilyMemberViewModel {
   final BehaviorSubject<FamilyMember> familyMemberStream = BehaviorSubject.seeded(FamilyMember((b) => b
     ..familyMemberType = FamilyMemberType.child
     ..piggyBank = PiggyBank((b) => b..balance = 0).toBuilder()));
-
-  Stream<DocumentSnapshot<Family>> getFamily(String familyId) {
-    return familyRepository.getFamily(familyId);
-  }
 
   Future<String> getFirebaseStorageUrl(String imagePath) {
     return imageRepository.getImageUrlForImagePath(imagePath);
@@ -55,7 +50,7 @@ class FamilyMemberViewModel {
   }
 
   Future<void> _addFamilyMember(FamilyMember familyMember, String familyId) async {
-    final addFamilyResult = await familyRepository.addFamilyMember(familyMember, familyId);
+    final addFamilyResult = await familyMembersRepository.addFamilyMember(familyMember, familyId);
     saveFamilyMemberResult.add(addFamilyResult);
   }
 
@@ -77,6 +72,10 @@ class FamilyMemberViewModel {
   void setFamilyMemberType(FamilyMemberType familyMemberType) {
     final familyMember = familyMemberStream.value.rebuild((b) => b..familyMemberType = familyMemberType);
     familyMemberStream.add(familyMember);
+  }
+
+  Stream<QuerySnapshot<FamilyMember>> getFamilyMemberList(String familyId) {
+    return familyMembersRepository.getFamilyMemberList(familyId);
   }
 
   void dispose() {

@@ -6,7 +6,8 @@ part of 'family_member.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<FamilyMember> _$familyMemberSerializer = new _$FamilyMemberSerializer();
+Serializer<FamilyMember> _$familyMemberSerializer =
+    new _$FamilyMemberSerializer();
 
 class _$FamilyMemberSerializer implements StructuredSerializer<FamilyMember> {
   @override
@@ -17,46 +18,63 @@ class _$FamilyMemberSerializer implements StructuredSerializer<FamilyMember> {
   @override
   Iterable<Object?> serialize(Serializers serializers, FamilyMember object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object?>[
-      'chores',
-      serializers.serialize(object.chores, specifiedType: const FullType(BuiltList, const [const FullType(Chore)])),
-    ];
+    final result = <Object?>[];
     Object? value;
     value = object.id;
     if (value != null) {
-      result..add('id')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('id')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.name;
     if (value != null) {
-      result..add('name')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('name')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.lastName;
     if (value != null) {
-      result..add('lastName')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('lastName')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.dateOfBirth;
     if (value != null) {
-      result..add('dateOfBirth')..add(serializers.serialize(value, specifiedType: const FullType(DateTime)));
+      result
+        ..add('dateOfBirth')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(DateTime)));
     }
     value = object.piggyBank;
     if (value != null) {
-      result..add('piggyBank')..add(serializers.serialize(value, specifiedType: const FullType(PiggyBank)));
+      result
+        ..add('piggyBank')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(PiggyBank)));
     }
     value = object.image;
     if (value != null) {
-      result..add('image')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('image')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.familyMemberType;
     if (value != null) {
       result
         ..add('familyMemberType')
-        ..add(serializers.serialize(value, specifiedType: const FullType(FamilyMemberType)));
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(FamilyMemberType)));
     }
     return result;
   }
 
   @override
-  FamilyMember deserialize(Serializers serializers, Iterable<Object?> serialized,
+  FamilyMember deserialize(
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new FamilyMemberBuilder();
 
@@ -67,31 +85,33 @@ class _$FamilyMemberSerializer implements StructuredSerializer<FamilyMember> {
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
-          result.id = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'name':
-          result.name = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.name = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'lastName':
-          result.lastName = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.lastName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'dateOfBirth':
-          result.dateOfBirth = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
+          result.dateOfBirth = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
           break;
         case 'piggyBank':
-          result.piggyBank
-              .replace(serializers.deserialize(value, specifiedType: const FullType(PiggyBank))! as PiggyBank);
+          result.piggyBank.replace(serializers.deserialize(value,
+              specifiedType: const FullType(PiggyBank))! as PiggyBank);
           break;
         case 'image':
-          result.image = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.image = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'familyMemberType':
-          result.familyMemberType =
-              serializers.deserialize(value, specifiedType: const FullType(FamilyMemberType)) as FamilyMemberType;
-          break;
-        case 'chores':
-          result.chores.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltList, const [const FullType(Chore)]))! as BuiltList<Object>);
+          result.familyMemberType = serializers.deserialize(value,
+                  specifiedType: const FullType(FamilyMemberType))
+              as FamilyMemberType;
           break;
       }
     }
@@ -115,8 +135,6 @@ class _$FamilyMember extends FamilyMember {
   final String? image;
   @override
   final FamilyMemberType? familyMemberType;
-  @override
-  final BuiltList<Chore> chores;
 
   factory _$FamilyMember([void Function(FamilyMemberBuilder)? updates]) =>
       (new FamilyMemberBuilder()..update(updates)).build();
@@ -128,14 +146,12 @@ class _$FamilyMember extends FamilyMember {
       this.dateOfBirth,
       this.piggyBank,
       this.image,
-      this.familyMemberType,
-      required this.chores})
-      : super._() {
-    BuiltValueNullFieldError.checkNotNull(chores, 'FamilyMember', 'chores');
-  }
+      this.familyMemberType})
+      : super._();
 
   @override
-  FamilyMember rebuild(void Function(FamilyMemberBuilder) updates) => (toBuilder()..update(updates)).build();
+  FamilyMember rebuild(void Function(FamilyMemberBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   FamilyMemberBuilder toBuilder() => new FamilyMemberBuilder()..replace(this);
@@ -150,8 +166,7 @@ class _$FamilyMember extends FamilyMember {
         dateOfBirth == other.dateOfBirth &&
         piggyBank == other.piggyBank &&
         image == other.image &&
-        familyMemberType == other.familyMemberType &&
-        chores == other.chores;
+        familyMemberType == other.familyMemberType;
   }
 
   @override
@@ -159,11 +174,13 @@ class _$FamilyMember extends FamilyMember {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc($jc($jc(0, id.hashCode), name.hashCode), lastName.hashCode), dateOfBirth.hashCode),
-                    piggyBank.hashCode),
-                image.hashCode),
-            familyMemberType.hashCode),
-        chores.hashCode));
+                $jc(
+                    $jc($jc($jc(0, id.hashCode), name.hashCode),
+                        lastName.hashCode),
+                    dateOfBirth.hashCode),
+                piggyBank.hashCode),
+            image.hashCode),
+        familyMemberType.hashCode));
   }
 
   @override
@@ -175,13 +192,13 @@ class _$FamilyMember extends FamilyMember {
           ..add('dateOfBirth', dateOfBirth)
           ..add('piggyBank', piggyBank)
           ..add('image', image)
-          ..add('familyMemberType', familyMemberType)
-          ..add('chores', chores))
+          ..add('familyMemberType', familyMemberType))
         .toString();
   }
 }
 
-class FamilyMemberBuilder implements Builder<FamilyMember, FamilyMemberBuilder> {
+class FamilyMemberBuilder
+    implements Builder<FamilyMember, FamilyMemberBuilder> {
   _$FamilyMember? _$v;
 
   String? _id;
@@ -201,7 +218,8 @@ class FamilyMemberBuilder implements Builder<FamilyMember, FamilyMemberBuilder> 
   set dateOfBirth(DateTime? dateOfBirth) => _$this._dateOfBirth = dateOfBirth;
 
   PiggyBankBuilder? _piggyBank;
-  PiggyBankBuilder get piggyBank => _$this._piggyBank ??= new PiggyBankBuilder();
+  PiggyBankBuilder get piggyBank =>
+      _$this._piggyBank ??= new PiggyBankBuilder();
   set piggyBank(PiggyBankBuilder? piggyBank) => _$this._piggyBank = piggyBank;
 
   String? _image;
@@ -210,11 +228,8 @@ class FamilyMemberBuilder implements Builder<FamilyMember, FamilyMemberBuilder> 
 
   FamilyMemberType? _familyMemberType;
   FamilyMemberType? get familyMemberType => _$this._familyMemberType;
-  set familyMemberType(FamilyMemberType? familyMemberType) => _$this._familyMemberType = familyMemberType;
-
-  ListBuilder<Chore>? _chores;
-  ListBuilder<Chore> get chores => _$this._chores ??= new ListBuilder<Chore>();
-  set chores(ListBuilder<Chore>? chores) => _$this._chores = chores;
+  set familyMemberType(FamilyMemberType? familyMemberType) =>
+      _$this._familyMemberType = familyMemberType;
 
   FamilyMemberBuilder();
 
@@ -228,7 +243,6 @@ class FamilyMemberBuilder implements Builder<FamilyMember, FamilyMemberBuilder> 
       _piggyBank = $v.piggyBank?.toBuilder();
       _image = $v.image;
       _familyMemberType = $v.familyMemberType;
-      _chores = $v.chores.toBuilder();
       _$v = null;
     }
     return this;
@@ -257,18 +271,15 @@ class FamilyMemberBuilder implements Builder<FamilyMember, FamilyMemberBuilder> 
               dateOfBirth: dateOfBirth,
               piggyBank: _piggyBank?.build(),
               image: image,
-              familyMemberType: familyMemberType,
-              chores: chores.build());
+              familyMemberType: familyMemberType);
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'piggyBank';
         _piggyBank?.build();
-
-        _$failedField = 'chores';
-        chores.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError('FamilyMember', _$failedField, e.toString());
+        throw new BuiltValueNestedFieldError(
+            'FamilyMember', _$failedField, e.toString());
       }
       rethrow;
     }

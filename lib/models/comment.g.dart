@@ -21,15 +21,24 @@ class _$CommentSerializer implements StructuredSerializer<Comment> {
     Object? value;
     value = object.senderId;
     if (value != null) {
-      result..add('senderId')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('senderId')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.sentDate;
     if (value != null) {
-      result..add('sentDate')..add(serializers.serialize(value, specifiedType: const FullType(DateTime)));
+      result
+        ..add('sentDate')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(DateTime)));
     }
     value = object.message;
     if (value != null) {
-      result..add('message')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('message')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     return result;
   }
@@ -46,13 +55,16 @@ class _$CommentSerializer implements StructuredSerializer<Comment> {
       final Object? value = iterator.current;
       switch (key) {
         case 'senderId':
-          result.senderId = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.senderId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'sentDate':
-          result.sentDate = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
+          result.sentDate = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
           break;
         case 'message':
-          result.message = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.message = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
       }
     }
@@ -69,12 +81,14 @@ class _$Comment extends Comment {
   @override
   final String? message;
 
-  factory _$Comment([void Function(CommentBuilder)? updates]) => (new CommentBuilder()..update(updates)).build();
+  factory _$Comment([void Function(CommentBuilder)? updates]) =>
+      (new CommentBuilder()..update(updates)).build();
 
   _$Comment._({this.senderId, this.sentDate, this.message}) : super._();
 
   @override
-  Comment rebuild(void Function(CommentBuilder) updates) => (toBuilder()..update(updates)).build();
+  Comment rebuild(void Function(CommentBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   CommentBuilder toBuilder() => new CommentBuilder()..replace(this);
@@ -82,12 +96,16 @@ class _$Comment extends Comment {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Comment && senderId == other.senderId && sentDate == other.sentDate && message == other.message;
+    return other is Comment &&
+        senderId == other.senderId &&
+        sentDate == other.sentDate &&
+        message == other.message;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, senderId.hashCode), sentDate.hashCode), message.hashCode));
+    return $jf($jc(
+        $jc($jc(0, senderId.hashCode), sentDate.hashCode), message.hashCode));
   }
 
   @override
@@ -141,7 +159,9 @@ class CommentBuilder implements Builder<Comment, CommentBuilder> {
 
   @override
   _$Comment build() {
-    final _$result = _$v ?? new _$Comment._(senderId: senderId, sentDate: sentDate, message: message);
+    final _$result = _$v ??
+        new _$Comment._(
+            senderId: senderId, sentDate: sentDate, message: message);
     replace(_$result);
     return _$result;
   }

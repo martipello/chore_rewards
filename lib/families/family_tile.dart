@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../dependency_injection_container.dart';
 import '../extensions/string_extension.dart';
-import 'family_detail_view.dart';
 import '../models/family.dart';
+import '../models/family_member.dart';
 import '../repositories/image_repository.dart';
 import '../theme/chores_app_text.dart';
+import '../view_models/family/family_member_view_model.dart';
+import 'family_detail_view.dart';
 
 class FamilyTile extends StatelessWidget {
   FamilyTile({required this.family});
@@ -14,6 +17,7 @@ class FamilyTile extends StatelessWidget {
   final Family family;
 
   final _imageRepository = getIt.get<ImageRepository>();
+  final _familyMemberViewModel = getIt.get<FamilyMemberViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +84,14 @@ class FamilyTile extends StatelessWidget {
                           SizedBox(
                             height: 2,
                           ),
-                          Text(
-                            'Members : ${family.familyMembers.length}',
-                            style: ChoresAppText.body3Style,
+                          StreamBuilder<QuerySnapshot<FamilyMember>>(
+                            stream: _familyMemberViewModel.getFamilyMemberList(family.id ?? ''),
+                            builder: (context, snapshot) {
+                              return Text(
+                                'Members : ${snapshot.data?.docs.length ?? 0}',
+                                style: ChoresAppText.body3Style,
+                              );
+                            }
                           ),
                         ],
                       ),

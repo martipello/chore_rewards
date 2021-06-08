@@ -6,14 +6,14 @@ part of 'allocation.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-const Allocation _$pending = const Allocation._('pending');
+const Allocation _$available = const Allocation._('available');
 const Allocation _$allocated = const Allocation._('allocated');
 const Allocation _$completed = const Allocation._('completed');
 
 Allocation _$allocationValueOf(String name) {
   switch (name) {
-    case 'pending':
-      return _$pending;
+    case 'available':
+      return _$available;
     case 'allocated':
       return _$allocated;
     case 'completed':
@@ -23,8 +23,9 @@ Allocation _$allocationValueOf(String name) {
   }
 }
 
-final BuiltSet<Allocation> _$allocationValues = new BuiltSet<Allocation>(const <Allocation>[
-  _$pending,
+final BuiltSet<Allocation> _$allocationValues =
+    new BuiltSet<Allocation>(const <Allocation>[
+  _$available,
   _$allocated,
   _$completed,
 ]);
@@ -38,11 +39,13 @@ class _$AllocationSerializer implements PrimitiveSerializer<Allocation> {
   final String wireName = 'Allocation';
 
   @override
-  Object serialize(Serializers serializers, Allocation object, {FullType specifiedType = FullType.unspecified}) =>
+  Object serialize(Serializers serializers, Allocation object,
+          {FullType specifiedType = FullType.unspecified}) =>
       object.name;
 
   @override
-  Allocation deserialize(Serializers serializers, Object serialized, {FullType specifiedType = FullType.unspecified}) =>
+  Allocation deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
       Allocation.valueOf(serialized as String);
 }
 

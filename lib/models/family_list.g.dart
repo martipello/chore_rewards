@@ -20,7 +20,8 @@ class _$FamilyListSerializer implements StructuredSerializer<FamilyList> {
     final result = <Object?>[
       'familyList',
       serializers.serialize(object.familyList,
-          specifiedType: const FullType(BuiltList, const [const FullType(Family)])),
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Family)])),
     ];
 
     return result;
@@ -39,7 +40,9 @@ class _$FamilyListSerializer implements StructuredSerializer<FamilyList> {
       switch (key) {
         case 'familyList':
           result.familyList.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltList, const [const FullType(Family)]))! as BuiltList<Object>);
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(Family)]))!
+              as BuiltList<Object>);
           break;
       }
     }
@@ -56,11 +59,13 @@ class _$FamilyList extends FamilyList {
       (new FamilyListBuilder()..update(updates)).build();
 
   _$FamilyList._({required this.familyList}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(familyList, 'FamilyList', 'familyList');
+    BuiltValueNullFieldError.checkNotNull(
+        familyList, 'FamilyList', 'familyList');
   }
 
   @override
-  FamilyList rebuild(void Function(FamilyListBuilder) updates) => (toBuilder()..update(updates)).build();
+  FamilyList rebuild(void Function(FamilyListBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   FamilyListBuilder toBuilder() => new FamilyListBuilder()..replace(this);
@@ -78,7 +83,9 @@ class _$FamilyList extends FamilyList {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('FamilyList')..add('familyList', familyList)).toString();
+    return (newBuiltValueToStringHelper('FamilyList')
+          ..add('familyList', familyList))
+        .toString();
   }
 }
 
@@ -86,8 +93,10 @@ class FamilyListBuilder implements Builder<FamilyList, FamilyListBuilder> {
   _$FamilyList? _$v;
 
   ListBuilder<Family>? _familyList;
-  ListBuilder<Family> get familyList => _$this._familyList ??= new ListBuilder<Family>();
-  set familyList(ListBuilder<Family>? familyList) => _$this._familyList = familyList;
+  ListBuilder<Family> get familyList =>
+      _$this._familyList ??= new ListBuilder<Family>();
+  set familyList(ListBuilder<Family>? familyList) =>
+      _$this._familyList = familyList;
 
   FamilyListBuilder();
 
@@ -122,7 +131,8 @@ class FamilyListBuilder implements Builder<FamilyList, FamilyListBuilder> {
         _$failedField = 'familyList';
         familyList.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError('FamilyList', _$failedField, e.toString());
+        throw new BuiltValueNestedFieldError(
+            'FamilyList', _$failedField, e.toString());
       }
       rethrow;
     }

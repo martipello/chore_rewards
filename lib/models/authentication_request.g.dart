@@ -6,32 +6,45 @@ part of 'authentication_request.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<AuthenticationRequest> _$authenticationRequestSerializer = new _$AuthenticationRequestSerializer();
+Serializer<AuthenticationRequest> _$authenticationRequestSerializer =
+    new _$AuthenticationRequestSerializer();
 
-class _$AuthenticationRequestSerializer implements StructuredSerializer<AuthenticationRequest> {
+class _$AuthenticationRequestSerializer
+    implements StructuredSerializer<AuthenticationRequest> {
   @override
-  final Iterable<Type> types = const [AuthenticationRequest, _$AuthenticationRequest];
+  final Iterable<Type> types = const [
+    AuthenticationRequest,
+    _$AuthenticationRequest
+  ];
   @override
   final String wireName = 'AuthenticationRequest';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, AuthenticationRequest object,
+  Iterable<Object?> serialize(
+      Serializers serializers, AuthenticationRequest object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[];
     Object? value;
     value = object.email;
     if (value != null) {
-      result..add('email')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('email')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.password;
     if (value != null) {
-      result..add('password')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('password')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     return result;
   }
 
   @override
-  AuthenticationRequest deserialize(Serializers serializers, Iterable<Object?> serialized,
+  AuthenticationRequest deserialize(
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new AuthenticationRequestBuilder();
 
@@ -42,10 +55,12 @@ class _$AuthenticationRequestSerializer implements StructuredSerializer<Authenti
       final Object? value = iterator.current;
       switch (key) {
         case 'email':
-          result.email = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.email = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'password':
-          result.password = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.password = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
       }
     }
@@ -60,22 +75,27 @@ class _$AuthenticationRequest extends AuthenticationRequest {
   @override
   final String? password;
 
-  factory _$AuthenticationRequest([void Function(AuthenticationRequestBuilder)? updates]) =>
+  factory _$AuthenticationRequest(
+          [void Function(AuthenticationRequestBuilder)? updates]) =>
       (new AuthenticationRequestBuilder()..update(updates)).build();
 
   _$AuthenticationRequest._({this.email, this.password}) : super._();
 
   @override
-  AuthenticationRequest rebuild(void Function(AuthenticationRequestBuilder) updates) =>
+  AuthenticationRequest rebuild(
+          void Function(AuthenticationRequestBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  AuthenticationRequestBuilder toBuilder() => new AuthenticationRequestBuilder()..replace(this);
+  AuthenticationRequestBuilder toBuilder() =>
+      new AuthenticationRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AuthenticationRequest && email == other.email && password == other.password;
+    return other is AuthenticationRequest &&
+        email == other.email &&
+        password == other.password;
   }
 
   @override
@@ -85,12 +105,15 @@ class _$AuthenticationRequest extends AuthenticationRequest {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('AuthenticationRequest')..add('email', email)..add('password', password))
+    return (newBuiltValueToStringHelper('AuthenticationRequest')
+          ..add('email', email)
+          ..add('password', password))
         .toString();
   }
 }
 
-class AuthenticationRequestBuilder implements Builder<AuthenticationRequest, AuthenticationRequestBuilder> {
+class AuthenticationRequestBuilder
+    implements Builder<AuthenticationRequest, AuthenticationRequestBuilder> {
   _$AuthenticationRequest? _$v;
 
   String? _email;
@@ -126,7 +149,8 @@ class AuthenticationRequestBuilder implements Builder<AuthenticationRequest, Aut
 
   @override
   _$AuthenticationRequest build() {
-    final _$result = _$v ?? new _$AuthenticationRequest._(email: email, password: password);
+    final _$result =
+        _$v ?? new _$AuthenticationRequest._(email: email, password: password);
     replace(_$result);
     return _$result;
   }

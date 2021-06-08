@@ -1,52 +1,77 @@
-import 'package:built_collection/built_collection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/utils/api_response.dart';
+import '../models/allocated_family_member.dart';
+import '../models/allocation.dart';
 import '../models/chore.dart';
-import '../models/family.dart';
+import '../models/family_member.dart';
+import '../utils/constants.dart';
 import '../utils/log.dart';
 import 'family_repository.dart';
 
 class ChoreRepository {
   ChoreRepository(
     this.familyRepository,
+    this.sharedPreferences,
+    this.firebaseFirestore,
   );
 
   final FamilyRepository familyRepository;
+  final SharedPreferences sharedPreferences;
+  final FirebaseFirestore firebaseFirestore;
 
-  Stream<BuiltList<Chore>?> getChores(String familyId) {
-    return familyRepository.getFamily(familyId).asyncMap((event) {
-      return event.data()?.chores;
-    });
+  Future<CollectionReference> _choresCollection(String familyId) async {
+    final userId = sharedPreferences.getString(Constants.USER_ID);
+    return firebaseFirestore.collection('/users/$userId/families/$familyId/chores');
   }
 
-  Stream<Chore?> getChore(String familyId, String choreId) {
-    return familyRepository.getFamily(familyId).asyncMap((event) {
-      return event.data()?.chores.firstWhere((chore) => chore.id == choreId);
-    });
+  Stream<QuerySnapshot<Chore>> getChores(String familyId) async* {
+    final choresCollection = await _choresCollection(familyId);
+    yield* choresCollection
+        .withConverter<Chore>(
+          fromFirestore: (snapshots, _) => Chore.fromJson(snapshots.data()!) ?? Chore(),
+          toFirestore: (chore, _) => chore.toJson(),
+        )
+        .snapshots();
   }
 
   Future<ApiResponse> addChore(Chore chore, String familyId) async {
     try {
       logger(chore);
-      final _familyDocument = await familyRepository.familyDocument(familyId);
-      final family = await _familyDocument
-          .withConverter<Family>(
-              fromFirestore: (snapshot, _) => Family.fromJson(snapshot.data()!) ?? Family(),
-              toFirestore: (family, _) => family.toJson())
-          .get();
-      if (family.data() != null) {
-        final familyChoreList = family.data()?.chores.asList() ?? [];
-        final choreList = [...familyChoreList, chore];
-
-        final familyRebuild = family.data()?.rebuild(
-              (b) => b..chores = choreList.toBuiltList().toBuilder(),
-            );
-        return familyRepository.addFamily(familyRebuild!);
-      } else {
-        return ApiResponse.error('Couldn\'t add Chore because family doesn\'t exist.');
-      }
+      final choresCollection = await _choresCollection(familyId);
+      choresCollection.doc(chore.id).set(chore.toJson());
+      return ApiResponse.completed(null);
     } catch (e) {
       return ApiResponse.error(e.toString());
     }
+  }
+
+  Future<ApiResponse> acceptChore(
+    Chore chore,
+    FamilyMember? familyMember,
+    String familyId,
+  ) async {
+    try {
+      final choresCollection = await _choresCollection(familyId);
+      choresCollection.doc(chore.id).update(chore
+          .rebuild(
+            (b) => b
+              ..allocation = Allocation.allocated
+              ..allocatedToFamilyMember = _createdAllocationFamilyMemberForFamilyMember(familyMember).toBuilder(),
+          )
+          .toJson());
+      return ApiResponse.completed(null);
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
+  AllocatedFamilyMember _createdAllocationFamilyMemberForFamilyMember(FamilyMember? familyMember) {
+    return AllocatedFamilyMember((b) => b
+      ..id = familyMember?.id
+      ..name = familyMember?.name
+      ..lastName = familyMember?.lastName
+      ..image = familyMember?.image);
   }
 }

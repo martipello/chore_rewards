@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'repositories/chore_repository.dart';
+import 'repositories/family_members_repository.dart';
 import 'repositories/family_repository.dart';
 import 'repositories/image_repository.dart';
 import 'repositories/user_repository.dart';
@@ -28,13 +29,14 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => FirebaseAuth.instance);
 
   getIt.registerLazySingleton(() => ImageRepository(getIt()));
-  getIt.registerLazySingleton(() => ChoreRepository(getIt()));
+  getIt.registerLazySingleton(() => ChoreRepository(getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => UserRepository(getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => FamilyRepository(getIt(), getIt(), getIt()));
+  getIt.registerLazySingleton(() => FamilyMembersRepository(getIt(), getIt(), getIt()));
   getIt.registerFactory(() => UserViewModel(getIt(), getIt(), getIt()));
   getIt.registerFactory(() => AuthenticationViewModel(getIt(), getIt(), getIt(), getIt()));
-  getIt.registerFactory(() => FamilyViewModel(getIt(), getIt()));
+  getIt.registerFactory(() => FamilyViewModel(getIt(), getIt(), getIt()));
   getIt.registerFactory(() => FamilyMemberViewModel(getIt(), getIt()));
-  getIt.registerFactory(() => ChoreViewModel(getIt(), getIt()));
+  getIt.registerFactory(() => ChoreViewModel(getIt(), getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => ImagePicker());
 }

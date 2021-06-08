@@ -15,38 +15,59 @@ class _$UserSerializer implements StructuredSerializer<User> {
   final String wireName = 'User';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, User object, {FullType specifiedType = FullType.unspecified}) {
+  Iterable<Object?> serialize(Serializers serializers, User object,
+      {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[];
     Object? value;
     value = object.name;
     if (value != null) {
-      result..add('name')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('name')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.id;
     if (value != null) {
-      result..add('id')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('id')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.image;
     if (value != null) {
-      result..add('image')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('image')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.lastName;
     if (value != null) {
-      result..add('lastName')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('lastName')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.userName;
     if (value != null) {
-      result..add('userName')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('userName')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.dateOfBirth;
     if (value != null) {
-      result..add('dateOfBirth')..add(serializers.serialize(value, specifiedType: const FullType(DateTime)));
+      result
+        ..add('dateOfBirth')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(DateTime)));
     }
     value = object.families;
     if (value != null) {
       result
         ..add('families')
-        ..add(serializers.serialize(value, specifiedType: const FullType(BuiltList, const [const FullType(Family)])));
+        ..add(serializers.serialize(value,
+            specifiedType:
+                const FullType(BuiltList, const [const FullType(Family)])));
     }
     return result;
   }
@@ -63,26 +84,34 @@ class _$UserSerializer implements StructuredSerializer<User> {
       final Object? value = iterator.current;
       switch (key) {
         case 'name':
-          result.name = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.name = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'id':
-          result.id = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'image':
-          result.image = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.image = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'lastName':
-          result.lastName = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.lastName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'userName':
-          result.userName = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.userName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'dateOfBirth':
-          result.dateOfBirth = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
+          result.dateOfBirth = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
           break;
         case 'families':
           result.families.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltList, const [const FullType(Family)]))! as BuiltList<Object>);
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(Family)]))!
+              as BuiltList<Object>);
           break;
       }
     }
@@ -107,12 +136,22 @@ class _$User extends User {
   @override
   final BuiltList<Family>? families;
 
-  factory _$User([void Function(UserBuilder)? updates]) => (new UserBuilder()..update(updates)).build();
+  factory _$User([void Function(UserBuilder)? updates]) =>
+      (new UserBuilder()..update(updates)).build();
 
-  _$User._({this.name, this.id, this.image, this.lastName, this.userName, this.dateOfBirth, this.families}) : super._();
+  _$User._(
+      {this.name,
+      this.id,
+      this.image,
+      this.lastName,
+      this.userName,
+      this.dateOfBirth,
+      this.families})
+      : super._();
 
   @override
-  User rebuild(void Function(UserBuilder) updates) => (toBuilder()..update(updates)).build();
+  User rebuild(void Function(UserBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   UserBuilder toBuilder() => new UserBuilder()..replace(this);
@@ -134,7 +173,11 @@ class _$User extends User {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc($jc($jc(0, name.hashCode), id.hashCode), image.hashCode), lastName.hashCode),
+            $jc(
+                $jc(
+                    $jc($jc($jc(0, name.hashCode), id.hashCode),
+                        image.hashCode),
+                    lastName.hashCode),
                 userName.hashCode),
             dateOfBirth.hashCode),
         families.hashCode));
@@ -182,7 +225,8 @@ class UserBuilder implements Builder<User, UserBuilder> {
   set dateOfBirth(DateTime? dateOfBirth) => _$this._dateOfBirth = dateOfBirth;
 
   ListBuilder<Family>? _families;
-  ListBuilder<Family> get families => _$this._families ??= new ListBuilder<Family>();
+  ListBuilder<Family> get families =>
+      _$this._families ??= new ListBuilder<Family>();
   set families(ListBuilder<Family>? families) => _$this._families = families;
 
   UserBuilder();
@@ -232,7 +276,8 @@ class UserBuilder implements Builder<User, UserBuilder> {
         _$failedField = 'families';
         _families?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError('User', _$failedField, e.toString());
+        throw new BuiltValueNestedFieldError(
+            'User', _$failedField, e.toString());
       }
       rethrow;
     }

@@ -1,24 +1,36 @@
 import 'dart:io';
 
-import 'package:built_collection/built_collection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/utils/api_response.dart';
+import '../../models/allocated_family_member.dart';
 import '../../models/allocation.dart';
 import '../../models/chore.dart';
 import '../../models/family_member.dart';
 import '../../repositories/chore_repository.dart';
+import '../../repositories/family_members_repository.dart';
 import '../../repositories/image_repository.dart';
 import '../../utils/constants.dart';
 import '../../utils/log.dart';
 
 class ChoreViewModel {
-  ChoreViewModel(this.choreRepository, this.imageRepository);
+  ChoreViewModel(
+    this.choreRepository,
+    this.imageRepository,
+    this.familyRepository,
+    this.sharedPreferences,
+  );
 
   final ChoreRepository choreRepository;
   final ImageRepository imageRepository;
+  final FamilyMembersRepository familyRepository;
+  final SharedPreferences sharedPreferences;
 
   final BehaviorSubject<ApiResponse> saveChoreResult = BehaviorSubject();
+
+  final BehaviorSubject<ApiResponse> acceptChoreResult = BehaviorSubject();
 
   final BehaviorSubject<Chore> choreStream = BehaviorSubject.seeded(Chore());
 
@@ -26,7 +38,7 @@ class ChoreViewModel {
     return imageRepository.getImageUrlForImagePath(imagePath);
   }
 
-  Stream<BuiltList<Chore>?> getChores(String familyId) {
+  Stream<QuerySnapshot<Chore>?> getChores(String familyId) {
     return choreRepository.getChores(familyId);
   }
 
@@ -37,15 +49,19 @@ class ChoreViewModel {
   }) async {
     saveChoreResult.add(ApiResponse.loading(null));
     final now = DateTime.now();
+    final familyMember = await familyRepository.getFamilyMember(familyId);
     final chore = choreStream.value.rebuild((b) => b
       ..id = '${now.day}${now.month}${now.year}${now.hour}${now.minute}${now.second}'
       ..addedDate = DateTime.now()
-      ..allocation = Allocation.pending);
+      ..allocation = Allocation.available
+      ..createdBy = _createdByFamilyMember(familyMember.data()).toBuilder());
     if (imageFile != null) {
       final uploadResult = await imageRepository.uploadImage(imageFile, '$familyId/chores/${chore.id}/uploads');
       logger('uploadResult $uploadResult');
       if (uploadResult.status == Status.ERROR) {
-        saveChoreResult.add(ApiResponse.error('Uploading image failed.'));
+        saveChoreResult.add(
+          ApiResponse.error('Uploading image failed.'),
+        );
       }
       logger('family before rebuild  $familyId');
       final _choreWithImage = chore.rebuild((b) => b..image = uploadResult.data);
@@ -92,12 +108,29 @@ class ChoreViewModel {
   void setAllocatedFamilyMember(FamilyMember? familyMember) {
     final chore = familyMember?.name == Constants.ALL_FAMILY_MEMBERS
         ? choreStream.value.rebuild((b) => b..allocatedToFamilyMember = null)
-        : choreStream.value.rebuild((b) => b..allocatedToFamilyMember = familyMember?.toBuilder());
+        : choreStream.value
+            .rebuild((b) => b..allocatedToFamilyMember = _createdByFamilyMember(familyMember).toBuilder());
     choreStream.add(chore);
+  }
+
+  AllocatedFamilyMember _createdByFamilyMember(FamilyMember? familyMember) {
+    return AllocatedFamilyMember((b) => b
+      ..id = familyMember?.id
+      ..name = familyMember?.name
+      ..lastName = familyMember?.lastName
+      ..image = familyMember?.image);
   }
 
   void dispose() {
     saveChoreResult.close();
+    acceptChoreResult.close();
     choreStream.close();
+  }
+
+  void acceptChore(Chore chore, String familyId) async {
+    acceptChoreResult.add(ApiResponse.loading(null));
+    final familyMember = await familyRepository.getFamilyMember(familyId);
+    final acceptedChoreResult = await choreRepository.acceptChore(chore, familyMember.data(), familyId);
+    acceptChoreResult.add(acceptedChoreResult);
   }
 }

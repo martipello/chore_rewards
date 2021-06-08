@@ -15,53 +15,91 @@ class _$ChoreSerializer implements StructuredSerializer<Chore> {
   final String wireName = 'Chore';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, Chore object, {FullType specifiedType = FullType.unspecified}) {
+  Iterable<Object?> serialize(Serializers serializers, Chore object,
+      {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
       'comments',
-      serializers.serialize(object.comments, specifiedType: const FullType(BuiltList, const [const FullType(Comment)])),
+      serializers.serialize(object.comments,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Comment)])),
     ];
     Object? value;
     value = object.id;
     if (value != null) {
-      result..add('id')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('id')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.title;
     if (value != null) {
-      result..add('title')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('title')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.description;
     if (value != null) {
-      result..add('description')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('description')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.reward;
     if (value != null) {
-      result..add('reward')..add(serializers.serialize(value, specifiedType: const FullType(double)));
+      result
+        ..add('reward')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(double)));
     }
     value = object.addedDate;
     if (value != null) {
-      result..add('addedDate')..add(serializers.serialize(value, specifiedType: const FullType(DateTime)));
+      result
+        ..add('addedDate')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(DateTime)));
     }
     value = object.completedDate;
     if (value != null) {
-      result..add('completedDate')..add(serializers.serialize(value, specifiedType: const FullType(DateTime)));
+      result
+        ..add('completedDate')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(DateTime)));
     }
     value = object.expiryDate;
     if (value != null) {
-      result..add('expiryDate')..add(serializers.serialize(value, specifiedType: const FullType(DateTime)));
+      result
+        ..add('expiryDate')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(DateTime)));
     }
     value = object.image;
     if (value != null) {
-      result..add('image')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('image')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.allocation;
     if (value != null) {
-      result..add('allocation')..add(serializers.serialize(value, specifiedType: const FullType(Allocation)));
+      result
+        ..add('allocation')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(Allocation)));
     }
     value = object.allocatedToFamilyMember;
     if (value != null) {
       result
         ..add('allocatedToFamilyMember')
-        ..add(serializers.serialize(value, specifiedType: const FullType(FamilyMember)));
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(AllocatedFamilyMember)));
+    }
+    value = object.createdBy;
+    if (value != null) {
+      result
+        ..add('createdBy')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(AllocatedFamilyMember)));
     }
     return result;
   }
@@ -78,39 +116,56 @@ class _$ChoreSerializer implements StructuredSerializer<Chore> {
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
-          result.id = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'title':
-          result.title = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.title = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'description':
-          result.description = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.description = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'reward':
-          result.reward = serializers.deserialize(value, specifiedType: const FullType(double)) as double;
+          result.reward = serializers.deserialize(value,
+              specifiedType: const FullType(double)) as double;
           break;
         case 'addedDate':
-          result.addedDate = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
+          result.addedDate = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
           break;
         case 'completedDate':
-          result.completedDate = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
+          result.completedDate = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
           break;
         case 'expiryDate':
-          result.expiryDate = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
+          result.expiryDate = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
           break;
         case 'image':
-          result.image = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.image = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'allocation':
-          result.allocation = serializers.deserialize(value, specifiedType: const FullType(Allocation)) as Allocation;
+          result.allocation = serializers.deserialize(value,
+              specifiedType: const FullType(Allocation)) as Allocation;
           break;
         case 'comments':
           result.comments.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltList, const [const FullType(Comment)]))! as BuiltList<Object>);
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(Comment)]))!
+              as BuiltList<Object>);
           break;
         case 'allocatedToFamilyMember':
-          result.allocatedToFamilyMember
-              .replace(serializers.deserialize(value, specifiedType: const FullType(FamilyMember))! as FamilyMember);
+          result.allocatedToFamilyMember.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(AllocatedFamilyMember))!
+              as AllocatedFamilyMember);
+          break;
+        case 'createdBy':
+          result.createdBy.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(AllocatedFamilyMember))!
+              as AllocatedFamilyMember);
           break;
       }
     }
@@ -141,9 +196,12 @@ class _$Chore extends Chore {
   @override
   final BuiltList<Comment> comments;
   @override
-  final FamilyMember? allocatedToFamilyMember;
+  final AllocatedFamilyMember? allocatedToFamilyMember;
+  @override
+  final AllocatedFamilyMember? createdBy;
 
-  factory _$Chore([void Function(ChoreBuilder)? updates]) => (new ChoreBuilder()..update(updates)).build();
+  factory _$Chore([void Function(ChoreBuilder)? updates]) =>
+      (new ChoreBuilder()..update(updates)).build();
 
   _$Chore._(
       {this.id,
@@ -156,13 +214,15 @@ class _$Chore extends Chore {
       this.image,
       this.allocation,
       required this.comments,
-      this.allocatedToFamilyMember})
+      this.allocatedToFamilyMember,
+      this.createdBy})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(comments, 'Chore', 'comments');
   }
 
   @override
-  Chore rebuild(void Function(ChoreBuilder) updates) => (toBuilder()..update(updates)).build();
+  Chore rebuild(void Function(ChoreBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   ChoreBuilder toBuilder() => new ChoreBuilder()..replace(this);
@@ -181,7 +241,8 @@ class _$Chore extends Chore {
         image == other.image &&
         allocation == other.allocation &&
         comments == other.comments &&
-        allocatedToFamilyMember == other.allocatedToFamilyMember;
+        allocatedToFamilyMember == other.allocatedToFamilyMember &&
+        createdBy == other.createdBy;
   }
 
   @override
@@ -193,15 +254,21 @@ class _$Chore extends Chore {
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc($jc($jc(0, id.hashCode), title.hashCode), description.hashCode),
-                                    reward.hashCode),
-                                addedDate.hashCode),
-                            completedDate.hashCode),
-                        expiryDate.hashCode),
-                    image.hashCode),
-                allocation.hashCode),
-            comments.hashCode),
-        allocatedToFamilyMember.hashCode));
+                                $jc(
+                                    $jc(
+                                        $jc(
+                                            $jc($jc(0, id.hashCode),
+                                                title.hashCode),
+                                            description.hashCode),
+                                        reward.hashCode),
+                                    addedDate.hashCode),
+                                completedDate.hashCode),
+                            expiryDate.hashCode),
+                        image.hashCode),
+                    allocation.hashCode),
+                comments.hashCode),
+            allocatedToFamilyMember.hashCode),
+        createdBy.hashCode));
   }
 
   @override
@@ -217,7 +284,8 @@ class _$Chore extends Chore {
           ..add('image', image)
           ..add('allocation', allocation)
           ..add('comments', comments)
-          ..add('allocatedToFamilyMember', allocatedToFamilyMember))
+          ..add('allocatedToFamilyMember', allocatedToFamilyMember)
+          ..add('createdBy', createdBy))
         .toString();
   }
 }
@@ -247,7 +315,8 @@ class ChoreBuilder implements Builder<Chore, ChoreBuilder> {
 
   DateTime? _completedDate;
   DateTime? get completedDate => _$this._completedDate;
-  set completedDate(DateTime? completedDate) => _$this._completedDate = completedDate;
+  set completedDate(DateTime? completedDate) =>
+      _$this._completedDate = completedDate;
 
   DateTime? _expiryDate;
   DateTime? get expiryDate => _$this._expiryDate;
@@ -262,13 +331,22 @@ class ChoreBuilder implements Builder<Chore, ChoreBuilder> {
   set allocation(Allocation? allocation) => _$this._allocation = allocation;
 
   ListBuilder<Comment>? _comments;
-  ListBuilder<Comment> get comments => _$this._comments ??= new ListBuilder<Comment>();
+  ListBuilder<Comment> get comments =>
+      _$this._comments ??= new ListBuilder<Comment>();
   set comments(ListBuilder<Comment>? comments) => _$this._comments = comments;
 
-  FamilyMemberBuilder? _allocatedToFamilyMember;
-  FamilyMemberBuilder get allocatedToFamilyMember => _$this._allocatedToFamilyMember ??= new FamilyMemberBuilder();
-  set allocatedToFamilyMember(FamilyMemberBuilder? allocatedToFamilyMember) =>
+  AllocatedFamilyMemberBuilder? _allocatedToFamilyMember;
+  AllocatedFamilyMemberBuilder get allocatedToFamilyMember =>
+      _$this._allocatedToFamilyMember ??= new AllocatedFamilyMemberBuilder();
+  set allocatedToFamilyMember(
+          AllocatedFamilyMemberBuilder? allocatedToFamilyMember) =>
       _$this._allocatedToFamilyMember = allocatedToFamilyMember;
+
+  AllocatedFamilyMemberBuilder? _createdBy;
+  AllocatedFamilyMemberBuilder get createdBy =>
+      _$this._createdBy ??= new AllocatedFamilyMemberBuilder();
+  set createdBy(AllocatedFamilyMemberBuilder? createdBy) =>
+      _$this._createdBy = createdBy;
 
   ChoreBuilder();
 
@@ -286,6 +364,7 @@ class ChoreBuilder implements Builder<Chore, ChoreBuilder> {
       _allocation = $v.allocation;
       _comments = $v.comments.toBuilder();
       _allocatedToFamilyMember = $v.allocatedToFamilyMember?.toBuilder();
+      _createdBy = $v.createdBy?.toBuilder();
       _$v = null;
     }
     return this;
@@ -318,7 +397,8 @@ class ChoreBuilder implements Builder<Chore, ChoreBuilder> {
               image: image,
               allocation: allocation,
               comments: comments.build(),
-              allocatedToFamilyMember: _allocatedToFamilyMember?.build());
+              allocatedToFamilyMember: _allocatedToFamilyMember?.build(),
+              createdBy: _createdBy?.build());
     } catch (_) {
       late String _$failedField;
       try {
@@ -326,8 +406,11 @@ class ChoreBuilder implements Builder<Chore, ChoreBuilder> {
         comments.build();
         _$failedField = 'allocatedToFamilyMember';
         _allocatedToFamilyMember?.build();
+        _$failedField = 'createdBy';
+        _createdBy?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError('Chore', _$failedField, e.toString());
+        throw new BuiltValueNestedFieldError(
+            'Chore', _$failedField, e.toString());
       }
       rethrow;
     }

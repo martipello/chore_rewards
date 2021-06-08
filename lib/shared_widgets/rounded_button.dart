@@ -15,6 +15,8 @@ class RoundedButton extends StatelessWidget {
     this.leadingIcon,
     this.trailingIcon,
     this.outlineColor,
+    this.textStyle,
+    this.elevation,
   }) : super(key: key);
 
   final VoidCallback? onPressed;
@@ -23,9 +25,11 @@ class RoundedButton extends StatelessWidget {
   final bool isLoading;
   final bool isFilled;
   final bool disableShadow;
+  final double? elevation;
   final String label;
   final IconData? leadingIcon;
   final IconData? trailingIcon;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -34,65 +38,63 @@ class RoundedButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(18.0),
       ),
       child: TextButton(
-          style: ButtonStyle(
-            textStyle: MaterialStateProperty.all(ChoresAppText.body4Style),
-            elevation: MaterialStateProperty.all(onPressed != null && !disableShadow ? 2 : 0),
-            padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 16)),
-            backgroundColor: MaterialStateProperty.all(_getFillColor(context)),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ),
-            ),
-            side: MaterialStateProperty.all(
-              BorderSide(
-                color: _getOutlineColor(context),
-              ),
+        style: ButtonStyle(
+          textStyle: MaterialStateProperty.all(textStyle ?? ChoresAppText.body4Style),
+          elevation: MaterialStateProperty.all(onPressed != null && !disableShadow ? elevation ?? 2 : 0),
+          padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 16)),
+          backgroundColor: MaterialStateProperty.all(_getFillColor(context)),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
             ),
           ),
-          onPressed: _handleOnPressed(),
-          child: Builder(
-            builder: (context) {
-              if (isLoading) return _buildLoading(context);
-              return _buildButtonContent(context);
-            },
-          )),
+          side: MaterialStateProperty.all(
+            BorderSide(
+              color: _getOutlineColor(context),
+            ),
+          ),
+        ),
+        onPressed: _handleOnPressed(),
+        child: Builder(
+          builder: (context) {
+            if (isLoading) return _buildLoading(context);
+            return _buildButtonContent(context);
+          },
+        ),
+      ),
     );
   }
 
   Widget _buildButtonContent(BuildContext context) {
-    final textStyle = _getTextStyle(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (leadingIcon != null)
-            Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: Icon(
-                leadingIcon,
-                color: textStyle.color,
-                size: textStyle.fontSize! + 4,
-              ),
-            ),
-          Flexible(
-            child: Text(
-              label,
-              style: textStyle,
+    var textStyle = _getTextStyle(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (leadingIcon != null)
+          Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: Icon(
+              leadingIcon,
+              color: textStyle.color,
+              size: textStyle.fontSize! + 2,
             ),
           ),
-          if (trailingIcon != null)
-            Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Icon(
-                trailingIcon,
-                color: textStyle.color,
-                size: textStyle.fontSize! + 2,
-              ),
+        Flexible(
+          child: Text(
+            label,
+            style: textStyle,
+          ),
+        ),
+        if (trailingIcon != null)
+          Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Icon(
+              trailingIcon,
+              color: textStyle.color,
+              size: textStyle.fontSize! + 2,
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
@@ -100,9 +102,9 @@ class RoundedButton extends StatelessWidget {
     if (isFilled && onPressed != null) {
       return fillColor ?? colors(context).secondary;
     } else if (!isFilled && onPressed == null) {
-      return Colors.white;
+      return colors(context).textOnSecondary;
     } else if (!isFilled && onPressed != null) {
-      return Colors.white;
+      return colors(context).textOnSecondary;
     } else {
       return colors(context).foreground;
     }
@@ -110,7 +112,7 @@ class RoundedButton extends StatelessWidget {
 
   Color _getOutlineColor(BuildContext context) {
     if (onPressed != null) {
-      return outlineColor ?? colors(context).secondary;
+      return outlineColor ?? fillColor ?? colors(context).secondary;
     } else {
       return colors(context).foreground;
     }
@@ -118,7 +120,8 @@ class RoundedButton extends StatelessWidget {
 
   TextStyle _getTextStyle(BuildContext context) {
     if (isFilled && onPressed != null) {
-      return ChoresAppText.subtitle4Style.copyWith(color: colors(context).textOnSecondary);
+      return textStyle?.copyWith(color: colors(context).textOnSecondary) ??
+          ChoresAppText.subtitle4Style.copyWith(color: colors(context).textOnSecondary);
     } else if (!isFilled && onPressed != null) {
       return ChoresAppText.subtitle4Style.copyWith(color: colors(context).secondary);
     } else if (isFilled && onPressed == null) {

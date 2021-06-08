@@ -281,6 +281,7 @@ class _AddChoreViewState extends State<AddChoreView> {
   Widget _buildExpiryDate() {
     return DateTimeField(
       format: DateFormat('MMMM d, yyyy'),
+      style: ChoresAppText.body4Style,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.zero,
         labelText: 'Expiry date',

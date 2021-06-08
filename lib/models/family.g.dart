@@ -15,30 +15,37 @@ class _$FamilySerializer implements StructuredSerializer<Family> {
   final String wireName = 'Family';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, Family object, {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object?>[
-      'chores',
-      serializers.serialize(object.chores, specifiedType: const FullType(BuiltList, const [const FullType(Chore)])),
-      'familyMembers',
-      serializers.serialize(object.familyMembers,
-          specifiedType: const FullType(BuiltList, const [const FullType(FamilyMember)])),
-    ];
+  Iterable<Object?> serialize(Serializers serializers, Family object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object?>[];
     Object? value;
     value = object.id;
     if (value != null) {
-      result..add('id')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('id')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.name;
     if (value != null) {
-      result..add('name')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('name')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.image;
     if (value != null) {
-      result..add('image')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('image')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.headOfFamily;
     if (value != null) {
-      result..add('headOfFamily')..add(serializers.serialize(value, specifiedType: const FullType(FamilyMember)));
+      result
+        ..add('headOfFamily')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(FamilyMember)));
     }
     return result;
   }
@@ -55,25 +62,20 @@ class _$FamilySerializer implements StructuredSerializer<Family> {
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
-          result.id = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'name':
-          result.name = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.name = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'image':
-          result.image = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.image = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'headOfFamily':
-          result.headOfFamily
-              .replace(serializers.deserialize(value, specifiedType: const FullType(FamilyMember))! as FamilyMember);
-          break;
-        case 'chores':
-          result.chores.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltList, const [const FullType(Chore)]))! as BuiltList<Object>);
-          break;
-        case 'familyMembers':
-          result.familyMembers.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltList, const [const FullType(FamilyMember)]))! as BuiltList<Object>);
+          result.headOfFamily.replace(serializers.deserialize(value,
+              specifiedType: const FullType(FamilyMember))! as FamilyMember);
           break;
       }
     }
@@ -91,21 +93,15 @@ class _$Family extends Family {
   final String? image;
   @override
   final FamilyMember? headOfFamily;
-  @override
-  final BuiltList<Chore> chores;
-  @override
-  final BuiltList<FamilyMember> familyMembers;
 
-  factory _$Family([void Function(FamilyBuilder)? updates]) => (new FamilyBuilder()..update(updates)).build();
+  factory _$Family([void Function(FamilyBuilder)? updates]) =>
+      (new FamilyBuilder()..update(updates)).build();
 
-  _$Family._({this.id, this.name, this.image, this.headOfFamily, required this.chores, required this.familyMembers})
-      : super._() {
-    BuiltValueNullFieldError.checkNotNull(chores, 'Family', 'chores');
-    BuiltValueNullFieldError.checkNotNull(familyMembers, 'Family', 'familyMembers');
-  }
+  _$Family._({this.id, this.name, this.image, this.headOfFamily}) : super._();
 
   @override
-  Family rebuild(void Function(FamilyBuilder) updates) => (toBuilder()..update(updates)).build();
+  Family rebuild(void Function(FamilyBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   FamilyBuilder toBuilder() => new FamilyBuilder()..replace(this);
@@ -117,16 +113,13 @@ class _$Family extends Family {
         id == other.id &&
         name == other.name &&
         image == other.image &&
-        headOfFamily == other.headOfFamily &&
-        chores == other.chores &&
-        familyMembers == other.familyMembers;
+        headOfFamily == other.headOfFamily;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc($jc($jc($jc(0, id.hashCode), name.hashCode), image.hashCode), headOfFamily.hashCode), chores.hashCode),
-        familyMembers.hashCode));
+    return $jf($jc($jc($jc($jc(0, id.hashCode), name.hashCode), image.hashCode),
+        headOfFamily.hashCode));
   }
 
   @override
@@ -135,9 +128,7 @@ class _$Family extends Family {
           ..add('id', id)
           ..add('name', name)
           ..add('image', image)
-          ..add('headOfFamily', headOfFamily)
-          ..add('chores', chores)
-          ..add('familyMembers', familyMembers))
+          ..add('headOfFamily', headOfFamily))
         .toString();
   }
 }
@@ -158,16 +149,10 @@ class FamilyBuilder implements Builder<Family, FamilyBuilder> {
   set image(String? image) => _$this._image = image;
 
   FamilyMemberBuilder? _headOfFamily;
-  FamilyMemberBuilder get headOfFamily => _$this._headOfFamily ??= new FamilyMemberBuilder();
-  set headOfFamily(FamilyMemberBuilder? headOfFamily) => _$this._headOfFamily = headOfFamily;
-
-  ListBuilder<Chore>? _chores;
-  ListBuilder<Chore> get chores => _$this._chores ??= new ListBuilder<Chore>();
-  set chores(ListBuilder<Chore>? chores) => _$this._chores = chores;
-
-  ListBuilder<FamilyMember>? _familyMembers;
-  ListBuilder<FamilyMember> get familyMembers => _$this._familyMembers ??= new ListBuilder<FamilyMember>();
-  set familyMembers(ListBuilder<FamilyMember>? familyMembers) => _$this._familyMembers = familyMembers;
+  FamilyMemberBuilder get headOfFamily =>
+      _$this._headOfFamily ??= new FamilyMemberBuilder();
+  set headOfFamily(FamilyMemberBuilder? headOfFamily) =>
+      _$this._headOfFamily = headOfFamily;
 
   FamilyBuilder();
 
@@ -178,8 +163,6 @@ class FamilyBuilder implements Builder<Family, FamilyBuilder> {
       _name = $v.name;
       _image = $v.image;
       _headOfFamily = $v.headOfFamily?.toBuilder();
-      _chores = $v.chores.toBuilder();
-      _familyMembers = $v.familyMembers.toBuilder();
       _$v = null;
     }
     return this;
@@ -205,20 +188,15 @@ class FamilyBuilder implements Builder<Family, FamilyBuilder> {
               id: id,
               name: name,
               image: image,
-              headOfFamily: _headOfFamily?.build(),
-              chores: chores.build(),
-              familyMembers: familyMembers.build());
+              headOfFamily: _headOfFamily?.build());
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'headOfFamily';
         _headOfFamily?.build();
-        _$failedField = 'chores';
-        chores.build();
-        _$failedField = 'familyMembers';
-        familyMembers.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError('Family', _$failedField, e.toString());
+        throw new BuiltValueNestedFieldError(
+            'Family', _$failedField, e.toString());
       }
       rethrow;
     }

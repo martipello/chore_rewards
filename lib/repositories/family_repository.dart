@@ -1,11 +1,9 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/utils/api_response.dart';
 import '../models/family.dart';
-import '../models/family_member.dart';
 import '../utils/constants.dart';
 import '../utils/log.dart';
 
@@ -40,7 +38,7 @@ class FamilyRepository {
     yield* familiesCollection
         .withConverter<Family>(
           fromFirestore: (snapshots, _) =>
-              Family.fromJson(snapshots.data()!) ?? Family((b) => b..familyMembers = ListBuilder([])),
+              Family.fromJson(snapshots.data()!) ?? Family(),
           toFirestore: (family, _) => family.toJson(),
         )
         .snapshots();
@@ -51,7 +49,7 @@ class FamilyRepository {
     yield* _familyDocument
         .withConverter<Family>(
           fromFirestore: (snapshots, _) =>
-              Family.fromJson(snapshots.data()!) ?? Family((b) => b..familyMembers = ListBuilder([])),
+              Family.fromJson(snapshots.data()!) ?? Family(),
           toFirestore: (family, _) => family.toJson(),
         )
         .snapshots();
@@ -68,28 +66,4 @@ class FamilyRepository {
     }
   }
 
-  Future<ApiResponse> addFamilyMember(FamilyMember familyMember, String familyId) async {
-    try {
-      logger(familyMember);
-      final _familyDocument = await familyDocument(familyId);
-      final family = await _familyDocument
-          .withConverter<Family>(
-              fromFirestore: (snapshot, _) => Family.fromJson(snapshot.data()!) ?? Family(),
-              toFirestore: (family, _) => family.toJson())
-          .get();
-      if (family.data() != null) {
-        final familyFamilyMembers = family.data()?.familyMembers.asList() ?? [];
-        final familyMemberList = [...familyFamilyMembers, familyMember];
-
-        final familyRebuild = family.data()?.rebuild(
-              (b) => b..familyMembers = familyMemberList.toBuiltList().toBuilder(),
-            );
-        return addFamily(familyRebuild!);
-      } else {
-        return ApiResponse.error('Couldn\'t add family member because family doesn\'t exist.');
-      }
-    } catch (e) {
-      return ApiResponse.error(e.toString());
-    }
-  }
 }

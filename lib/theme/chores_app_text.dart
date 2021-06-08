@@ -109,6 +109,12 @@ class ChoresAppText {
     height: 1.2,
   );
 
+  static final h6Style = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    height: 1.2,
+  );
+
   // Button
 
   static final button1Style = TextStyle(

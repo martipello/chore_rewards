@@ -20,12 +20,16 @@ class _$PiggyBankSerializer implements StructuredSerializer<PiggyBank> {
     final result = <Object?>[
       'transactions',
       serializers.serialize(object.transactions,
-          specifiedType: const FullType(BuiltList, const [const FullType(Transaction)])),
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Transaction)])),
     ];
     Object? value;
     value = object.balance;
     if (value != null) {
-      result..add('balance')..add(serializers.serialize(value, specifiedType: const FullType(double)));
+      result
+        ..add('balance')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(double)));
     }
     return result;
   }
@@ -42,11 +46,14 @@ class _$PiggyBankSerializer implements StructuredSerializer<PiggyBank> {
       final Object? value = iterator.current;
       switch (key) {
         case 'balance':
-          result.balance = serializers.deserialize(value, specifiedType: const FullType(double)) as double;
+          result.balance = serializers.deserialize(value,
+              specifiedType: const FullType(double)) as double;
           break;
         case 'transactions':
           result.transactions.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltList, const [const FullType(Transaction)]))! as BuiltList<Object>);
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(Transaction)]))!
+              as BuiltList<Object>);
           break;
       }
     }
@@ -61,14 +68,17 @@ class _$PiggyBank extends PiggyBank {
   @override
   final BuiltList<Transaction> transactions;
 
-  factory _$PiggyBank([void Function(PiggyBankBuilder)? updates]) => (new PiggyBankBuilder()..update(updates)).build();
+  factory _$PiggyBank([void Function(PiggyBankBuilder)? updates]) =>
+      (new PiggyBankBuilder()..update(updates)).build();
 
   _$PiggyBank._({this.balance, required this.transactions}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(transactions, 'PiggyBank', 'transactions');
+    BuiltValueNullFieldError.checkNotNull(
+        transactions, 'PiggyBank', 'transactions');
   }
 
   @override
-  PiggyBank rebuild(void Function(PiggyBankBuilder) updates) => (toBuilder()..update(updates)).build();
+  PiggyBank rebuild(void Function(PiggyBankBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   PiggyBankBuilder toBuilder() => new PiggyBankBuilder()..replace(this);
@@ -76,7 +86,9 @@ class _$PiggyBank extends PiggyBank {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is PiggyBank && balance == other.balance && transactions == other.transactions;
+    return other is PiggyBank &&
+        balance == other.balance &&
+        transactions == other.transactions;
   }
 
   @override
@@ -86,7 +98,9 @@ class _$PiggyBank extends PiggyBank {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('PiggyBank')..add('balance', balance)..add('transactions', transactions))
+    return (newBuiltValueToStringHelper('PiggyBank')
+          ..add('balance', balance)
+          ..add('transactions', transactions))
         .toString();
   }
 }
@@ -99,8 +113,10 @@ class PiggyBankBuilder implements Builder<PiggyBank, PiggyBankBuilder> {
   set balance(double? balance) => _$this._balance = balance;
 
   ListBuilder<Transaction>? _transactions;
-  ListBuilder<Transaction> get transactions => _$this._transactions ??= new ListBuilder<Transaction>();
-  set transactions(ListBuilder<Transaction>? transactions) => _$this._transactions = transactions;
+  ListBuilder<Transaction> get transactions =>
+      _$this._transactions ??= new ListBuilder<Transaction>();
+  set transactions(ListBuilder<Transaction>? transactions) =>
+      _$this._transactions = transactions;
 
   PiggyBankBuilder();
 
@@ -129,14 +145,17 @@ class PiggyBankBuilder implements Builder<PiggyBank, PiggyBankBuilder> {
   _$PiggyBank build() {
     _$PiggyBank _$result;
     try {
-      _$result = _$v ?? new _$PiggyBank._(balance: balance, transactions: transactions.build());
+      _$result = _$v ??
+          new _$PiggyBank._(
+              balance: balance, transactions: transactions.build());
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'transactions';
         transactions.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError('PiggyBank', _$failedField, e.toString());
+        throw new BuiltValueNestedFieldError(
+            'PiggyBank', _$failedField, e.toString());
       }
       rethrow;
     }

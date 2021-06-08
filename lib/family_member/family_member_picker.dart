@@ -9,6 +9,7 @@ import '../shared_widgets/circle_image.dart';
 import '../theme/chores_app_text.dart';
 import '../utils/constants.dart';
 import '../view_models/family/family_member_view_model.dart';
+import '../view_models/family/family_view_model.dart';
 
 class FamilyMemberPicker extends StatelessWidget {
   FamilyMemberPicker({
@@ -22,40 +23,49 @@ class FamilyMemberPicker extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final ValueChanged<FamilyMember?> selectedFamilyMember;
 
-  final _familyViewModel = getIt.get<FamilyMemberViewModel>();
+  final _familyMemberViewModel = getIt.get<FamilyMemberViewModel>();
+  final _familyViewModel = getIt.get<FamilyViewModel>();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot<Family>>(
-      stream: _familyViewModel.getFamily(familyId),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data?.data()?.familyMembers.isNotEmpty == true) {
-            return DropdownButtonFormField<FamilyMember>(
-              onChanged: (familyMember){
-                selectedFamilyMember.call(familyMember);
-                formKey.currentState!.validate();
-              },
-              hint: Text(
-                'Select a family member...',
-                style: ChoresAppText.body4Style,
-              ),
-              iconSize: 50,
-              icon: Icon(
-                Icons.arrow_drop_down,
-                size: 24,
-              ),
-              validator: (familyMember){
-                if (familyMember == null) {
-                  return 'Please select family members';
-                }
-                return null;
-              },
-              items: [
-                FamilyMember((b) => b..name = Constants.ALL_FAMILY_MEMBERS..image = snapshot.data?.data()?.image),
-                ...snapshot.data?.data()?.familyMembers.toList() ?? <FamilyMember>[]
-              ].map(_buildFamilyMemberDropDownMenuItem).toList(),
-            );
+    return StreamBuilder<QuerySnapshot<FamilyMember>>(
+      stream: _familyMemberViewModel.getFamilyMemberList(familyId),
+      builder: (context, familyMembersSnapshot) {
+        if (familyMembersSnapshot.hasData) {
+          if (familyMembersSnapshot.data?.docs.isNotEmpty == true) {
+            return StreamBuilder<DocumentSnapshot<Family>>(
+                stream: _familyViewModel.getFamily(familyId),
+                builder: (context, familySnapshot) {
+                  return DropdownButtonFormField<FamilyMember>(
+                    onChanged: (familyMember) {
+                      selectedFamilyMember.call(familyMember);
+                      formKey.currentState!.validate();
+                    },
+                    hint: Text(
+                      'Select a family member...',
+                      style: ChoresAppText.body4Style,
+                    ),
+                    iconSize: 50,
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                      size: 24,
+                    ),
+                    validator: (familyMember) {
+                      if (familyMember == null) {
+                        return 'Please select family members';
+                      }
+                      return null;
+                    },
+                    items: [
+                      FamilyMember(
+                        (b) => b
+                          ..name = Constants.ALL_FAMILY_MEMBERS
+                          ..image = familySnapshot.data?.data()?.image ?? '',
+                      ),
+                      ...familyMembersSnapshot.data?.docs.map((e) => e.data()) ?? <FamilyMember>[]
+                    ].map(_buildFamilyMemberDropDownMenuItem).toList(),
+                  );
+                });
           } else {
             return Text(
               'No Family members with banks, please create one to get started.',

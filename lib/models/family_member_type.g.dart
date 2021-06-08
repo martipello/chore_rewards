@@ -20,21 +20,25 @@ FamilyMemberType _$familyMemberTypeValueOf(String name) {
   }
 }
 
-final BuiltSet<FamilyMemberType> _$familyMemberTypeValues = new BuiltSet<FamilyMemberType>(const <FamilyMemberType>[
+final BuiltSet<FamilyMemberType> _$familyMemberTypeValues =
+    new BuiltSet<FamilyMemberType>(const <FamilyMemberType>[
   _$parent,
   _$child,
 ]);
 
-Serializer<FamilyMemberType> _$familyMemberTypeSerializer = new _$FamilyMemberTypeSerializer();
+Serializer<FamilyMemberType> _$familyMemberTypeSerializer =
+    new _$FamilyMemberTypeSerializer();
 
-class _$FamilyMemberTypeSerializer implements PrimitiveSerializer<FamilyMemberType> {
+class _$FamilyMemberTypeSerializer
+    implements PrimitiveSerializer<FamilyMemberType> {
   @override
   final Iterable<Type> types = const <Type>[FamilyMemberType];
   @override
   final String wireName = 'FamilyMemberType';
 
   @override
-  Object serialize(Serializers serializers, FamilyMemberType object, {FullType specifiedType = FullType.unspecified}) =>
+  Object serialize(Serializers serializers, FamilyMemberType object,
+          {FullType specifiedType = FullType.unspecified}) =>
       object.name;
 
   @override

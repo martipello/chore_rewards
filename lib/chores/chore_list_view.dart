@@ -1,18 +1,28 @@
-import 'package:built_collection/built_collection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../dependency_injection_container.dart';
+import '../extensions/chore_extension.dart';
+import '../models/allocation.dart';
 import '../models/chore.dart';
+import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
+import '../utils/constants.dart';
 import '../view_models/chore/chore_view_model.dart';
 import 'chore_tile.dart';
 
 class ChoreListView extends StatelessWidget {
-  ChoreListView({required this.familyId});
+  ChoreListView({
+    required this.familyId,
+    required this.allocation,
+  });
 
   final String familyId;
+  final Allocation allocation;
 
   final _choreViewModel = getIt.get<ChoreViewModel>();
+  final sharedPreferences = getIt.get<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,41 +40,85 @@ class ChoreListView extends StatelessWidget {
   }
 
   Widget _buildChoreList() {
-    return StreamBuilder<BuiltList<Chore>?>(
-        stream: _choreViewModel.getChores(familyId),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data?.isNotEmpty == true) {
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return _buildChoreListItem(context, index, snapshot.data![index]);
-                  },
-                  childCount: snapshot.data?.length ?? 0,
-                ),
-              );
-            } else {
-              return SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    'No chores...',
-                    style: ChoresAppText.body1Style,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
-            }
+    return StreamBuilder<QuerySnapshot<Chore>?>(
+      stream: _choreViewModel.getChores(familyId),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final choreList = _getChoreList(snapshot.data?.docs);
+          if (choreList.isNotEmpty) {
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return _buildChoreListItem(context, index, choreList[index]);
+                },
+                childCount: choreList.length,
+              ),
+            );
           } else {
             return SliverFillRemaining(
               child: Center(
-                child: CircularProgressIndicator(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/chores_app.png',
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.contain,
+                      color: colors(context).textOnForeground,
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      'No chores...',
+                      style: ChoresAppText.h6Style.copyWith(
+                        color: colors(context).textOnForeground,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             );
           }
-        });
+        } else {
+          return SliverFillRemaining(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  List<Chore> _getChoreList(List<QueryDocumentSnapshot<Chore>>? snapshot) {
+    final userId = sharedPreferences.getString(Constants.USER_ID);
+    if (snapshot == null) {
+      return [];
+    }
+    if (allocation == Allocation.available) {
+      return snapshot
+          .where((chore) =>
+              chore.data().allocation == allocation && chore.data().allocatedToFamilyMember == null ||
+              chore.data().allocatedToFamilyMember?.id == userId && chore.data().isExpired())
+          .map(
+            (e) => e.data(),
+          )
+          .toList();
+    } else {
+      return snapshot
+          .where((chore) => chore.data().allocation == allocation)
+          .map(
+            (e) => e.data(),
+          )
+          .toList();
+    }
   }
 
   Widget _buildChoreListItem(BuildContext context, int index, Chore chore) {
-    return ChoreTile(chore: chore);
+    return ChoreTile(chore: chore, familyId: familyId,);
   }
 }

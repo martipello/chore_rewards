@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/allocation.dart';
 import 'chore_list_view.dart';
 
 class ChoreView extends StatelessWidget {
@@ -16,9 +17,9 @@ class ChoreView extends StatelessWidget {
     return TabBarView(
       controller: tabController,
       children: [
-        ChoreListView(familyId: familyId),
-        ChoreListView(familyId: familyId),
-        ChoreListView(familyId: familyId),
+        ChoreListView(familyId: familyId, allocation: Allocation.available,),
+        ChoreListView(familyId: familyId, allocation: Allocation.allocated,),
+        ChoreListView(familyId: familyId, allocation: Allocation.completed,),
       ],
     );
   }

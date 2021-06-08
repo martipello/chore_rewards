@@ -28,8 +28,6 @@ abstract class FamilyMember implements Built<FamilyMember, FamilyMemberBuilder> 
 
   FamilyMemberType? get familyMemberType;
 
-  BuiltList<Chore> get chores;
-
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(FamilyMember.serializer, this) as Map<String, dynamic>;
   }

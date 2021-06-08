@@ -1,8 +1,9 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
-import '../models/allocation.dart';
 
+import '../models/allocated_family_member.dart';
+import '../models/allocation.dart';
 import '../models/authentication_request.dart';
 import '../models/chore.dart';
 import '../models/comment.dart';
@@ -21,6 +22,7 @@ part 'serializers.g.dart';
   User,
   Chore,
   Family,
+  AllocatedFamilyMember,
   FamilyMember,
   FamilyMemberType,
   PiggyBank,

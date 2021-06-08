@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:chore_rewards/models/allocated_family_member.dart';
 
 import '../serializers/serializers.dart';
 import 'allocation.dart';
@@ -34,7 +35,9 @@ abstract class Chore implements Built<Chore, ChoreBuilder> {
 
   BuiltList<Comment> get comments;
 
-  FamilyMember? get allocatedToFamilyMember;
+  AllocatedFamilyMember? get allocatedToFamilyMember;
+
+  AllocatedFamilyMember? get createdBy;
 
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(Chore.serializer, this) as Map<String, dynamic>;

@@ -21,19 +21,31 @@ class _$TransactionSerializer implements StructuredSerializer<Transaction> {
     Object? value;
     value = object.reward;
     if (value != null) {
-      result..add('reward')..add(serializers.serialize(value, specifiedType: const FullType(String)));
+      result
+        ..add('reward')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     value = object.from;
     if (value != null) {
-      result..add('from')..add(serializers.serialize(value, specifiedType: const FullType(FamilyMember)));
+      result
+        ..add('from')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(FamilyMember)));
     }
     value = object.to;
     if (value != null) {
-      result..add('to')..add(serializers.serialize(value, specifiedType: const FullType(FamilyMember)));
+      result
+        ..add('to')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(FamilyMember)));
     }
     value = object.date;
     if (value != null) {
-      result..add('date')..add(serializers.serialize(value, specifiedType: const FullType(DateTime)));
+      result
+        ..add('date')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(DateTime)));
     }
     return result;
   }
@@ -50,18 +62,20 @@ class _$TransactionSerializer implements StructuredSerializer<Transaction> {
       final Object? value = iterator.current;
       switch (key) {
         case 'reward':
-          result.reward = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          result.reward = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'from':
-          result.from
-              .replace(serializers.deserialize(value, specifiedType: const FullType(FamilyMember))! as FamilyMember);
+          result.from.replace(serializers.deserialize(value,
+              specifiedType: const FullType(FamilyMember))! as FamilyMember);
           break;
         case 'to':
-          result.to
-              .replace(serializers.deserialize(value, specifiedType: const FullType(FamilyMember))! as FamilyMember);
+          result.to.replace(serializers.deserialize(value,
+              specifiedType: const FullType(FamilyMember))! as FamilyMember);
           break;
         case 'date':
-          result.date = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
+          result.date = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
           break;
       }
     }
@@ -86,7 +100,8 @@ class _$Transaction extends Transaction {
   _$Transaction._({this.reward, this.from, this.to, this.date}) : super._();
 
   @override
-  Transaction rebuild(void Function(TransactionBuilder) updates) => (toBuilder()..update(updates)).build();
+  Transaction rebuild(void Function(TransactionBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   TransactionBuilder toBuilder() => new TransactionBuilder()..replace(this);
@@ -94,12 +109,18 @@ class _$Transaction extends Transaction {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Transaction && reward == other.reward && from == other.from && to == other.to && date == other.date;
+    return other is Transaction &&
+        reward == other.reward &&
+        from == other.from &&
+        to == other.to &&
+        date == other.date;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc($jc(0, reward.hashCode), from.hashCode), to.hashCode), date.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, reward.hashCode), from.hashCode), to.hashCode),
+        date.hashCode));
   }
 
   @override
@@ -161,7 +182,12 @@ class TransactionBuilder implements Builder<Transaction, TransactionBuilder> {
   _$Transaction build() {
     _$Transaction _$result;
     try {
-      _$result = _$v ?? new _$Transaction._(reward: reward, from: _from?.build(), to: _to?.build(), date: date);
+      _$result = _$v ??
+          new _$Transaction._(
+              reward: reward,
+              from: _from?.build(),
+              to: _to?.build(),
+              date: date);
     } catch (_) {
       late String _$failedField;
       try {
@@ -170,7 +196,8 @@ class TransactionBuilder implements Builder<Transaction, TransactionBuilder> {
         _$failedField = 'to';
         _to?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError('Transaction', _$failedField, e.toString());
+        throw new BuiltValueNestedFieldError(
+            'Transaction', _$failedField, e.toString());
       }
       rethrow;
     }

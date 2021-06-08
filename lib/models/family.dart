@@ -16,8 +16,6 @@ abstract class Family implements Built<Family, FamilyBuilder> {
   String? get name;
   String? get image;
   FamilyMember? get headOfFamily;
-  BuiltList<Chore> get chores;
-  BuiltList<FamilyMember> get familyMembers;
 
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(Family.serializer, this) as Map<String, dynamic>;
