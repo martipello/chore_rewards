@@ -14,8 +14,6 @@ abstract class PiggyBank implements Built<PiggyBank, PiggyBankBuilder> {
 
   double? get balance;
 
-  BuiltList<Transaction> get transactions;
-
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(PiggyBank.serializer, this) as Map<String, dynamic>;
   }

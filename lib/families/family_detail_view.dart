@@ -40,7 +40,7 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   final _bottomNavViewsActionButtons = <WidgetForIdBuilder>[
@@ -96,7 +96,7 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
         tabController: _tabController,
       );
     } else if (_selectedIndex == 2) {
-      return BankListView();
+      return BankListView(familyId: id,);
     } else {
       return SizedBox();
     }
@@ -143,11 +143,13 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
   PreferredSizeWidget _buildTabBar(BuildContext context) {
     return TabBar(
       controller: _tabController,
+      isScrollable: true,
       indicatorColor: colors(context).secondary,
       tabs: [
         _buildTab('AVAILABLE'),
         _buildTab('ACCEPTED'),
         _buildTab('COMPLETED'),
+        _buildTab('CREATED'),
       ],
     );
   }

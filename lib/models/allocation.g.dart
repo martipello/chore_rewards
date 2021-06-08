@@ -6,12 +6,15 @@ part of 'allocation.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+const Allocation _$none = const Allocation._('none');
 const Allocation _$available = const Allocation._('available');
 const Allocation _$allocated = const Allocation._('allocated');
 const Allocation _$completed = const Allocation._('completed');
 
 Allocation _$allocationValueOf(String name) {
   switch (name) {
+    case 'none':
+      return _$none;
     case 'available':
       return _$available;
     case 'allocated':
@@ -25,6 +28,7 @@ Allocation _$allocationValueOf(String name) {
 
 final BuiltSet<Allocation> _$allocationValues =
     new BuiltSet<Allocation>(const <Allocation>[
+  _$none,
   _$available,
   _$allocated,
   _$completed,

@@ -8,8 +8,8 @@ import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
 import '../view_models/chore/chore_view_model.dart';
 
-class AcceptChoreDialog extends StatefulWidget {
-  AcceptChoreDialog({
+class CompleteChoreDialog extends StatefulWidget {
+  CompleteChoreDialog({
     Key? key,
     required this.chore,
     required this.familyId,
@@ -22,7 +22,7 @@ class AcceptChoreDialog extends StatefulWidget {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
-        return AcceptChoreDialog(
+        return CompleteChoreDialog(
           chore: chore,
           familyId: familyId,
         );
@@ -38,16 +38,16 @@ class AcceptChoreDialog extends StatefulWidget {
   }
 
   @override
-  _AcceptChoreDialogState createState() => _AcceptChoreDialogState();
+  _CompleteChoreDialogState createState() => _CompleteChoreDialogState();
 }
 
-class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
+class _CompleteChoreDialogState extends State<CompleteChoreDialog> {
   final _choreViewModel = getIt.get<ChoreViewModel>();
 
   @override
   void initState() {
     super.initState();
-    _choreViewModel.acceptChoreResult.listen(
+    _choreViewModel.completeChoreResult.listen(
       (value) {
         if (value.status == Status.COMPLETED) {
           Future.delayed(Duration(seconds: 1)).then(
@@ -75,7 +75,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
 
   Widget _buildAcceptChoreContent(BuildContext context) {
     return StreamBuilder<ApiResponse>(
-      stream: _choreViewModel.acceptChoreResult,
+      stream: _choreViewModel.completeChoreResult,
       builder: (context, snapshot) {
         return SafeArea(
           child: Column(
@@ -108,7 +108,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0),
       child: Text(
-        'Are you sure you want to accept this chore?',
+        'Are you sure you want to set this chore as completed?',
         style: ChoresAppText.body4Style.copyWith(height: 1),
       ),
     );
@@ -120,7 +120,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
-          child: Text('Accept Chore', style: ChoresAppText.subtitle1Style.copyWith(height: 1)),
+          child: Text('Complete Chore', style: ChoresAppText.subtitle1Style.copyWith(height: 1)),
         ),
         SizedBox(
           height: 24,
@@ -142,7 +142,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
           height: 16,
         ),
         Text(
-          'Chore Accepted',
+          'Chore Completed',
           style: ChoresAppText.subtitle1Style,
         )
       ],
@@ -158,10 +158,10 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
             constraints: BoxConstraints(maxHeight: 32),
             child: _buildConfirmButton(
               context,
-              'ACCEPT',
+              'COMPLETE',
               isLoading,
               () {
-                _choreViewModel.acceptChore(widget.chore, widget.familyId);
+                _choreViewModel.completeChore(widget.chore, widget.familyId);
               },
             ),
           ),

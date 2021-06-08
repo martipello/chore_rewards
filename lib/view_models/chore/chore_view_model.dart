@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chore_rewards/models/transaction_type.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,9 +10,11 @@ import '../../models/allocated_family_member.dart';
 import '../../models/allocation.dart';
 import '../../models/chore.dart';
 import '../../models/family_member.dart';
+import '../../models/transaction.dart' as t;
 import '../../repositories/chore_repository.dart';
 import '../../repositories/family_members_repository.dart';
 import '../../repositories/image_repository.dart';
+import '../../repositories/transaction_repository.dart';
 import '../../utils/constants.dart';
 import '../../utils/log.dart';
 
@@ -19,18 +22,26 @@ class ChoreViewModel {
   ChoreViewModel(
     this.choreRepository,
     this.imageRepository,
-    this.familyRepository,
+    this.familyMemberRepository,
     this.sharedPreferences,
+    this.transactionRepository,
   );
 
   final ChoreRepository choreRepository;
+  final TransactionRepository transactionRepository;
   final ImageRepository imageRepository;
-  final FamilyMembersRepository familyRepository;
+  final FamilyMembersRepository familyMemberRepository;
   final SharedPreferences sharedPreferences;
 
   final BehaviorSubject<ApiResponse> saveChoreResult = BehaviorSubject();
 
   final BehaviorSubject<ApiResponse> acceptChoreResult = BehaviorSubject();
+
+  final BehaviorSubject<ApiResponse> cancelChoreResult = BehaviorSubject();
+
+  final BehaviorSubject<ApiResponse> completeChoreResult = BehaviorSubject();
+
+  final BehaviorSubject<ApiResponse> rewardChoreResult = BehaviorSubject();
 
   final BehaviorSubject<Chore> choreStream = BehaviorSubject.seeded(Chore());
 
@@ -49,7 +60,7 @@ class ChoreViewModel {
   }) async {
     saveChoreResult.add(ApiResponse.loading(null));
     final now = DateTime.now();
-    final familyMember = await familyRepository.getFamilyMember(familyId);
+    final familyMember = await familyMemberRepository.getFamilyMember(familyId);
     final chore = choreStream.value.rebuild((b) => b
       ..id = '${now.day}${now.month}${now.year}${now.hour}${now.minute}${now.second}'
       ..addedDate = DateTime.now()
@@ -125,12 +136,67 @@ class ChoreViewModel {
     saveChoreResult.close();
     acceptChoreResult.close();
     choreStream.close();
+    cancelChoreResult.close();
+    completeChoreResult.close();
+    rewardChoreResult.close();
   }
 
   void acceptChore(Chore chore, String familyId) async {
     acceptChoreResult.add(ApiResponse.loading(null));
-    final familyMember = await familyRepository.getFamilyMember(familyId);
-    final acceptedChoreResult = await choreRepository.acceptChore(chore, familyMember.data(), familyId);
+    final familyMember = await familyMemberRepository.getFamilyMember(familyId);
+    final acceptedChoreResult = await choreRepository.updateChoreAllocation(
+      chore,
+      familyMember.data(),
+      familyId,
+      Allocation.allocated,
+    );
     acceptChoreResult.add(acceptedChoreResult);
+  }
+
+  void cancelChore(Chore chore, String familyId) async {
+    cancelChoreResult.add(ApiResponse.loading(null));
+    final familyMember = await familyMemberRepository.getFamilyMember(familyId);
+    final cancelledChoreResult = await choreRepository.updateChoreAllocation(
+      chore,
+      familyMember.data(),
+      familyId,
+      Allocation.available,
+    );
+    cancelChoreResult.add(cancelledChoreResult);
+  }
+
+  void completeChore(Chore chore, String familyId) async {
+    completeChoreResult.add(ApiResponse.loading(null));
+    final familyMember = await familyMemberRepository.getFamilyMember(familyId);
+    final completedChoreResult = await choreRepository.updateChoreAllocation(
+      chore,
+      familyMember.data(),
+      familyId,
+      Allocation.completed,
+    );
+    completeChoreResult.add(completedChoreResult);
+  }
+
+  void rewardChore(Chore chore, String familyId) async {
+    rewardChoreResult.add(ApiResponse.loading(null));
+    final familyMember = await familyMemberRepository.getFamilyMember(familyId);
+    final rewardedChoreResult = await choreRepository.updateChoreAllocation(
+      chore,
+      familyMember.data(),
+      familyId,
+      Allocation.completed,
+    );
+    await transactionRepository.addTransaction(
+        t.Transaction(
+          (b) => b
+            ..title = chore.title
+            ..reward = chore.reward
+            ..transactionType = TransactionType.addition
+            ..date = DateTime.now()
+            ..from = chore.createdBy?.toBuilder()
+            ..to = chore.allocatedToFamilyMember?.toBuilder(),
+        ),
+        familyId);
+    rewardChoreResult.add(rewardedChoreResult);
   }
 }

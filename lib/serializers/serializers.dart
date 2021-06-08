@@ -12,6 +12,7 @@ import '../models/family_member.dart';
 import '../models/family_member_type.dart';
 import '../models/piggy_bank.dart';
 import '../models/transaction.dart';
+import '../models/transaction_type.dart';
 import '../models/user.dart';
 import 'date_time_serializer.dart';
 
@@ -28,7 +29,8 @@ part 'serializers.g.dart';
   PiggyBank,
   Transaction,
   Comment,
-  Allocation
+  Allocation,
+  TransactionType,
 ])
 final Serializers serializers = (_$serializers.toBuilder()
       ..add(DateTimeSerializer())

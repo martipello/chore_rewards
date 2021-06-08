@@ -22,7 +22,7 @@ final choresAppTheme = AppTheme(
       chromeDark: Color(0xFF333333),
       positive: Color(0xFF8AB341),
       error: Color(0xFFFF654B),
-      warning: Color(0xFFFFAA3D),
+      warning: Color(0xFFFF654B),
       guide: Color(0xFF007CF2),
       black: Color(0xFF000000),
       white: Color(0xFFFFFFFF),

@@ -32,7 +32,7 @@ class ChoreListView extends StatelessWidget {
           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         ),
         SliverPadding(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.only(top: 8, right: 8, left: 8, bottom: 64),
           sliver: _buildChoreList(),
         ),
       ],
@@ -49,7 +49,12 @@ class ChoreListView extends StatelessWidget {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  return _buildChoreListItem(context, index, choreList[index]);
+                  return _buildChoreListItem(
+                    context,
+                    index,
+                    choreList[index],
+                    allocation,
+                  );
                 },
                 childCount: choreList.length,
               ),
@@ -95,22 +100,32 @@ class ChoreListView extends StatelessWidget {
   }
 
   List<Chore> _getChoreList(List<QueryDocumentSnapshot<Chore>>? snapshot) {
-    final userId = sharedPreferences.getString(Constants.USER_ID);
+    final userId = sharedPreferences.getString(Constants.USER_ID) ?? '';
     if (snapshot == null) {
       return [];
     }
     if (allocation == Allocation.available) {
       return snapshot
-          .where((chore) =>
-              chore.data().allocation == allocation && chore.data().allocatedToFamilyMember == null ||
-              chore.data().allocatedToFamilyMember?.id == userId && chore.data().isExpired())
+          .where(
+            (chore) =>
+                chore.data().allocation == Allocation.available &&
+                !chore.data().isExpired() &&
+                chore.data().isChoreAvailableToFamilyMember(userId),
+          )
+          .map(
+            (e) => e.data(),
+          )
+          .toList();
+    } else if (allocation == Allocation.none) {
+      return snapshot
+          .where((chore) => chore.data().createdBy?.id == userId)
           .map(
             (e) => e.data(),
           )
           .toList();
     } else {
       return snapshot
-          .where((chore) => chore.data().allocation == allocation)
+          .where((chore) => chore.data().allocation == allocation && !chore.data().isExpired())
           .map(
             (e) => e.data(),
           )
@@ -118,7 +133,16 @@ class ChoreListView extends StatelessWidget {
     }
   }
 
-  Widget _buildChoreListItem(BuildContext context, int index, Chore chore) {
-    return ChoreTile(chore: chore, familyId: familyId,);
+  Widget _buildChoreListItem(
+    BuildContext context,
+    int index,
+    Chore chore,
+    Allocation allocation,
+  ) {
+    return ChoreTile(
+      chore: chore,
+      familyId: familyId,
+      allocation: allocation,
+    );
   }
 }

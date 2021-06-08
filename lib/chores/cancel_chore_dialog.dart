@@ -8,8 +8,8 @@ import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
 import '../view_models/chore/chore_view_model.dart';
 
-class AcceptChoreDialog extends StatefulWidget {
-  AcceptChoreDialog({
+class CancelChoreDialog extends StatefulWidget {
+  CancelChoreDialog({
     Key? key,
     required this.chore,
     required this.familyId,
@@ -22,7 +22,7 @@ class AcceptChoreDialog extends StatefulWidget {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
-        return AcceptChoreDialog(
+        return CancelChoreDialog(
           chore: chore,
           familyId: familyId,
         );
@@ -38,16 +38,16 @@ class AcceptChoreDialog extends StatefulWidget {
   }
 
   @override
-  _AcceptChoreDialogState createState() => _AcceptChoreDialogState();
+  _CancelChoreDialogState createState() => _CancelChoreDialogState();
 }
 
-class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
+class _CancelChoreDialogState extends State<CancelChoreDialog> {
   final _choreViewModel = getIt.get<ChoreViewModel>();
 
   @override
   void initState() {
     super.initState();
-    _choreViewModel.acceptChoreResult.listen(
+    _choreViewModel.cancelChoreResult.listen(
       (value) {
         if (value.status == Status.COMPLETED) {
           Future.delayed(Duration(seconds: 1)).then(
@@ -70,57 +70,56 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildAcceptChoreContent(context);
+    return _buildCancelChoreContent(context);
   }
 
-  Widget _buildAcceptChoreContent(BuildContext context) {
+  Widget _buildCancelChoreContent(BuildContext context) {
     return StreamBuilder<ApiResponse>(
-      stream: _choreViewModel.acceptChoreResult,
-      builder: (context, snapshot) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 36,
-              ),
-              if (snapshot.data?.status != Status.COMPLETED) _buildAcceptedChoreTitle(context),
-              if (snapshot.data?.status == Status.COMPLETED) _buildAcceptedChore(),
-              if (snapshot.data?.status != Status.COMPLETED) _buildConfirmChoreText(context),
-              SizedBox(
-                height: 32,
-              ),
-              // if (snapshot.data?.status == Status.ERROR) _buildErrorWidget(snapshot.data?.error),
-              if (snapshot.data?.status != Status.COMPLETED)
-                _buildButtonBar(context, snapshot.data?.status == Status.LOADING),
-              SizedBox(
-                height: 16,
-              ),
-            ],
-          ),
-        );
-      },
-    );
+        stream: _choreViewModel.cancelChoreResult,
+        builder: (context, snapshot) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height: 36,
+                ),
+                if (snapshot.data?.status != Status.COMPLETED) _buildCancelChoreTitle(context),
+                if (snapshot.data?.status == Status.COMPLETED) _buildCancelledChore(),
+                if (snapshot.data?.status != Status.COMPLETED) _buildCancelChoreText(context),
+                SizedBox(
+                  height: 32,
+                ),
+                // if (snapshot.data?.status == Status.ERROR) _buildErrorWidget(snapshot.data?.error),
+                if (snapshot.data?.status != Status.COMPLETED)
+                  _buildButtonBar(context, snapshot.data?.status == Status.LOADING),
+                SizedBox(
+                  height: 16,
+                ),
+              ],
+            ),
+          );
+        });
   }
 
-  Padding _buildConfirmChoreText(BuildContext context) {
+  Padding _buildCancelChoreText(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0),
       child: Text(
-        'Are you sure you want to accept this chore?',
+        'Are you sure you want to cancel this chore?',
         style: ChoresAppText.body4Style.copyWith(height: 1),
       ),
     );
   }
 
-  Column _buildAcceptedChoreTitle(BuildContext context) {
+  Column _buildCancelChoreTitle(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
-          child: Text('Accept Chore', style: ChoresAppText.subtitle1Style.copyWith(height: 1)),
+          child: Text('Cancel Chore', style: ChoresAppText.subtitle1Style.copyWith(height: 1)),
         ),
         SizedBox(
           height: 24,
@@ -129,7 +128,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
     );
   }
 
-  Widget _buildAcceptedChore() {
+  Widget _buildCancelledChore() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -142,7 +141,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
           height: 16,
         ),
         Text(
-          'Chore Accepted',
+          'Chore Cancelled',
           style: ChoresAppText.subtitle1Style,
         )
       ],
@@ -158,10 +157,10 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
             constraints: BoxConstraints(maxHeight: 32),
             child: _buildConfirmButton(
               context,
-              'ACCEPT',
+              'OK',
               isLoading,
               () {
-                _choreViewModel.acceptChore(widget.chore, widget.familyId);
+                _choreViewModel.cancelChore(widget.chore, widget.familyId);
               },
             ),
           ),
@@ -172,7 +171,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
             constraints: BoxConstraints(maxHeight: 32),
             child: _buildDeclineButton(
               context,
-              'BACK',
+              'NO',
               () {
                 Navigator.of(context).pop(false);
               },

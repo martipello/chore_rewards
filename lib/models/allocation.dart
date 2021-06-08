@@ -8,6 +8,7 @@ part 'allocation.g.dart';
 class Allocation extends EnumClass {
   const Allocation._(String name) : super(name);
 
+  static const Allocation none = _$none;
   static const Allocation available = _$available;
   static const Allocation allocated = _$allocated;
   static const Allocation completed = _$completed;

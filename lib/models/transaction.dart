@@ -1,5 +1,7 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:chore_rewards/models/allocated_family_member.dart';
+import 'package:chore_rewards/models/transaction_type.dart';
 
 import '../serializers/serializers.dart';
 import 'family_member.dart';
@@ -11,13 +13,19 @@ abstract class Transaction implements Built<Transaction, TransactionBuilder> {
 
   Transaction._();
 
-  String? get reward;
+  String? get id;
 
-  FamilyMember? get from;
+  String? get title;
 
-  FamilyMember? get to;
+  double? get reward;
+
+  AllocatedFamilyMember? get from;
+
+  AllocatedFamilyMember? get to;
 
   DateTime? get date;
+
+  TransactionType? get transactionType;
 
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(Transaction.serializer, this) as Map<String, dynamic>;

@@ -20,6 +20,7 @@ class ChoreView extends StatelessWidget {
         ChoreListView(familyId: familyId, allocation: Allocation.available,),
         ChoreListView(familyId: familyId, allocation: Allocation.allocated,),
         ChoreListView(familyId: familyId, allocation: Allocation.completed,),
+        ChoreListView(familyId: familyId, allocation: Allocation.none,),
       ],
     );
   }

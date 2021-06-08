@@ -47,18 +47,22 @@ class ChoreRepository {
     }
   }
 
-  Future<ApiResponse> acceptChore(
+  Future<ApiResponse> updateChoreAllocation(
     Chore chore,
     FamilyMember? familyMember,
     String familyId,
+    Allocation allocation,
   ) async {
     try {
       final choresCollection = await _choresCollection(familyId);
+      final allocatedToFamilyMember = allocation == Allocation.allocated
+          ? _createdAllocationFamilyMemberForFamilyMember(familyMember)
+          : AllocatedFamilyMember();
       choresCollection.doc(chore.id).update(chore
           .rebuild(
             (b) => b
-              ..allocation = Allocation.allocated
-              ..allocatedToFamilyMember = _createdAllocationFamilyMemberForFamilyMember(familyMember).toBuilder(),
+              ..allocation = allocation
+              ..allocatedToFamilyMember = allocatedToFamilyMember.toBuilder(),
           )
           .toJson());
       return ApiResponse.completed(null);

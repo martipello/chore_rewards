@@ -185,7 +185,7 @@ class _AddChoreViewState extends State<AddChoreView> {
                         ),
                         height: _profileImageHeight,
                         width: _profileImageHeight,
-                      )
+                      ),
                     ],
                   )
                 : _buildAddImageIcon(),

@@ -8,8 +8,9 @@ import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
 import '../view_models/chore/chore_view_model.dart';
 
-class AcceptChoreDialog extends StatefulWidget {
-  AcceptChoreDialog({
+//TODO add a plus and minus button to increase or decrease reward
+class RewardChoreDialog extends StatefulWidget {
+  RewardChoreDialog({
     Key? key,
     required this.chore,
     required this.familyId,
@@ -22,7 +23,7 @@ class AcceptChoreDialog extends StatefulWidget {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
-        return AcceptChoreDialog(
+        return RewardChoreDialog(
           chore: chore,
           familyId: familyId,
         );
@@ -38,16 +39,16 @@ class AcceptChoreDialog extends StatefulWidget {
   }
 
   @override
-  _AcceptChoreDialogState createState() => _AcceptChoreDialogState();
+  _CompleteChoreDialogState createState() => _CompleteChoreDialogState();
 }
 
-class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
+class _CompleteChoreDialogState extends State<RewardChoreDialog> {
   final _choreViewModel = getIt.get<ChoreViewModel>();
 
   @override
   void initState() {
     super.initState();
-    _choreViewModel.acceptChoreResult.listen(
+    _choreViewModel.rewardChoreResult.listen(
       (value) {
         if (value.status == Status.COMPLETED) {
           Future.delayed(Duration(seconds: 1)).then(
@@ -70,12 +71,12 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildAcceptChoreContent(context);
+    return _buildRewardChoreContent(context);
   }
 
-  Widget _buildAcceptChoreContent(BuildContext context) {
+  Widget _buildRewardChoreContent(BuildContext context) {
     return StreamBuilder<ApiResponse>(
-      stream: _choreViewModel.acceptChoreResult,
+      stream: _choreViewModel.rewardChoreResult,
       builder: (context, snapshot) {
         return SafeArea(
           child: Column(
@@ -85,9 +86,9 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
               SizedBox(
                 height: 36,
               ),
-              if (snapshot.data?.status != Status.COMPLETED) _buildAcceptedChoreTitle(context),
-              if (snapshot.data?.status == Status.COMPLETED) _buildAcceptedChore(),
-              if (snapshot.data?.status != Status.COMPLETED) _buildConfirmChoreText(context),
+              if (snapshot.data?.status != Status.COMPLETED) _buildRewardChoreTitle(context),
+              if (snapshot.data?.status == Status.COMPLETED) _buildRewardChore(),
+              if (snapshot.data?.status != Status.COMPLETED) _buildConfirmRewardChoreText(context),
               SizedBox(
                 height: 32,
               ),
@@ -104,23 +105,23 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
     );
   }
 
-  Padding _buildConfirmChoreText(BuildContext context) {
+  Padding _buildConfirmRewardChoreText(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0),
       child: Text(
-        'Are you sure you want to accept this chore?',
+        'Are you sure you want to reward this chore?',
         style: ChoresAppText.body4Style.copyWith(height: 1),
       ),
     );
   }
 
-  Column _buildAcceptedChoreTitle(BuildContext context) {
+  Column _buildRewardChoreTitle(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
-          child: Text('Accept Chore', style: ChoresAppText.subtitle1Style.copyWith(height: 1)),
+          child: Text('Reward Chore', style: ChoresAppText.subtitle1Style.copyWith(height: 1)),
         ),
         SizedBox(
           height: 24,
@@ -129,7 +130,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
     );
   }
 
-  Widget _buildAcceptedChore() {
+  Widget _buildRewardChore() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -142,7 +143,7 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
           height: 16,
         ),
         Text(
-          'Chore Accepted',
+          'Chore Rewarded',
           style: ChoresAppText.subtitle1Style,
         )
       ],
@@ -158,10 +159,10 @@ class _AcceptChoreDialogState extends State<AcceptChoreDialog> {
             constraints: BoxConstraints(maxHeight: 32),
             child: _buildConfirmButton(
               context,
-              'ACCEPT',
+              'REWARD',
               isLoading,
               () {
-                _choreViewModel.acceptChore(widget.chore, widget.familyId);
+                _choreViewModel.rewardChore(widget.chore, widget.familyId);
               },
             ),
           ),

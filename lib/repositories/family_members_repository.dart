@@ -60,4 +60,15 @@ class FamilyMembersRepository {
     }
   }
 
+  Future<ApiResponse> updateFamilyMember(FamilyMember familyMember, String familyId) async {
+    try {
+      logger(familyMember);
+      final membersCollection = await _familyMembersCollection(familyId);
+      membersCollection.doc(familyMember.id).update(familyMember.toJson());
+      return ApiResponse.completed(null);
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
 }

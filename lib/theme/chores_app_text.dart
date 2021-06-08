@@ -16,13 +16,13 @@ class ChoresAppText {
   static final subtitle1Style = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
-    height: 1.875,
+    height: 1.2,
   );
 
   static final subtitle2Style = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.normal,
-    height: 1.875,
+    height: 1.2,
   );
 
   static final subtitle3Style = TextStyle(

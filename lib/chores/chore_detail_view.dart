@@ -3,27 +3,49 @@ import 'package:intl/intl.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
+import '../api/utils/api_response.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/string_extension.dart';
+import '../models/allocation.dart';
 import '../models/chore.dart';
 import '../repositories/image_repository.dart';
 import '../shared_widgets/rounded_button.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
+import '../view_models/chore/chore_view_model.dart';
+import 'accept_chore_dialog.dart';
+import 'cancel_chore_dialog.dart';
+import 'complete_chore_dialog.dart';
 
 class ChoreDetailViewArguments {
   ChoreDetailViewArguments({
+    required this.familyId,
     required this.chore,
     required this.imagePath,
   });
 
   final Chore chore;
+  final String familyId;
   final String imagePath;
 }
 
-class ChoreDetailView extends StatelessWidget {
+class ChoreDetailView extends StatefulWidget {
   static const routeName = '/families/chores/details';
+
+  @override
+  _ChoreDetailViewState createState() => _ChoreDetailViewState();
+}
+
+class _ChoreDetailViewState extends State<ChoreDetailView> {
   final _imageRepository = getIt.get<ImageRepository>();
+
+  final _choreViewModel = getIt.get<ChoreViewModel>();
+
+  @override
+  void dispose() {
+    _choreViewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +77,90 @@ class ChoreDetailView extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: RoundedButton(
-          onPressed: () {},
-          label: 'ACCEPT',
-        ),
+        child: _buildButtonBar(arguments.chore, arguments.familyId),
       ),
     );
+  }
+
+  Widget _buildButtonBar(Chore chore, String familyId) {
+    return Row(
+      children: [
+        if (chore.allocation == Allocation.available)
+          Expanded(
+            child: _buildAcceptButton(chore, familyId),
+          ),
+        if (chore.allocation == Allocation.allocated)
+          Expanded(
+            child: _buildCancelButton(chore, familyId),
+          ),
+        if (chore.allocation == Allocation.allocated)
+          SizedBox(
+            width: 16,
+          ),
+        if (chore.allocation == Allocation.allocated)
+          Expanded(
+            child: _buildCompleteButton(chore, familyId),
+          ),
+        SizedBox(
+          width: 12,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAcceptButton(Chore chore, String familyId) {
+    return StreamBuilder<ApiResponse>(
+        stream: _choreViewModel.acceptChoreResult,
+        builder: (context, snapshot) {
+          return RoundedButton(
+            label: 'ACCEPT',
+            isLoading: snapshot.data?.status == Status.LOADING,
+            onPressed: () {
+              _showAcceptChoreDialog(chore, familyId);
+            },
+          );
+        });
+  }
+
+  Widget _buildCancelButton(Chore chore, String familyId) {
+    return StreamBuilder<ApiResponse>(
+        stream: _choreViewModel.acceptChoreResult,
+        builder: (context, snapshot) {
+          return RoundedButton(
+            label: 'Cancel',
+            fillColor: colors(context).error,
+            isLoading: snapshot.data?.status == Status.LOADING,
+            onPressed: () {
+              _showCancelChoreDialog(chore, familyId);
+            },
+          );
+        });
+  }
+
+  Widget _buildCompleteButton(Chore chore, String familyId) {
+    return StreamBuilder<ApiResponse>(
+        stream: _choreViewModel.acceptChoreResult,
+        builder: (context, snapshot) {
+          return RoundedButton(
+            label: 'Complete',
+            isLoading: snapshot.data?.status == Status.LOADING,
+            onPressed: () {
+              _showCompletedChoreDialog(chore, familyId);
+            },
+          );
+        });
+  }
+
+  void _showAcceptChoreDialog(Chore chore, String familyId) {
+    AcceptChoreDialog.show(context, chore, familyId);
+  }
+
+  void _showCancelChoreDialog(Chore chore, String familyId) {
+    CancelChoreDialog.show(context, chore, familyId);
+  }
+
+  void _showCompletedChoreDialog(Chore chore, String familyId) {
+    CompleteChoreDialog.show(context, chore, familyId);
   }
 
   Widget _buildProfileHeader(Chore chore) {
@@ -127,6 +227,7 @@ class ChoreDetailView extends StatelessWidget {
     final addedDate = _buildDateTime(chore.addedDate);
     final completedDate = _buildDateTime(chore.completedDate);
     final allocation = chore.allocation?.name ?? '';
+    final createdBy = chore.createdBy?.name ?? '';
     final allocatedTo = chore.allocatedToFamilyMember?.name ?? '';
     final expiry = _buildDateTime(chore.expiryDate);
     final reward = chore.reward?.toString() ?? '0';
@@ -161,8 +262,15 @@ class ChoreDetailView extends StatelessWidget {
         if (allocatedTo.isNotEmpty)
           _buildTableRow(
             context,
-            reward,
+            allocatedTo,
             'Allocated to :',
+            Icons.person,
+          ),
+        if (createdBy.isNotEmpty)
+          _buildTableRow(
+            context,
+            createdBy,
+            'Created by :',
             Icons.person,
           ),
         if (reward.isNotEmpty)
