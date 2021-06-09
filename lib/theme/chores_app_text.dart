@@ -28,7 +28,7 @@ class ChoresAppText {
   static final subtitle3Style = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,
-    height: 1.625,
+    height: 1,
   );
 
   static final subtitle4Style = TextStyle(

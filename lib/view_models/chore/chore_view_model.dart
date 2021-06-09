@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:chore_rewards/models/transaction_type.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +10,7 @@ import '../../models/allocation.dart';
 import '../../models/chore.dart';
 import '../../models/family_member.dart';
 import '../../models/transaction.dart' as t;
+import '../../models/transaction_type.dart';
 import '../../repositories/chore_repository.dart';
 import '../../repositories/family_members_repository.dart';
 import '../../repositories/image_repository.dart';

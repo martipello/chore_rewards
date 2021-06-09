@@ -1,10 +1,9 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:chore_rewards/models/allocated_family_member.dart';
-import 'package:chore_rewards/models/transaction_type.dart';
 
 import '../serializers/serializers.dart';
-import 'family_member.dart';
+import 'allocated_family_member.dart';
+import 'transaction_type.dart';
 
 part 'transaction.g.dart';
 

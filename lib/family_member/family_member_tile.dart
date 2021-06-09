@@ -1,4 +1,3 @@
-import 'package:chore_rewards/utils/log.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +20,6 @@ class FamilyMemberTile extends StatelessWidget {
     return FutureBuilder<String>(
         future: _imageRepository.getImageUrlForImagePath(familyMember.image ?? ''),
         builder: (context, snapshot) {
-          logger('${familyMember.id}${familyMember.image}');
           return Card(
             elevation: 2,
             shape: RoundedRectangleBorder(

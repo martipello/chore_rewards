@@ -7,10 +7,11 @@ import '../serializers/serializers.dart';
 part 'transaction_type.g.dart';
 
 class TransactionType extends EnumClass {
+  const TransactionType._(String name) : super(name);
+
   static const TransactionType addition = _$addition;
   static const TransactionType subtraction = _$subtraction;
 
-  const TransactionType._(String name) : super(name);
 
   static BuiltSet<TransactionType> get values => _$transactionTypeValues;
 

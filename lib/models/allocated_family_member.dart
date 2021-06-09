@@ -1,11 +1,7 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
 import '../serializers/serializers.dart';
-import 'chore.dart';
-import 'family_member_type.dart';
-import 'piggy_bank.dart';
 
 part 'allocated_family_member.g.dart';
 

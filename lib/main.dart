@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'authentication/login_page.dart';
 import 'authentication/login_view.dart';
+import 'bank/transaction_detail_view.dart';
 import 'chores/chore_detail_view.dart';
 import 'dependency_injection_container.dart' as di;
 import 'families/family_detail_view.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
         FamilyDetailView.routeName: (context) => FamilyDetailView(),
         FamilyMemberDetailView.routeName: (context) => FamilyMemberDetailView(),
         ChoreDetailView.routeName: (context) => ChoreDetailView(),
+        TransactionDetailView.routeName: (context) => TransactionDetailView(),
       },
     );
   }
