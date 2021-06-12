@@ -9,6 +9,7 @@ import '../models/chore.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
 import '../utils/constants.dart';
+import '../utils/log.dart';
 import '../view_models/chore/chore_view_model.dart';
 import 'chore_tile.dart';
 
@@ -107,10 +108,15 @@ class ChoreListView extends StatelessWidget {
     if (allocation == Allocation.available) {
       return snapshot
           .where(
-            (chore) =>
-                chore.data().allocation == Allocation.available &&
-                !chore.data().isExpired() &&
-                chore.data().isChoreAvailableToFamilyMember(userId),
+            (chore) {
+              logger('CHORE DATA ${chore.data()}');
+              logger('AVAILABLE ${chore.data().allocation == Allocation.available}');
+              logger('EXPIRED ${chore.data().isExpired()}');
+              logger('AVAILABLE TO MEMBER ${chore.data().isChoreAvailableToFamilyMember(userId)}');
+              return chore.data().allocation == Allocation.available &&
+                  !chore.data().isExpired() &&
+                  chore.data().isChoreAvailableToFamilyMember(userId);
+            },
           )
           .map(
             (e) => e.data(),

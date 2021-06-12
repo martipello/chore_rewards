@@ -26,6 +26,20 @@ class ChoreRepository {
     return firebaseFirestore.collection('/users/$userId/families/$familyId/chores');
   }
 
+  Future<DocumentReference> _choreDocument(String? familyId, String? choreId) async {
+    final userId = sharedPreferences.getString(Constants.USER_ID);
+    return firebaseFirestore.doc('/users/$userId/families/$familyId/chores/$choreId');
+  }
+
+  Stream<DocumentSnapshot<Chore>> getChore(String? familyId, String? choreId) async* {
+    final choreDocument = await _choreDocument(familyId, choreId);
+    yield* choreDocument
+        .withConverter<Chore>(
+      fromFirestore: (snapshots, _) => Chore.fromJson(snapshots.data()!) ?? Chore(),
+      toFirestore: (chore, _) => chore.toJson(),
+    ).snapshots();
+  }
+
   Stream<QuerySnapshot<Chore>> getChores(String familyId) async* {
     final choresCollection = await _choresCollection(familyId);
     yield* choresCollection

@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
@@ -12,10 +14,12 @@ import '../repositories/image_repository.dart';
 import '../shared_widgets/rounded_button.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
+import '../utils/constants.dart';
 import '../view_models/chore/chore_view_model.dart';
 import 'accept_chore_dialog.dart';
 import 'cancel_chore_dialog.dart';
 import 'complete_chore_dialog.dart';
+import 'reward_chore_dialog.dart';
 
 class ChoreDetailViewArguments {
   ChoreDetailViewArguments({
@@ -40,6 +44,7 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
   final _imageRepository = getIt.get<ImageRepository>();
 
   final _choreViewModel = getIt.get<ChoreViewModel>();
+  final sharedPreferences = getIt.get<SharedPreferences>();
 
   @override
   void dispose() {
@@ -50,39 +55,80 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)?.settings.arguments as ChoreDetailViewArguments;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(arguments.chore.title?.capitalize() ?? 'Family Member'),
-      ),
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            SizedBox(
-              height: 160,
-              width: double.infinity,
-              child: _buildWave(context),
+    return StreamBuilder<DocumentSnapshot<Chore>?>(
+        stream: _choreViewModel.getChore(arguments.familyId, arguments.chore.id),
+        builder: (context, snapshot) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(arguments.chore.title?.capitalize() ?? 'Family Member'),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildProfileHeader(arguments.chore),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: _buildChoreInformationTable(context, arguments.chore),
-                ),
-              ],
+            body: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  SizedBox(
+                    height: 160,
+                    width: double.infinity,
+                    child: _buildWave(context),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildProfileHeader(arguments.chore),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                        child: _buildChoreInformationState(snapshot),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _buildButtonBar(arguments.chore, arguments.familyId),
-      ),
-    );
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: _buildButtonBarState(snapshot, arguments.familyId),
+            ),
+          );
+        });
+  }
+
+  Widget _buildChoreInformationState(AsyncSnapshot<DocumentSnapshot<Chore>?> snapshot) {
+    if (snapshot.hasData) {
+      final chore = snapshot.data?.data();
+      if (chore != null) {
+        return _buildChoreInformationTable(context, chore);
+      }
+      return Center(
+        child: Text('Oops there was an error getting this chore...'),
+      );
+    } else if (snapshot.hasError) {
+      return Center(
+        child: Text('Oops there was an error getting this chore...'),
+      );
+    } else {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+  }
+
+  Widget _buildButtonBarState(AsyncSnapshot<DocumentSnapshot<Chore>?> snapshot, String familyId) {
+    if (snapshot.hasData) {
+      final chore = snapshot.data?.data();
+      if (chore != null) {
+        return _buildButtonBar(chore, familyId);
+      }
+      return SizedBox();
+    } else if (snapshot.hasError) {
+      return SizedBox();
+    } else {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
 
   Widget _buildButtonBar(Chore chore, String familyId) {
+    final userId = sharedPreferences.getString(Constants.USER_ID) ?? '';
     return Row(
       children: [
         if (chore.allocation == Allocation.available)
@@ -101,9 +147,10 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
           Expanded(
             child: _buildCompleteButton(chore, familyId),
           ),
-        SizedBox(
-          width: 12,
-        ),
+        if (chore.allocation == Allocation.completed && chore.createdBy?.id == userId)
+          Expanded(
+            child: _buildRewardButton(chore, familyId),
+          ),
       ],
     );
   }
@@ -151,6 +198,20 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
         });
   }
 
+  Widget _buildRewardButton(Chore chore, String familyId){
+    return StreamBuilder<ApiResponse>(
+        stream: _choreViewModel.rewardChoreResult,
+        builder: (context, snapshot) {
+          return RoundedButton(
+            label: 'REWARD',
+            isLoading: snapshot.data?.status == Status.LOADING,
+            onPressed: (){
+              _showRewardChoreDialog(chore, familyId);
+            },
+          );
+        });
+  }
+
   void _showAcceptChoreDialog(Chore chore, String familyId) {
     AcceptChoreDialog.show(context, chore, familyId);
   }
@@ -161,6 +222,10 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
 
   void _showCompletedChoreDialog(Chore chore, String familyId) {
     CompleteChoreDialog.show(context, chore, familyId);
+  }
+
+  void _showRewardChoreDialog(Chore chore, String familyId) {
+    RewardChoreDialog.show(context, chore, familyId);
   }
 
   Widget _buildProfileHeader(Chore chore) {

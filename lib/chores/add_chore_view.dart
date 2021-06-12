@@ -17,7 +17,6 @@ import '../theme/chores_app_text.dart';
 import '../utils/log.dart';
 import '../view_models/chore/chore_view_model.dart';
 
-//TODO add ability to allocate family members to chores
 class AddChoreView extends StatefulWidget {
   AddChoreView({required this.familyId});
 
@@ -78,64 +77,66 @@ class _AddChoreViewState extends State<AddChoreView> {
           builder: (context, snapshot) {
             return Stack(
               children: [
-                SingleChildScrollView(
-                  child: StreamBuilder<Chore>(
-                    stream: _choreViewModel.choreStream,
-                    builder: (context, userSnapshot) {
-                      return Stack(
-                        children: [
-                          SizedBox(
-                            height: 140,
-                            width: double.infinity,
-                            child: _buildWave(),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  Center(
-                                    child: _buildProfileImage(context),
-                                  ),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  _buildTitle(context),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  _buildDescription(context),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  _buildExpiryDate(),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  _buildRewardCounter(),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  _buildFamilyMemberPicker(),
-                                  SizedBox(
-                                    height: 72,
-                                  ),
-                                ],
+                Positioned.fill(
+                  child: SingleChildScrollView(
+                    child: StreamBuilder<Chore>(
+                      stream: _choreViewModel.createChoreStream,
+                      builder: (context, userSnapshot) {
+                        return Stack(
+                          children: [
+                            SizedBox(
+                              height: 140,
+                              width: double.infinity,
+                              child: _buildWave(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    Center(
+                                      child: _buildProfileImage(context),
+                                    ),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    _buildTitle(context),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    _buildDescription(context),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    _buildExpiryDate(),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    _buildRewardCounter(),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    _buildFamilyMemberPicker(),
+                                    SizedBox(
+                                      height: 72,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    },
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
                 if (snapshot.hasData && snapshot.data!.status == Status.LOADING)
-                  Expanded(
+                  Positioned.fill(
                     child: Container(
                       color: Colors.black12,
                       child: Center(
@@ -311,7 +312,7 @@ class _AddChoreViewState extends State<AddChoreView> {
 
   Widget _buildRewardCounter() {
     return StreamBuilder<Chore>(
-        stream: _choreViewModel.choreStream,
+        stream: _choreViewModel.createChoreStream,
         builder: (context, snapshot) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

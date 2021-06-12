@@ -41,6 +41,6 @@ Future<void> init() async {
   getIt.registerFactory(() => FamilyViewModel(getIt(), getIt(), getIt()));
   getIt.registerFactory(() => FamilyMemberViewModel(getIt(), getIt()));
   getIt.registerFactory(() => PiggyBankViewModel(getIt(), getIt(), getIt()));
-  getIt.registerFactory(() => ChoreViewModel(getIt(), getIt(), getIt(), getIt(), getIt()));
+  getIt.registerFactory(() => ChoreViewModel(getIt(), getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => ImagePicker());
 }

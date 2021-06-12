@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/utils/api_response.dart';
 import '../../models/allocated_family_member.dart';
@@ -23,7 +22,6 @@ class ChoreViewModel {
     this.choreRepository,
     this.imageRepository,
     this.familyMemberRepository,
-    this.sharedPreferences,
     this.transactionRepository,
   );
 
@@ -31,7 +29,6 @@ class ChoreViewModel {
   final TransactionRepository transactionRepository;
   final ImageRepository imageRepository;
   final FamilyMembersRepository familyMemberRepository;
-  final SharedPreferences sharedPreferences;
 
   final BehaviorSubject<ApiResponse> saveChoreResult = BehaviorSubject();
 
@@ -43,7 +40,7 @@ class ChoreViewModel {
 
   final BehaviorSubject<ApiResponse> rewardChoreResult = BehaviorSubject();
 
-  final BehaviorSubject<Chore> choreStream = BehaviorSubject.seeded(Chore());
+  final BehaviorSubject<Chore> createChoreStream = BehaviorSubject.seeded(Chore());
 
   Future<String> getFirebaseStorageUrl(String imagePath) {
     return imageRepository.getImageUrlForImagePath(imagePath);
@@ -51,6 +48,10 @@ class ChoreViewModel {
 
   Stream<QuerySnapshot<Chore>?> getChores(String familyId) {
     return choreRepository.getChores(familyId);
+  }
+
+  Stream<DocumentSnapshot<Chore>?> getChore(String? familyId, String? choreId) {
+    return choreRepository.getChore(familyId, choreId);
   }
 
   Future<void> createChore({
@@ -61,7 +62,7 @@ class ChoreViewModel {
     saveChoreResult.add(ApiResponse.loading(null));
     final now = DateTime.now();
     final familyMember = await familyMemberRepository.getFamilyMember(familyId);
-    final chore = choreStream.value.rebuild((b) => b
+    final chore = createChoreStream.value.rebuild((b) => b
       ..id = '${now.day}${now.month}${now.year}${now.hour}${now.minute}${now.second}'
       ..addedDate = DateTime.now()
       ..allocation = Allocation.available
@@ -88,40 +89,40 @@ class ChoreViewModel {
   }
 
   void setChoreTitle(String title) {
-    final chore = choreStream.value.rebuild((b) => b..title = title);
-    choreStream.add(chore);
+    final chore = createChoreStream.value.rebuild((b) => b..title = title);
+    createChoreStream.add(chore);
   }
 
   void setChoreDescription(String description) {
-    final chore = choreStream.value.rebuild((b) => b..description = description);
-    choreStream.add(chore);
+    final chore = createChoreStream.value.rebuild((b) => b..description = description);
+    createChoreStream.add(chore);
   }
 
   void setChoreExpiry(DateTime expiry) {
-    final chore = choreStream.value.rebuild((b) => b..expiryDate = expiry);
-    choreStream.add(chore);
+    final chore = createChoreStream.value.rebuild((b) => b..expiryDate = expiry);
+    createChoreStream.add(chore);
   }
 
   void addChoreReward() {
-    final chore = choreStream.value;
+    final chore = createChoreStream.value;
     final reward = chore.reward ?? 0;
-    choreStream.add(chore.rebuild((b) => b..reward = reward + 1));
+    createChoreStream.add(chore.rebuild((b) => b..reward = reward + 1));
   }
 
   void minusChoreReward() {
-    final chore = choreStream.value;
+    final chore = createChoreStream.value;
     final reward = chore.reward ?? 0;
     if (reward > 0) {
-      choreStream.add(chore.rebuild((b) => b..reward = reward - 1));
+      createChoreStream.add(chore.rebuild((b) => b..reward = reward - 1));
     }
   }
 
   void setAllocatedFamilyMember(FamilyMember? familyMember) {
     final chore = familyMember?.name == Constants.ALL_FAMILY_MEMBERS
-        ? choreStream.value.rebuild((b) => b..allocatedToFamilyMember = null)
-        : choreStream.value
+        ? createChoreStream.value.rebuild((b) => b..allocatedToFamilyMember = null)
+        : createChoreStream.value
             .rebuild((b) => b..allocatedToFamilyMember = _createdByFamilyMember(familyMember).toBuilder());
-    choreStream.add(chore);
+    createChoreStream.add(chore);
   }
 
   AllocatedFamilyMember _createdByFamilyMember(FamilyMember? familyMember) {
@@ -135,7 +136,7 @@ class ChoreViewModel {
   void dispose() {
     saveChoreResult.close();
     acceptChoreResult.close();
-    choreStream.close();
+    createChoreStream.close();
     cancelChoreResult.close();
     completeChoreResult.close();
     rewardChoreResult.close();

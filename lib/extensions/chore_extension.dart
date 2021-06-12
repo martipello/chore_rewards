@@ -10,6 +10,7 @@ extension ChoreExtension on Chore {
 
   bool isChoreAvailableToFamilyMember(String userId){
     return allocatedToFamilyMember == null ||
+        allocatedToFamilyMember?.id == null ||
         allocatedToFamilyMember?.id?.isEmpty == true ||
         allocatedToFamilyMember?.id == userId;
   }
