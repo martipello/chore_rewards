@@ -149,7 +149,7 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
           ),
         if (chore.allocation == Allocation.completed && chore.createdBy?.id == userId)
           Expanded(
-            child: _buildRewardButton(chore, familyId),
+            child: _buildRewardButton(chore, chore.allocatedToFamilyMember?.id),
           ),
       ],
     );
@@ -198,15 +198,26 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
         });
   }
 
-  Widget _buildRewardButton(Chore chore, String familyId){
+  Widget _buildRewardButton(Chore chore, String? familyId) {
     return StreamBuilder<ApiResponse>(
         stream: _choreViewModel.rewardChoreResult,
         builder: (context, snapshot) {
           return RoundedButton(
             label: 'REWARD',
             isLoading: snapshot.data?.status == Status.LOADING,
-            onPressed: (){
-              _showRewardChoreDialog(chore, familyId);
+            onPressed: () {
+              if (familyId != null && familyId.isNotEmpty) {
+                _showRewardChoreDialog(chore, familyId);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'No family member to reward',
+                      style: ChoresAppText.body4Style,
+                    ),
+                  ),
+                );
+              }
             },
           );
         });

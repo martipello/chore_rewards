@@ -41,8 +41,7 @@ class FamilyMembersRepository {
         .snapshots();
   }
 
-  Future<DocumentSnapshot<FamilyMember>> getFamilyMember(String familyId) async {
-    final memberId = sharedPreferences.getString(Constants.USER_ID) ?? '';
+  Future<DocumentSnapshot<FamilyMember>> getFamilyMember(String familyId, String memberId) async {
     final documentReference = await _familyMemberDocument(familyId, memberId);
     return documentReference.withConverter<FamilyMember>(
         fromFirestore: (doc, _) => FamilyMember.fromJson(doc.data()!) ?? FamilyMember(),

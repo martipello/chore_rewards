@@ -12,6 +12,7 @@ class Allocation extends EnumClass {
   static const Allocation available = _$available;
   static const Allocation allocated = _$allocated;
   static const Allocation completed = _$completed;
+  static const Allocation rewarded = _$rewarded;
 
   static BuiltSet<Allocation> get values => _$allocationValues;
   static Allocation valueOf(String name) => _$allocationValueOf(name);

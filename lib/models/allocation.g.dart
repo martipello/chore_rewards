@@ -10,6 +10,7 @@ const Allocation _$none = const Allocation._('none');
 const Allocation _$available = const Allocation._('available');
 const Allocation _$allocated = const Allocation._('allocated');
 const Allocation _$completed = const Allocation._('completed');
+const Allocation _$rewarded = const Allocation._('rewarded');
 
 Allocation _$allocationValueOf(String name) {
   switch (name) {
@@ -21,6 +22,8 @@ Allocation _$allocationValueOf(String name) {
       return _$allocated;
     case 'completed':
       return _$completed;
+    case 'rewarded':
+      return _$rewarded;
     default:
       throw new ArgumentError(name);
   }
@@ -32,6 +35,7 @@ final BuiltSet<Allocation> _$allocationValues =
   _$available,
   _$allocated,
   _$completed,
+  _$rewarded,
 ]);
 
 Serializer<Allocation> _$allocationSerializer = new _$AllocationSerializer();

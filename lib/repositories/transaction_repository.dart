@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api/utils/api_response.dart';
 import '../models/piggy_bank.dart';
 import '../models/transaction.dart' as t;
+import '../models/transaction_type.dart';
 import '../utils/constants.dart';
 import '../utils/log.dart';
 import 'family_members_repository.dart';
@@ -39,7 +40,7 @@ class TransactionRepository {
       logger(transaction);
       final transactionCollection = await _transactionCollection(familyId);
       transactionCollection.doc(transaction.id).set(transaction.toJson());
-      _updatePiggyBank(transaction.reward!, familyId);
+      _updatePiggyBank(transaction, familyId);
       return ApiResponse.completed(null);
     } catch (e) {
       return ApiResponse.error(e.toString());
@@ -47,22 +48,27 @@ class TransactionRepository {
   }
 
   Future<ApiResponse> _updatePiggyBank(
-    double reward,
+      t.Transaction transaction,
     String familyId,
   ) async {
     try {
-      final familyMemberDocument = await familyMembersRepository.getFamilyMember(familyId);
+      final familyMemberDocument = await familyMembersRepository.getFamilyMember(familyId, transaction.to?.id ?? '');
       if (familyMemberDocument.data()?.piggyBank != null) {
-        final piggyBank = familyMemberDocument.data()!.piggyBank!;
-        familyMembersRepository.updateFamilyMember(
-            familyMemberDocument.data()!.rebuild(
-                  (b) => b..piggyBank = PiggyBank((b) => b..balance = piggyBank.balance ?? 0 + reward).toBuilder(),
-                ),
-            familyId);
+        final reward = transaction.reward ?? 0;
+        final oldBalance = familyMemberDocument.data()?.piggyBank?.balance ?? 0;
+        final newBalance = transaction.transactionType == TransactionType.addition ?
+            oldBalance + reward : oldBalance - reward;
+        final piggyBank = PiggyBank((b) => b..balance = newBalance);
+        final familyMember = familyMemberDocument.data()!.rebuild(
+              (b) => b..piggyBank = piggyBank.toBuilder(),
+            );
+        logger('_updatePiggyBank $piggyBank');
+        logger('for familyMember $familyMember');
+        familyMembersRepository.updateFamilyMember(familyMember, familyId);
       } else {
         familyMembersRepository.updateFamilyMember(
             familyMemberDocument.data()!.rebuild(
-                  (b) => b..piggyBank = PiggyBank((b) => b..balance = reward).toBuilder(),
+                  (b) => b..piggyBank = PiggyBank((b) => b..balance = transaction.reward).toBuilder(),
                 ),
             familyId);
       }

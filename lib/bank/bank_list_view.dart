@@ -8,6 +8,7 @@ import '../models/family_member.dart';
 import '../models/transaction.dart' as t;
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
+import '../utils/constants.dart';
 import '../view_models/family/family_member_view_model.dart';
 import '../view_models/piggy_bank_view_model.dart';
 import 'balance_tile.dart';
@@ -40,8 +41,9 @@ class BankListView extends StatelessWidget {
   }
 
   Widget _buildChoreList() {
+    final familyMemberId = sharedPreferences.getString(Constants.USER_ID) ?? '';
     return StreamBuilder<DocumentSnapshot<FamilyMember>>(
-      stream: _familyMemberViewModel.getFamilyMember(familyId),
+      stream: _familyMemberViewModel.getFamilyMember(familyId, familyMemberId),
       builder: (context, balanceSnapshot) {
         return StreamBuilder<QuerySnapshot<t.Transaction>>(
           stream: _piggyBankViewModel.getTransactions(familyId),
@@ -68,16 +70,21 @@ class BankListView extends StatelessWidget {
                   ],
                 );
               } else {
-                return SliverFillRemaining(
-                  child: Center(
-                    child: Text(
-                      'No transactions...',
-                      style: ChoresAppText.h6Style.copyWith(
-                        color: colors(context).textOnForeground,
+                return MultiSliver(
+                  children: [
+                    if (familyMember != null) _buildBalanceItem(familyMember),
+                    SliverFillRemaining(
+                      child: Center(
+                        child: Text(
+                          'No transactions...',
+                          style: ChoresAppText.h6Style.copyWith(
+                            color: colors(context).textOnForeground,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
+                  ],
                 );
               }
             } else {

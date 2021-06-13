@@ -54,8 +54,8 @@ class FamilyMemberViewModel {
     saveFamilyMemberResult.add(addFamilyResult);
   }
 
-  Stream<DocumentSnapshot<FamilyMember>> getFamilyMember(String familyId) {
-    return familyMembersRepository.getFamilyMember(familyId).asStream();
+  Stream<DocumentSnapshot<FamilyMember>> getFamilyMember(String familyId, String familyMemberId) {
+    return familyMembersRepository.getFamilyMember(familyId, familyMemberId).asStream();
   }
 
   void setFamilyMemberName(String userName) {

@@ -64,7 +64,7 @@ class BalanceTile extends StatelessWidget {
                                 },
                                 errorBuilder: (context, object, stacktrace) {
                                   return Image.asset(
-                                    'assets/images/familyMembers_app.png',
+                                    'assets/images/chores_app.png',
                                     fit: BoxFit.cover,
                                     height: 80,
                                     width: 120,

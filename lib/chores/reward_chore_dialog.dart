@@ -162,7 +162,11 @@ class _CompleteChoreDialogState extends State<RewardChoreDialog> {
               'REWARD',
               isLoading,
               () {
-                _choreViewModel.rewardChore(widget.chore, widget.familyId);
+                _choreViewModel.rewardChore(
+                  widget.chore,
+                  widget.familyId,
+                  widget.chore.allocatedToFamilyMember?.id ?? '',
+                );
               },
             ),
           ),

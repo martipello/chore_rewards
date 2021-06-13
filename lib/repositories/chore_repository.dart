@@ -35,9 +35,10 @@ class ChoreRepository {
     final choreDocument = await _choreDocument(familyId, choreId);
     yield* choreDocument
         .withConverter<Chore>(
-      fromFirestore: (snapshots, _) => Chore.fromJson(snapshots.data()!) ?? Chore(),
-      toFirestore: (chore, _) => chore.toJson(),
-    ).snapshots();
+          fromFirestore: (snapshots, _) => Chore.fromJson(snapshots.data()!) ?? Chore(),
+          toFirestore: (chore, _) => chore.toJson(),
+        )
+        .snapshots();
   }
 
   Stream<QuerySnapshot<Chore>> getChores(String familyId) async* {
@@ -69,20 +70,32 @@ class ChoreRepository {
   ) async {
     try {
       final choresCollection = await _choresCollection(familyId);
-      final allocatedToFamilyMember = allocation == Allocation.allocated
-          ? _createdAllocationFamilyMemberForFamilyMember(familyMember)
-          : AllocatedFamilyMember();
+      final allocatedToFamilyMember = _getAllocatedToFamilyMember(allocation, familyMember, chore.allocatedToFamilyMember);
       choresCollection.doc(chore.id).update(chore
           .rebuild(
             (b) => b
               ..allocation = allocation
-              ..allocatedToFamilyMember = allocatedToFamilyMember.toBuilder(),
+              ..allocatedToFamilyMember = allocatedToFamilyMember?.toBuilder(),
           )
           .toJson());
       return ApiResponse.completed(null);
     } catch (e) {
       return ApiResponse.error(e.toString());
     }
+  }
+
+  AllocatedFamilyMember? _getAllocatedToFamilyMember(
+    Allocation allocation,
+    FamilyMember? familyMember,
+    AllocatedFamilyMember? allocatedFamilyMember,
+  ) {
+    if (allocation == Allocation.available) {
+      return AllocatedFamilyMember();
+    }
+    if (allocation == Allocation.allocated) {
+      return _createdAllocationFamilyMemberForFamilyMember(familyMember);
+    }
+    return allocatedFamilyMember;
   }
 
   AllocatedFamilyMember _createdAllocationFamilyMemberForFamilyMember(FamilyMember? familyMember) {

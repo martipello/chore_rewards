@@ -79,67 +79,70 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
       body: StreamBuilder<ApiResponse>(
           stream: _familyMemberViewModel.saveFamilyMemberResult,
           builder: (context, snapshot) {
-            return SingleChildScrollView(
-              child: Stack(
-                children: [
-                  StreamBuilder<FamilyMember>(
-                      stream: _familyMemberViewModel.familyMemberStream,
-                      builder: (context, snapshot) {
-                        return Stack(
-                          children: [
-                            SizedBox(
-                              height: 140,
-                              width: double.infinity,
-                              child: _buildWave(),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                              child: Form(
-                                key: _formKey,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    SizedBox(
-                                      height: 16,
-                                    ),
-                                    _buildProfileImage(context),
-                                    SizedBox(
-                                      height: 36,
-                                    ),
-                                    _buildName(context),
-                                    SizedBox(
-                                      height: 16,
-                                    ),
-                                    _buildLastName(context),
-                                    SizedBox(
-                                      height: 16,
-                                    ),
-                                    _buildDateOfBirth(),
-                                    SizedBox(
-                                      height: 16,
-                                    ),
-                                    _buildFamilyMemberTypePicker(),
-                                    SizedBox(
-                                      height: 72,
-                                    )
-                                  ],
+            return Stack(
+              children: [
+                StreamBuilder<FamilyMember>(
+                    stream: _familyMemberViewModel.familyMemberStream,
+                    builder: (context, snapshot) {
+                      final familyMember = snapshot.data;
+                      return Positioned.fill(
+                        child: SingleChildScrollView(
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: 140,
+                                width: double.infinity,
+                                child: _buildWave(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      _buildProfileImage(context),
+                                      SizedBox(
+                                        height: 36,
+                                      ),
+                                      _buildName(context),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      _buildLastName(context),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      _buildDateOfBirth(),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      _buildFamilyMemberTypePicker(familyMember),
+                                      SizedBox(
+                                        height: 72,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        );
-                      }),
-                  if (snapshot.hasData && snapshot.data!.status == Status.LOADING)
-                    Container(
-                      height: double.infinity,
-                      width: double.infinity,
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                if (snapshot.hasData && snapshot.data!.status == Status.LOADING)
+                  Positioned.fill(
+                    child: Container(
                       color: Colors.black12,
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             );
           }),
       floatingActionButton: _buildSaveFamilyButton(context),
@@ -278,6 +281,8 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
     return DateTimeField(
       format: DateFormat('MMMM d, yyyy'),
       decoration: InputDecoration(
+        labelStyle: ChoresAppText.body4Style,
+        hintStyle: ChoresAppText.body4Style,
         contentPadding: EdgeInsets.zero,
         labelText: 'Date of Birth',
       ),
@@ -304,7 +309,7 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
     );
   }
 
-  Widget _buildFamilyMemberTypePicker() {
+  Widget _buildFamilyMemberTypePicker(FamilyMember? familyMember) {
     return SwitchListTile.adaptive(
       title: Padding(
         padding: const EdgeInsets.only(
@@ -316,7 +321,7 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
         ),
       ),
       contentPadding: EdgeInsets.zero,
-      value: true,
+      value: familyMember?.familyMemberType == FamilyMemberType.child,
       onChanged: (value) {
         if (value) {
           _familyMemberViewModel.setFamilyMemberType(FamilyMemberType.child);
