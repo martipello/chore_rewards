@@ -38,8 +38,10 @@ class TransactionRepository {
   Future<ApiResponse> addTransaction(t.Transaction transaction, String familyId) async {
     try {
       logger(transaction);
+      final now = DateTime.now();
+      final id = '${now.day}${now.month}${now.year}${now.hour}${now.minute}${now.second}';
       final transactionCollection = await _transactionCollection(familyId);
-      transactionCollection.doc(transaction.id).set(transaction.toJson());
+      transactionCollection.doc(id).set(transaction.rebuild((b) => b..id = id).toJson());
       _updatePiggyBank(transaction, familyId);
       return ApiResponse.completed(null);
     } catch (e) {
@@ -52,7 +54,7 @@ class TransactionRepository {
     String familyId,
   ) async {
     try {
-      final familyMemberDocument = await familyMembersRepository.getFamilyMember(familyId, transaction.to?.id ?? '');
+      final familyMemberDocument = await familyMembersRepository.getFamilyMemberAsync(familyId, transaction.to?.id ?? '');
       if (familyMemberDocument.data()?.piggyBank != null) {
         final reward = transaction.reward ?? 0;
         final oldBalance = familyMemberDocument.data()?.piggyBank?.balance ?? 0;

@@ -65,7 +65,7 @@ class ChoreViewModel {
     saveChoreResult.add(ApiResponse.loading(null));
     final now = DateTime.now();
     final memberId = sharedPreferences.getString(Constants.USER_ID) ?? '';
-    final familyMember = await familyMemberRepository.getFamilyMember(familyId, memberId);
+    final familyMember = await familyMemberRepository.getFamilyMemberAsync(familyId, memberId);
     final chore = createChoreStream.value.rebuild((b) => b
       ..id = '${now.day}${now.month}${now.year}${now.hour}${now.minute}${now.second}'
       ..addedDate = DateTime.now()
@@ -149,7 +149,7 @@ class ChoreViewModel {
   void acceptChore(Chore chore, String familyId) async {
     acceptChoreResult.add(ApiResponse.loading(null));
     final memberId = sharedPreferences.getString(Constants.USER_ID) ?? '';
-    final familyMember = await familyMemberRepository.getFamilyMember(familyId, memberId);
+    final familyMember = await familyMemberRepository.getFamilyMemberAsync(familyId, memberId);
     final acceptedChoreResult = await choreRepository.updateChoreAllocation(
       chore,
       familyMember.data(),

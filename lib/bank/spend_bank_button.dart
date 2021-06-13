@@ -5,14 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../dependency_injection_container.dart';
 import '../models/family_member.dart';
 import '../models/family_member_type.dart';
-import '../shared_widgets/chores_app_dialog.dart';
-import '../shared_widgets/rounded_button.dart';
 import '../utils/constants.dart';
 import '../view_models/family/family_member_view_model.dart';
-import 'add_family_member_view.dart';
+import 'spend_bank_dialog.dart';
 
-class AddFamilyMemberButton extends StatelessWidget {
-  AddFamilyMemberButton({
+class SpendBankButton extends StatelessWidget {
+  SpendBankButton({
     Key? key,
     required this.familyId,
     required this.sharedPreferences,
@@ -30,12 +28,18 @@ class AddFamilyMemberButton extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data?.data()?.familyMemberType == FamilyMemberType.parent) {
-            return RoundedButton(
-              label: 'Add Family Member',
+            return FloatingActionButton(
               onPressed: () {
-                _showAddOrCreateFamilyDialog(context);
+                final familyMember = snapshot.data?.data();
+                if (familyMember != null) {
+                  SpendBankDialog.show(context, familyMember, familyId);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Oops there was a problem...'))
+                  );
+                }
               },
-              leadingIcon: Icons.add_circle_outline_rounded,
+              child: Icon(Icons.attach_money_rounded),
             );
           } else {
             return SizedBox();
@@ -52,42 +56,6 @@ class AddFamilyMemberButton extends StatelessWidget {
           );
         }
       },
-    );
-  }
-
-  void _showAddOrCreateFamilyDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return ChoresAppDialog(
-          title: 'Add or Create',
-          content: Text(
-            'Would you like to add an existing family member or create a new one',
-          ),
-          dialogActions: [
-            DialogAction(
-              actionText: 'Add',
-              actionVoidCallback: () {
-                Navigator.of(context).pop();
-                _navigateToAddFamilyMemberView(context, familyId);
-              },
-            ),
-            DialogAction(actionText: 'Create', actionVoidCallback: () {}),
-          ],
-        );
-      },
-    );
-  }
-
-  void _navigateToAddFamilyMemberView(BuildContext context, String familyId) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return AddFamilyMemberView(
-            familyId: familyId,
-          );
-        },
-      ),
     );
   }
 }

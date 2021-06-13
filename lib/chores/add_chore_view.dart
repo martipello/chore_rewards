@@ -312,46 +312,47 @@ class _AddChoreViewState extends State<AddChoreView> {
 
   Widget _buildRewardCounter() {
     return StreamBuilder<Chore>(
-        stream: _choreViewModel.createChoreStream,
-        builder: (context, snapshot) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Set reward',
-                style: ChoresAppText.body1Style,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  FloatingActionButton(
-                    onPressed: _choreViewModel.minusChoreReward,
-                    backgroundColor: colors(context).primary,
-                    child: Icon(
-                      Icons.remove,
-                      color: colors(context).textOnPrimary,
-                    ),
+      stream: _choreViewModel.createChoreStream,
+      builder: (context, snapshot) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Set reward',
+              style: ChoresAppText.body1Style,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FloatingActionButton(
+                  onPressed: _choreViewModel.minusChoreReward,
+                  backgroundColor: colors(context).primary,
+                  child: Icon(
+                    Icons.remove,
+                    color: colors(context).textOnPrimary,
                   ),
-                  Text(
-                    '${snapshot.data?.reward?.toInt() ?? 0}',
-                    style: ChoresAppText.subtitle2Style,
+                ),
+                Text(
+                  '${snapshot.data?.reward?.toInt() ?? 0}',
+                  style: ChoresAppText.subtitle2Style,
+                ),
+                FloatingActionButton(
+                  onPressed: _choreViewModel.addChoreReward,
+                  backgroundColor: colors(context).primary,
+                  child: Icon(
+                    Icons.add,
+                    color: colors(context).textOnPrimary,
                   ),
-                  FloatingActionButton(
-                    onPressed: _choreViewModel.addChoreReward,
-                    backgroundColor: colors(context).primary,
-                    child: Icon(
-                      Icons.add,
-                      color: colors(context).textOnPrimary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        });
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _getImageForImageSource(ImageSource source) async {

@@ -17,10 +17,12 @@ class FamilyMemberPicker extends StatelessWidget {
     required this.familyId,
     required this.formKey,
     required this.selectedFamilyMember,
+    this.canSelectAllMembers = true,
   }) : super(key: key);
 
   final String familyId;
-  final GlobalKey<FormState> formKey;
+  final bool canSelectAllMembers;
+  final GlobalKey<FormState>? formKey;
   final ValueChanged<FamilyMember?> selectedFamilyMember;
 
   final _familyMemberViewModel = getIt.get<FamilyMemberViewModel>();
@@ -39,7 +41,7 @@ class FamilyMemberPicker extends StatelessWidget {
                   return DropdownButtonFormField<FamilyMember>(
                     onChanged: (familyMember) {
                       selectedFamilyMember.call(familyMember);
-                      formKey.currentState!.validate();
+                      formKey?.currentState?.validate();
                     },
                     hint: Text(
                       'Select a family member...',
@@ -57,7 +59,7 @@ class FamilyMemberPicker extends StatelessWidget {
                       return null;
                     },
                     items: [
-                      FamilyMember(
+                      if(canSelectAllMembers) FamilyMember(
                         (b) => b
                           ..name = Constants.ALL_FAMILY_MEMBERS
                           ..image = familySnapshot.data?.data()?.image ?? '',

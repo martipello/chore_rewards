@@ -41,11 +41,18 @@ class FamilyMembersRepository {
         .snapshots();
   }
 
-  Future<DocumentSnapshot<FamilyMember>> getFamilyMember(String familyId, String memberId) async {
+  Future<DocumentSnapshot<FamilyMember>> getFamilyMemberAsync(String familyId, String memberId) async {
     final documentReference = await _familyMemberDocument(familyId, memberId);
     return documentReference.withConverter<FamilyMember>(
         fromFirestore: (doc, _) => FamilyMember.fromJson(doc.data()!) ?? FamilyMember(),
         toFirestore: (member, _) => member.toJson()).get();
+  }
+
+  Stream<DocumentSnapshot<FamilyMember>> getFamilyMember(String familyId, String memberId) async* {
+    final documentReference = await _familyMemberDocument(familyId, memberId);
+    yield* documentReference.withConverter<FamilyMember>(
+        fromFirestore: (doc, _) => FamilyMember.fromJson(doc.data()!) ?? FamilyMember(),
+        toFirestore: (member, _) => member.toJson()).snapshots();
   }
 
   Future<ApiResponse> addFamilyMember(FamilyMember familyMember, String familyId) async {

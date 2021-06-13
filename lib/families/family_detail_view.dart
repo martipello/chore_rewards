@@ -1,11 +1,14 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../bank/bank_list_view.dart';
+import '../bank/spend_bank_button.dart';
 import '../chores/add_chore_button.dart';
 import '../chores/chore_view.dart';
+import '../dependency_injection_container.dart';
 import '../extensions/string_extension.dart';
 import '../family_member/add_family_member_button.dart';
 import '../family_member/family_member_list_view.dart';
@@ -27,6 +30,7 @@ class FamilyDetailViewArguments {
 
 class FamilyDetailView extends StatefulWidget {
   static const routeName = '/families/detail';
+  final sharedPreferences = getIt.get<SharedPreferences>();
 
   @override
   _FamilyDetailViewState createState() => _FamilyDetailViewState();
@@ -43,11 +47,16 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
     _tabController = TabController(length: 4, vsync: this);
   }
 
-  final _bottomNavViewsActionButtons = <WidgetForIdBuilder>[
-    (id) => AddFamilyMemberButton(familyId: id),
-    (id) => AddChoreButton(familyId: id),
-    (id) => SizedBox(),
-  ];
+  List<WidgetForIdBuilder> _bottomNavViewsActionButtons() {
+    return [
+      (id) => AddFamilyMemberButton(familyId: id, sharedPreferences: widget.sharedPreferences,),
+      (id) => AddChoreButton(familyId: id),
+      (id) => SpendBankButton(
+            familyId: id,
+            sharedPreferences: widget.sharedPreferences,
+          )
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +88,7 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
         ),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
-      floatingActionButton: _bottomNavViewsActionButtons.elementAt(_selectedIndex).call(
+      floatingActionButton: _bottomNavViewsActionButtons().elementAt(_selectedIndex).call(
             arguments.family.id ?? '',
           ),
     );
@@ -96,7 +105,9 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
         tabController: _tabController,
       );
     } else if (_selectedIndex == 2) {
-      return BankListView(familyId: id,);
+      return BankListView(
+        familyId: id,
+      );
     } else {
       return SizedBox();
     }
