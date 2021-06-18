@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pinput/pin_put/pin_put.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
@@ -25,6 +26,8 @@ class _AddFamilyViewState extends State<AddFamilyView> {
   final _familyViewModel = getIt.get<FamilyViewModel>();
   final _userViewModel = getIt.get<UserViewModel>();
   final _textController = TextEditingController();
+  final _pinInputTextController = TextEditingController();
+  final _pinPutFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   final _imagePicker = getIt.get<ImagePicker>();
   File? _imageFile;
@@ -86,6 +89,37 @@ class _AddFamilyViewState extends State<AddFamilyView> {
                                   'As its creator you will be added as the head parent of this family.',
                                   style: ChoresAppText.body4Style,
                                 ),
+                              ),
+                              SizedBox(
+                                height: 32,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                                child: PinPut(
+                                  fieldsCount: 4,
+                                  focusNode: _pinPutFocusNode,
+                                  controller: _pinInputTextController,
+                                  submittedFieldDecoration: _pinPutDecoration,
+                                  selectedFieldDecoration: _pinPutDecoration,
+                                  followingFieldDecoration: _pinPutDecoration,
+                                  validator: (value){
+                                    final length = value?.length ?? 0;
+                                    if (length < 4) {
+                                      return 'Please enter a 4 digit pin.';
+                                    }
+                                  },
+                                  inputDecoration: _pinInputDecoration(),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                                child: Text(
+                                  'This pin is required for adding new family members.',
+                                  style: ChoresAppText.body4Style,
+                                ),
                               )
                             ],
                           ),
@@ -107,6 +141,20 @@ class _AddFamilyViewState extends State<AddFamilyView> {
             );
           }),
       floatingActionButton: _buildSaveFamilyButton(context),
+    );
+  }
+
+  BoxDecoration get _pinPutDecoration {
+    return BoxDecoration(
+      border: Border.all(color: colors(context).primary),
+    );
+  }
+
+  InputDecoration _pinInputDecoration() {
+    return InputDecoration(
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.transparent),
+      ),
     );
   }
 
@@ -205,15 +253,18 @@ class _AddFamilyViewState extends State<AddFamilyView> {
         final user = await _userViewModel.userDocument;
         if (_formKey.currentState!.validate()) {
           String? profileImageUrl;
-          _familyViewModel.createFamily(_textController.text,
-              imageUrl: profileImageUrl,
-              imageFile: _imageFile,
-              familyMember: FamilyMember((b) => b
-                ..id = user.data()?.id
-                ..name = user.data()?.name
-                ..image = user.data()?.image
-                ..dateOfBirth = user.data()?.dateOfBirth
-                ..familyMemberType = FamilyMemberType.parent));
+          _familyViewModel.createFamily(
+            _textController.text,
+            _pinInputTextController.text,
+            imageUrl: profileImageUrl,
+            imageFile: _imageFile,
+            familyMember: FamilyMember((b) => b
+              ..id = user.data()?.id
+              ..name = user.data()?.name
+              ..image = user.data()?.image
+              ..dateOfBirth = user.data()?.dateOfBirth
+              ..familyMemberType = FamilyMemberType.parent),
+          );
         }
       },
       tooltip: 'Save family',

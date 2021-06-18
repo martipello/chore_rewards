@@ -34,15 +34,23 @@ class FamilyViewModel {
   final BehaviorSubject<ApiResponse> saveFamilyResult = BehaviorSubject();
 
   Future<void> createFamily(
-    String familyName, {
+    String familyName,
+    String familyPin, {
     File? imageFile,
     String? imageUrl,
     required FamilyMember familyMember,
   }) async {
-    final family = _createFamilyModel(familyName, familyMember);
+    final family = _createFamilyModel(
+      familyName,
+      familyMember,
+      familyPin,
+    );
     saveFamilyResult.add(ApiResponse.loading(null));
     if (imageFile != null) {
-      final uploadResult = await imageRepository.uploadImage(imageFile, '${familyMember.id}/${family.id}/uploads');
+      final uploadResult = await imageRepository.uploadImage(
+        imageFile,
+        '${familyMember.id}/${family.id}/uploads',
+      );
       logger('uploadResult $uploadResult');
       if (uploadResult.status == Status.ERROR) {
         saveFamilyResult.add(ApiResponse.error('Uploading image failed.'));
@@ -56,10 +64,15 @@ class FamilyViewModel {
     }
   }
 
-  Family _createFamilyModel(String name, FamilyMember familyMember) {
+  Family _createFamilyModel(
+    String name,
+    FamilyMember familyMember,
+    String pin,
+  ) {
     final familyId = DateFormat('yMdhmms').format(DateTime.now());
     return Family((b) => b
       ..id = familyId
+      ..pin = pin
       ..name = name);
   }
 

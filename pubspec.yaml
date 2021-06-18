@@ -45,6 +45,7 @@ dependencies:
   logger: ^1.0.0
   wave: ^0.2.0
   datetime_picker_formfield: ^2.0.0
+  pinput: ^1.2.0
 
 dev_dependencies:
   flutter_test:

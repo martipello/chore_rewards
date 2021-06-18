@@ -47,6 +47,13 @@ class _$FamilySerializer implements StructuredSerializer<Family> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(FamilyMember)));
     }
+    value = object.pin;
+    if (value != null) {
+      result
+        ..add('pin')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
     return result;
   }
 
@@ -77,6 +84,10 @@ class _$FamilySerializer implements StructuredSerializer<Family> {
           result.headOfFamily.replace(serializers.deserialize(value,
               specifiedType: const FullType(FamilyMember))! as FamilyMember);
           break;
+        case 'pin':
+          result.pin = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
       }
     }
 
@@ -93,11 +104,14 @@ class _$Family extends Family {
   final String? image;
   @override
   final FamilyMember? headOfFamily;
+  @override
+  final String? pin;
 
   factory _$Family([void Function(FamilyBuilder)? updates]) =>
       (new FamilyBuilder()..update(updates)).build();
 
-  _$Family._({this.id, this.name, this.image, this.headOfFamily}) : super._();
+  _$Family._({this.id, this.name, this.image, this.headOfFamily, this.pin})
+      : super._();
 
   @override
   Family rebuild(void Function(FamilyBuilder) updates) =>
@@ -113,13 +127,16 @@ class _$Family extends Family {
         id == other.id &&
         name == other.name &&
         image == other.image &&
-        headOfFamily == other.headOfFamily;
+        headOfFamily == other.headOfFamily &&
+        pin == other.pin;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc($jc(0, id.hashCode), name.hashCode), image.hashCode),
-        headOfFamily.hashCode));
+    return $jf($jc(
+        $jc($jc($jc($jc(0, id.hashCode), name.hashCode), image.hashCode),
+            headOfFamily.hashCode),
+        pin.hashCode));
   }
 
   @override
@@ -128,7 +145,8 @@ class _$Family extends Family {
           ..add('id', id)
           ..add('name', name)
           ..add('image', image)
-          ..add('headOfFamily', headOfFamily))
+          ..add('headOfFamily', headOfFamily)
+          ..add('pin', pin))
         .toString();
   }
 }
@@ -154,6 +172,10 @@ class FamilyBuilder implements Builder<Family, FamilyBuilder> {
   set headOfFamily(FamilyMemberBuilder? headOfFamily) =>
       _$this._headOfFamily = headOfFamily;
 
+  String? _pin;
+  String? get pin => _$this._pin;
+  set pin(String? pin) => _$this._pin = pin;
+
   FamilyBuilder();
 
   FamilyBuilder get _$this {
@@ -163,6 +185,7 @@ class FamilyBuilder implements Builder<Family, FamilyBuilder> {
       _name = $v.name;
       _image = $v.image;
       _headOfFamily = $v.headOfFamily?.toBuilder();
+      _pin = $v.pin;
       _$v = null;
     }
     return this;
@@ -188,7 +211,8 @@ class FamilyBuilder implements Builder<Family, FamilyBuilder> {
               id: id,
               name: name,
               image: image,
-              headOfFamily: _headOfFamily?.build());
+              headOfFamily: _headOfFamily?.build(),
+              pin: pin);
     } catch (_) {
       late String _$failedField;
       try {
