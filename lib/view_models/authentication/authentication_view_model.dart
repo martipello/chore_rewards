@@ -61,6 +61,10 @@ class AuthenticationViewModel {
     }
   }
 
+  void signOut(){
+    firebaseAuth.signOut();
+  }
+
   void registerUser() async {
     registerStream.add(ApiResponse.loading(''));
     try {

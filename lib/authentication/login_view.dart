@@ -252,6 +252,8 @@ class _LoginViewState extends State<LoginView> {
       final onAuthenticated = await auth.authenticate(localizedReason: 'Please authenticate to sign in.');
       if (onAuthenticated) {
         widget.authenticationViewModel.signIn(autoAuthenticate: true);
+      } else {
+        widget.authenticationViewModel.signOut();
       }
     } on PlatformException catch (e) {
       print('There was an error $e');

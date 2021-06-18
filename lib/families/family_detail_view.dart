@@ -128,13 +128,7 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
       elevation: _selectedIndex == 1 ? 0 : 4,
       expandedHeight: 200,
       pinned: true,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back_rounded),
-        color: Colors.white,
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
+      leading: SizedBox(),
       flexibleSpace: _MyAppSpace(
         imagePath: arguments.imagePath,
         family: arguments.family,
@@ -264,6 +258,32 @@ class _MyAppSpace extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: SizedBox(
+                  height: kToolbarHeight,
+                  width: kToolbarHeight,
+                  child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(90),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(opacity / 4),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back_rounded),
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

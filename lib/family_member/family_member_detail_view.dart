@@ -49,48 +49,49 @@ class FamilyMemberDetailView extends StatelessWidget {
 
   Widget _buildProfileHeader(FamilyMember familyMember) {
     return FutureBuilder<String>(
-        future: _imageRepository.getImageUrlForImagePath(familyMember.image ?? ''),
-        builder: (context, snapshot) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Center(
-                child: Hero(
-                  tag: '${familyMember.id}${familyMember.image}',
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(180),
-                        child: Image.network(
-                          snapshot.data ?? '',
-                          fit: BoxFit.cover,
-                          height: 150,
-                          width: 150,
-                          loadingBuilder: (context, child, chunk) {
-                            if (chunk == null) {
-                              return child;
-                            }
-                            return _buildLoadingImage();
-                          },
-                          errorBuilder: (context, object, stacktrace) {
-                            return Icon(
-                              Icons.person_outline_rounded,
-                              size: 150,
-                            );
-                          },
-                        )),
-                  ),
+      future: _imageRepository.getImageUrlForImagePath(familyMember.image ?? ''),
+      builder: (context, snapshot) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: Hero(
+                tag: '${familyMember.id}${familyMember.image}',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(180),
+                      child: Image.network(
+                        snapshot.data ?? '',
+                        fit: BoxFit.cover,
+                        height: 150,
+                        width: 150,
+                        loadingBuilder: (context, child, chunk) {
+                          if (chunk == null) {
+                            return child;
+                          }
+                          return _buildLoadingImage();
+                        },
+                        errorBuilder: (context, object, stacktrace) {
+                          return Icon(
+                            Icons.person_outline_rounded,
+                            size: 150,
+                          );
+                        },
+                      )),
                 ),
               ),
-              SizedBox(
-                height: 24,
-              ),
-            ],
-          );
-        });
+            ),
+            SizedBox(
+              height: 24,
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildLoadingImage() {
