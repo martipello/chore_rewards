@@ -3,10 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../dependency_injection_container.dart';
+import '../extensions/family_extension.dart';
 import '../extensions/string_extension.dart';
 import '../models/family.dart';
 import '../models/family_member.dart';
 import '../repositories/image_repository.dart';
+import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
 import '../view_models/family/family_member_view_model.dart';
 import 'family_detail_view.dart';
@@ -41,25 +43,43 @@ class FamilyTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Hero(
-                      tag: '${family.id}${family.image}',
+                      tag: family.heroTag(),
                       child: ClipRRect(
                         borderRadius: BorderRadius.only(
                           topRight: Radius.circular(90),
                           bottomRight: Radius.circular(90),
                         ),
-                        child: snapshot.data?.isNotEmpty == true ? Material(
+                        child: Material(
                           type: MaterialType.transparency,
-                          child: Image.network(
-                            snapshot.data ?? '',
-                            fit: BoxFit.cover,
-                            height: 80,
-                            width: 120,
-                          ),
-                        ) : SizedBox(
-                          height: 80,
-                          width: 120,
-                          child: Center(
-                            child: CircularProgressIndicator(),
+                          child: Container(
+                            color: colors(context).primary,
+                            child: Image.network(
+                              snapshot.data ?? '',
+                              fit: BoxFit.cover,
+                              height: 80,
+                              width: 120,
+                              loadingBuilder: (context, child, chunk){
+                                if (chunk == null) {
+                                  return child;
+                                }
+                                return SizedBox(
+                                  height: 80,
+                                  width: 120,
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stack){
+                                return Image.asset(
+                                  'assets/images/chores_app.png',
+                                  fit: BoxFit.cover,
+                                  height: 80,
+                                  width: 120,
+                                  color: colors(context).chromeDark,
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),

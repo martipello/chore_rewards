@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../dependency_injection_container.dart';
+import '../extensions/family_member_extension.dart';
 import '../extensions/string_extension.dart';
 import '../models/family_member.dart';
 import '../repositories/image_repository.dart';
@@ -59,7 +60,7 @@ class FamilyMemberDetailView extends StatelessWidget {
             ),
             Center(
               child: Hero(
-                tag: '${familyMember.id}${familyMember.image}',
+                tag: familyMember.heroTag(),
                 child: Material(
                   type: MaterialType.transparency,
                   child: ClipRRect(

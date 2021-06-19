@@ -64,18 +64,18 @@ class AddFamilyMemberButton extends StatelessWidget {
           content: Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
-              'Would you like to add an existing family member or create a new one',
+              'Would you like to add an existing family member, or create a new one?',
             ),
           ),
           dialogActions: [
             DialogAction(
-              actionText: 'Add',
+              actionText: 'ADD',
               actionVoidCallback: () {
                 Navigator.of(context).pop();
                 _navigateToAddFamilyMemberView(context, familyId);
               },
             ),
-            DialogAction(actionText: 'Create', actionVoidCallback: () {}),
+            DialogAction(actionText: 'CREATE', actionVoidCallback: () {}),
           ],
         );
       },

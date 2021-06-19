@@ -9,6 +9,7 @@ import '../bank/spend_bank_button.dart';
 import '../chores/add_chore_button.dart';
 import '../chores/chore_view.dart';
 import '../dependency_injection_container.dart';
+import '../extensions/family_extension.dart';
 import '../extensions/string_extension.dart';
 import '../family_member/add_family_member_button.dart';
 import '../family_member/family_member_list_view.dart';
@@ -49,7 +50,10 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
 
   List<WidgetForIdBuilder> _bottomNavViewsActionButtons() {
     return [
-      (id) => AddFamilyMemberButton(familyId: id, sharedPreferences: widget.sharedPreferences,),
+      (id) => AddFamilyMemberButton(
+            familyId: id,
+            sharedPreferences: widget.sharedPreferences,
+          ),
       (id) => AddChoreButton(familyId: id),
       (id) => SpendBankButton(
             familyId: id,
@@ -294,12 +298,40 @@ class _MyAppSpace extends StatelessWidget {
 
   Widget getImage(Family family, String imagePath) {
     return Hero(
-      tag: '${family.name}${family.image}',
+      tag: family.heroTag(),
       child: Image.network(
         imagePath,
         height: 250,
         width: double.infinity,
         fit: BoxFit.cover,
+        loadingBuilder: (context, child, chunk) {
+          if (chunk == null) {
+            return child;
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+        errorBuilder: (context, error, stack) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 8.0,
+                  bottom: 16,
+                ),
+                child: Image.asset(
+                  'assets/images/chores_app.png',
+                  fit: BoxFit.contain,
+                  height: 120,
+                  width: 120,
+                  color: colors(context).chromeDark,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
