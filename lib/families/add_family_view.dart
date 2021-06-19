@@ -100,8 +100,10 @@ class _AddFamilyViewState extends State<AddFamilyView> {
                                   focusNode: _pinPutFocusNode,
                                   controller: _pinInputTextController,
                                   submittedFieldDecoration: _pinPutDecoration,
-                                  selectedFieldDecoration: _pinPutDecoration,
+                                  selectedFieldDecoration: _pinPutFilledDecoration,
                                   followingFieldDecoration: _pinPutDecoration,
+                                  pinAnimationType: PinAnimationType.scale,
+                                  textStyle: TextStyle(fontSize: 20.0),
                                   validator: (value){
                                     final length = value?.length ?? 0;
                                     if (length < 4) {
@@ -120,7 +122,10 @@ class _AddFamilyViewState extends State<AddFamilyView> {
                                   'This pin is required for adding new family members.',
                                   style: ChoresAppText.body4Style,
                                 ),
-                              )
+                              ),
+                              SizedBox(
+                                height: 36,
+                              ),
                             ],
                           ),
                         ),
@@ -146,7 +151,15 @@ class _AddFamilyViewState extends State<AddFamilyView> {
 
   BoxDecoration get _pinPutDecoration {
     return BoxDecoration(
-      border: Border.all(color: colors(context).primary),
+      borderRadius: BorderRadius.all(Radius.circular(90)),
+      border: Border.all(color: colors(context).secondary),
+    );
+  }
+
+  BoxDecoration get _pinPutFilledDecoration {
+    return BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(90)),
+      color: colors(context).secondary,
     );
   }
 
@@ -155,6 +168,13 @@ class _AddFamilyViewState extends State<AddFamilyView> {
       focusedBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.transparent),
       ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.transparent),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.transparent),
+      ),
+      counterText: ''
     );
   }
 
