@@ -61,8 +61,11 @@ class AddFamilyMemberButton extends StatelessWidget {
       builder: (context) {
         return ChoresAppDialog(
           title: 'Add or Create',
-          content: Text(
-            'Would you like to add an existing family member or create a new one',
+          content: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              'Would you like to add an existing family member or create a new one',
+            ),
           ),
           dialogActions: [
             DialogAction(

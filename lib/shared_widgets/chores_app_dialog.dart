@@ -74,9 +74,6 @@ class ChoresAppDialog extends StatelessWidget {
             height: 24,
           ),
           _buildPickerButtons(context),
-          SizedBox(
-            height: 8,
-          ),
         ],
       ),
     );
@@ -87,7 +84,7 @@ class ChoresAppDialog extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
-        padding: const EdgeInsets.only(right: 16.0, bottom: 8.0),
+        padding: const EdgeInsets.only(right: 12.0, bottom: 4.0),
         child: Wrap(
           spacing: actions.length > 2 ? 0 : 16,
           runSpacing: 12,

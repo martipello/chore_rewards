@@ -40,10 +40,10 @@ class AuthenticationViewModel {
 
   Stream<User?> get authState => firebaseAuth.authStateChanges();
 
-  void signIn({bool autoAuthenticate = false}) async {
+  Future<void> signIn({bool autoAuthenticate = false}) async {
     loginStream.add(ApiResponse.loading(''));
     try {
-      final authenticateRequest = await _createAuthenticationRequest(autoAuthenticate: false);
+      final authenticateRequest = await _createAuthenticationRequest(autoAuthenticate: autoAuthenticate);
       final userCredential = await firebaseAuth.signInWithEmailAndPassword(
           email: authenticateRequest.email ?? '', password: authenticateRequest.password ?? '');
       if (!autoAuthenticate) {
