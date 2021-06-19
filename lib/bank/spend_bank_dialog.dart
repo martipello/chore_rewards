@@ -164,15 +164,29 @@ class _SpendBankDialogState extends State<SpendBankDialog> {
     return StreamBuilder<t.Transaction>(
       stream: _piggyBankViewModel.createTransactionStream,
       builder: (context, snapshot) {
+        final reward = snapshot.data?.reward ?? 0;
+        final memberBalance = snapshot.data?.from?.balance ?? 0;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Spend reward amount',
+              'Spend amount',
               style: ChoresAppText.body1Style,
             ),
             SizedBox(
               height: 16,
+            ),
+            if(reward > memberBalance || memberBalance.isNegative)
+            Column(
+              children: [
+                Text(
+                  'This will make you overdrawn',
+                  style: ChoresAppText.body1Style,
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+              ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -248,7 +262,6 @@ class _SpendBankDialogState extends State<SpendBankDialog> {
       padding: const EdgeInsets.only(top: 32.0),
       child: Row(
         children: [
-          _buildMediumMargin(),
           Expanded(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxHeight: 32),
@@ -277,7 +290,6 @@ class _SpendBankDialogState extends State<SpendBankDialog> {
               ),
             ),
           ),
-          _buildMediumMargin(),
         ],
       ),
     );

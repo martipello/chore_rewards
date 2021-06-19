@@ -52,6 +52,11 @@ class BankListView extends StatelessWidget {
               final transactionList = snapshot.data?.docs ?? [];
               final familyMember = balanceSnapshot.data?.data();
               if (transactionList.isNotEmpty) {
+                transactionList.sort((doc, doc2) {
+                  final date1 = doc.data().date ?? DateTime.now();
+                  final date2 = doc2.data().date ?? DateTime.now();
+                  return date2.compareTo(date1);
+                });
                 return MultiSliver(
                   children: [
                     if (familyMember != null) _buildBalanceItem(familyMember),
@@ -121,5 +126,4 @@ class BankListView extends StatelessWidget {
   ) {
     return TransactionTile(transaction: transaction);
   }
-
 }

@@ -66,6 +66,13 @@ class _$ChoreSerializer implements StructuredSerializer<Chore> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(DateTime)));
     }
+    value = object.rewardedDate;
+    if (value != null) {
+      result
+        ..add('rewardedDate')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(DateTime)));
+    }
     value = object.expiryDate;
     if (value != null) {
       result
@@ -139,6 +146,10 @@ class _$ChoreSerializer implements StructuredSerializer<Chore> {
           result.completedDate = serializers.deserialize(value,
               specifiedType: const FullType(DateTime)) as DateTime;
           break;
+        case 'rewardedDate':
+          result.rewardedDate = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
+          break;
         case 'expiryDate':
           result.expiryDate = serializers.deserialize(value,
               specifiedType: const FullType(DateTime)) as DateTime;
@@ -188,6 +199,8 @@ class _$Chore extends Chore {
   @override
   final DateTime? completedDate;
   @override
+  final DateTime? rewardedDate;
+  @override
   final DateTime? expiryDate;
   @override
   final String? image;
@@ -210,6 +223,7 @@ class _$Chore extends Chore {
       this.reward,
       this.addedDate,
       this.completedDate,
+      this.rewardedDate,
       this.expiryDate,
       this.image,
       this.allocation,
@@ -237,6 +251,7 @@ class _$Chore extends Chore {
         reward == other.reward &&
         addedDate == other.addedDate &&
         completedDate == other.completedDate &&
+        rewardedDate == other.rewardedDate &&
         expiryDate == other.expiryDate &&
         image == other.image &&
         allocation == other.allocation &&
@@ -257,12 +272,14 @@ class _$Chore extends Chore {
                                 $jc(
                                     $jc(
                                         $jc(
-                                            $jc($jc(0, id.hashCode),
-                                                title.hashCode),
-                                            description.hashCode),
-                                        reward.hashCode),
-                                    addedDate.hashCode),
-                                completedDate.hashCode),
+                                            $jc(
+                                                $jc($jc(0, id.hashCode),
+                                                    title.hashCode),
+                                                description.hashCode),
+                                            reward.hashCode),
+                                        addedDate.hashCode),
+                                    completedDate.hashCode),
+                                rewardedDate.hashCode),
                             expiryDate.hashCode),
                         image.hashCode),
                     allocation.hashCode),
@@ -280,6 +297,7 @@ class _$Chore extends Chore {
           ..add('reward', reward)
           ..add('addedDate', addedDate)
           ..add('completedDate', completedDate)
+          ..add('rewardedDate', rewardedDate)
           ..add('expiryDate', expiryDate)
           ..add('image', image)
           ..add('allocation', allocation)
@@ -317,6 +335,11 @@ class ChoreBuilder implements Builder<Chore, ChoreBuilder> {
   DateTime? get completedDate => _$this._completedDate;
   set completedDate(DateTime? completedDate) =>
       _$this._completedDate = completedDate;
+
+  DateTime? _rewardedDate;
+  DateTime? get rewardedDate => _$this._rewardedDate;
+  set rewardedDate(DateTime? rewardedDate) =>
+      _$this._rewardedDate = rewardedDate;
 
   DateTime? _expiryDate;
   DateTime? get expiryDate => _$this._expiryDate;
@@ -359,6 +382,7 @@ class ChoreBuilder implements Builder<Chore, ChoreBuilder> {
       _reward = $v.reward;
       _addedDate = $v.addedDate;
       _completedDate = $v.completedDate;
+      _rewardedDate = $v.rewardedDate;
       _expiryDate = $v.expiryDate;
       _image = $v.image;
       _allocation = $v.allocation;
@@ -393,6 +417,7 @@ class ChoreBuilder implements Builder<Chore, ChoreBuilder> {
               reward: reward,
               addedDate: addedDate,
               completedDate: completedDate,
+              rewardedDate: rewardedDate,
               expiryDate: expiryDate,
               image: image,
               allocation: allocation,

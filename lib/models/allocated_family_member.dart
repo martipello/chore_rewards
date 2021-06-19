@@ -18,6 +18,8 @@ abstract class AllocatedFamilyMember implements Built<AllocatedFamilyMember, All
 
   String? get image;
 
+  double? get balance;
+
   Map<String, dynamic> toJson() {
     return serializers.serializeWith(AllocatedFamilyMember.serializer, this) as Map<String, dynamic>;
   }

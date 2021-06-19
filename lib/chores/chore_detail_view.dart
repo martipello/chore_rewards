@@ -149,7 +149,7 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
           ),
         if (chore.allocation == Allocation.completed && chore.createdBy?.id == userId)
           Expanded(
-            child: _buildRewardButton(chore, chore.allocatedToFamilyMember?.id),
+            child: _buildRewardButton(chore, familyId),
           ),
       ],
     );
@@ -198,29 +198,19 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
         });
   }
 
-  Widget _buildRewardButton(Chore chore, String? familyId) {
+  Widget _buildRewardButton(Chore chore, String familyId) {
     return StreamBuilder<ApiResponse>(
-        stream: _choreViewModel.rewardChoreResult,
-        builder: (context, snapshot) {
-          return RoundedButton(
-            label: 'REWARD',
-            isLoading: snapshot.data?.status == Status.LOADING,
-            onPressed: () {
-              if (familyId != null && familyId.isNotEmpty) {
-                _showRewardChoreDialog(chore, familyId);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'No family member to reward',
-                      style: ChoresAppText.body4Style,
-                    ),
-                  ),
-                );
-              }
-            },
-          );
-        });
+      stream: _choreViewModel.rewardChoreResult,
+      builder: (context, snapshot) {
+        return RoundedButton(
+          label: 'REWARD',
+          isLoading: snapshot.data?.status == Status.LOADING,
+          onPressed: () {
+            _showRewardChoreDialog(chore, familyId);
+          },
+        );
+      },
+    );
   }
 
   void _showAcceptChoreDialog(Chore chore, String familyId) {
@@ -302,6 +292,7 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
     final description = chore.description?.capitalize() ?? '';
     final addedDate = _buildDateTime(chore.addedDate);
     final completedDate = _buildDateTime(chore.completedDate);
+    final rewardedDate = _buildDateTime(chore.rewardedDate);
     final allocation = chore.allocation?.name ?? '';
     final createdBy = chore.createdBy?.name ?? '';
     final allocatedTo = chore.allocatedToFamilyMember?.name ?? '';
@@ -375,6 +366,13 @@ class _ChoreDetailViewState extends State<ChoreDetailView> {
             context,
             completedDate,
             'Completed :',
+            Icons.today,
+          ),
+        if (rewardedDate.isNotEmpty)
+          _buildTableRow(
+            context,
+            rewardedDate,
+            'Rewarded :',
             Icons.today,
           ),
       ],

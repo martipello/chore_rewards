@@ -64,7 +64,8 @@ class PiggyBankViewModel {
       ..id = familyMember?.id
       ..name = familyMember?.name
       ..lastName = familyMember?.lastName
-      ..image = familyMember?.image);
+      ..image = familyMember?.image
+      ..balance = familyMember?.piggyBank?.balance);
   }
 
   void addSpendTransaction(

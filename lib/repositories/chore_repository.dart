@@ -70,7 +70,11 @@ class ChoreRepository {
   ) async {
     try {
       final choresCollection = await _choresCollection(familyId);
-      final allocatedToFamilyMember = _getAllocatedToFamilyMember(allocation, familyMember, chore.allocatedToFamilyMember);
+      final allocatedToFamilyMember = _getAllocatedToFamilyMember(
+        allocation,
+        familyMember,
+        chore.allocatedToFamilyMember,
+      );
       choresCollection.doc(chore.id).update(chore
           .rebuild(
             (b) => b

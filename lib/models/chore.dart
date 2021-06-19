@@ -26,6 +26,8 @@ abstract class Chore implements Built<Chore, ChoreBuilder> {
 
   DateTime? get completedDate;
 
+  DateTime? get rewardedDate;
+
   DateTime? get expiryDate;
 
   String? get image;

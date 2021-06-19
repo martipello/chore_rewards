@@ -161,7 +161,8 @@ class _CompleteChoreDialogState extends State<CompleteChoreDialog> {
               'COMPLETE',
               isLoading,
               () {
-                _choreViewModel.completeChore(widget.chore, widget.familyId);
+                final chore = widget.chore.rebuild((b) => b..completedDate = DateTime.now());
+                _choreViewModel.completeChore(chore, widget.familyId);
               },
             ),
           ),

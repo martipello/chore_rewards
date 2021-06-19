@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../extensions/string_extension.dart';
 import '../models/transaction.dart';
@@ -24,30 +25,37 @@ class TransactionTile extends StatelessWidget {
           onTap: () {
             _navigateToTransactionDetailView(context, transaction);
           },
-          child: ListTile(
-            title: Text(transaction.title?.capitalize() ?? ''),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
-                  child: Icon(
-                    Icons.star,
-                    size: 18,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text(transaction.title?.capitalize() ?? ''),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(transactionDateTime(transaction.date)),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3.0),
+                    child: Icon(
+                      Icons.star,
+                      size: 18,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  '${transaction.reward?.toString() ?? '0'}',
-                  style: ChoresAppText.subtitle1Style.copyWith(height: 1),
-                ),
-                Text(
-                  _getTransactionType(transaction),
-                  style: ChoresAppText.subtitle1Style.copyWith(height: 1),
-                ),
-              ],
+                  SizedBox(
+                    width: 4,
+                  ),
+                  Text(
+                    '${transaction.reward?.toString() ?? '0'}',
+                    style: ChoresAppText.subtitle1Style.copyWith(height: 1),
+                  ),
+                  Text(
+                    _getTransactionType(transaction),
+                    style: ChoresAppText.subtitle1Style.copyWith(height: 1),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -55,6 +63,34 @@ class TransactionTile extends StatelessWidget {
     );
   }
 
+  String transactionDateTime(DateTime? dateTime) {
+    if (dateTime != null) {
+      final dayOfMonthSuffix = getDayOfMonthSuffix(dateTime.day);
+      return DateFormat("EEEE d'$dayOfMonthSuffix' MMMM yyyy").format(dateTime);
+    }
+    return '';
+  }
+
+  String getDayOfMonthSuffix(int dayNum) {
+    if (!(dayNum >= 1 && dayNum <= 31)) {
+      throw Exception('Invalid day of month');
+    }
+
+    if (dayNum >= 11 && dayNum <= 13) {
+      return 'th';
+    }
+
+    switch (dayNum % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  }
   String _getTransactionType(Transaction? transaction) {
     if (transaction?.transactionType != null) {
       switch (transaction!.transactionType!) {

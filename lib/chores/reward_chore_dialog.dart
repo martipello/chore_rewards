@@ -19,7 +19,11 @@ class RewardChoreDialog extends StatefulWidget {
   final Chore chore;
   final String familyId;
 
-  static Future<bool?> show(BuildContext context, Chore chore, String familyId) {
+  static Future<bool?> show(
+    BuildContext context,
+    Chore chore,
+    String familyId,
+  ) {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -121,7 +125,10 @@ class _CompleteChoreDialogState extends State<RewardChoreDialog> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
-          child: Text('Reward Chore', style: ChoresAppText.subtitle1Style.copyWith(height: 1)),
+          child: Text(
+            'Reward Chore',
+            style: ChoresAppText.subtitle1Style.copyWith(height: 1),
+          ),
         ),
         SizedBox(
           height: 24,
@@ -162,8 +169,9 @@ class _CompleteChoreDialogState extends State<RewardChoreDialog> {
               'REWARD',
               isLoading,
               () {
+                final chore = widget.chore.rebuild((b) => b..rewardedDate = DateTime.now());
                 _choreViewModel.rewardChore(
-                  widget.chore,
+                  chore,
                   widget.familyId,
                   widget.chore.allocatedToFamilyMember?.id ?? '',
                 );
