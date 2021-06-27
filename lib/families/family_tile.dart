@@ -10,7 +10,7 @@ import '../models/family_member.dart';
 import '../repositories/image_repository.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
-import '../view_models/family/family_member_view_model.dart';
+import '../view_models/family/create_family_member_view_model.dart';
 import 'family_detail_view.dart';
 
 class FamilyTile extends StatelessWidget {
@@ -19,7 +19,7 @@ class FamilyTile extends StatelessWidget {
   final Family family;
 
   final _imageRepository = getIt.get<ImageRepository>();
-  final _familyMemberViewModel = getIt.get<FamilyMemberViewModel>();
+  final _familyMemberViewModel = getIt.get<CreateFamilyMemberViewModel>();
 
   @override
   Widget build(BuildContext context) {

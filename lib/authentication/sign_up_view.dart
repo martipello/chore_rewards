@@ -1,17 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/utils/api_response.dart';
-import '../dependency_injection_container.dart';
 import '../extensions/string_extension.dart';
 import '../shared_widgets/rounded_button.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
-import '../utils/constants.dart';
 import '../view_models/authentication/authentication_view_model.dart';
 import 'email_input.dart';
 import 'login_page.dart';
@@ -40,20 +35,10 @@ class _SignUpViewState extends State<SignUpView> {
   @override
   void initState() {
     super.initState();
-    _checkForBiometrics();
     _addEmailEditTextListener();
     _addPasswordEditTextListener();
     _emailEditingController.text = widget.authenticationViewModel.email;
     _passwordEditingController.text = widget.authenticationViewModel.password;
-  }
-
-  Future<void> _checkForBiometrics() async {
-    final sharedPreferences = await getIt.getAsync<SharedPreferences>();
-    if (sharedPreferences.containsKey(Constants.USE_BIOMETRICS)) {
-      if (sharedPreferences.getBool(Constants.USE_BIOMETRICS) == true) {
-        _authenticateUsingBiometrics();
-      }
-    }
   }
 
   void _addEmailEditTextListener() {
@@ -108,13 +93,14 @@ class _SignUpViewState extends State<SignUpView> {
       child: Form(
         key: _formKey,
         child: StreamBuilder<ApiResponse<UserCredential>>(
-            stream: widget.authenticationViewModel.loginStream,
+            stream: widget.authenticationViewModel.registerStream,
             builder: (context, snapshot) {
               final hasResponseError = snapshot.data?.status == Status.ERROR;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (hasResponseError) _buildErrorMessage(snapshot.data?.message),
+                  _buildValidPasswordMessage(),
                   EmailInput(emailEditingController: _emailEditingController),
                   _buildSmallMargin(),
                   _buildPasswordInput(),
@@ -173,6 +159,20 @@ class _SignUpViewState extends State<SignUpView> {
         });
   }
 
+  Widget _buildValidPasswordMessage() {
+    return StreamBuilder<bool>(
+        stream: widget.authenticationViewModel.isPasswordValid,
+        builder: (context, snapshot) {
+          if (snapshot.data == false) {
+            return _buildErrorMessage(
+              'Password must contain a minimum of 8 characters, and include at least 3 of the following: \n1) Must contain a lowercase letter (a-z).\n2) Must contain an uppercase letter (A-Z).\n3) Must contain a number (0-9).\n4) Must contain a special character (\$@!%*#?&).',
+            );
+          } else {
+            return SizedBox();
+          }
+        });
+  }
+
   Widget _buildSignInButton() {
     return GestureDetector(
       onTap: () {
@@ -222,7 +222,7 @@ class _SignUpViewState extends State<SignUpView> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          errorMessage ?? 'Error message',
+          errorMessage ?? 'Oops that\'s an error try again.',
           style: ChoresAppText.captionStyle.copyWith(color: colors(context).error),
           textAlign: TextAlign.start,
         ),
@@ -231,15 +231,4 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  Future<void> _authenticateUsingBiometrics() async {
-    try {
-      final auth = LocalAuthentication();
-      final onAuthenticated = await auth.authenticate(localizedReason: 'Please authenticate to sign in.');
-      if (onAuthenticated) {
-        // widget.authenticationViewModel.authenticate(autoAuthenticate: true);
-      }
-    } on PlatformException catch (e) {
-      print('There was an error $e');
-    }
-  }
 }

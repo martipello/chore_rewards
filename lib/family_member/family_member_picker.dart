@@ -8,7 +8,7 @@ import '../models/family_member.dart';
 import '../shared_widgets/circle_image.dart';
 import '../theme/chores_app_text.dart';
 import '../utils/constants.dart';
-import '../view_models/family/family_member_view_model.dart';
+import '../view_models/family/create_family_member_view_model.dart';
 import '../view_models/family/family_view_model.dart';
 
 class FamilyMemberPicker extends StatelessWidget {
@@ -25,7 +25,7 @@ class FamilyMemberPicker extends StatelessWidget {
   final GlobalKey<FormState>? formKey;
   final ValueChanged<FamilyMember?> selectedFamilyMember;
 
-  final _familyMemberViewModel = getIt.get<FamilyMemberViewModel>();
+  final _familyMemberViewModel = getIt.get<CreateFamilyMemberViewModel>();
   final _familyViewModel = getIt.get<FamilyViewModel>();
 
   @override

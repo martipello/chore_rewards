@@ -11,13 +11,13 @@ import '../chores/chore_view.dart';
 import '../dependency_injection_container.dart';
 import '../extensions/family_extension.dart';
 import '../extensions/string_extension.dart';
-import '../family_member/add_family_member_button.dart';
+import '../family_member/add_or_create_family_member_button.dart';
 import '../family_member/family_member_list_view.dart';
 import '../models/family.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
 
-typedef WidgetForIdBuilder = Widget Function(String id);
+typedef WidgetForIdBuilder = Widget Function(String id, String pin);
 
 class FamilyDetailViewArguments {
   FamilyDetailViewArguments({
@@ -50,12 +50,13 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
 
   List<WidgetForIdBuilder> _bottomNavViewsActionButtons() {
     return [
-      (id) => AddFamilyMemberButton(
+      (id, pin) => AddOrCreateFamilyMemberButton(
             familyId: id,
+            pin: pin,
             sharedPreferences: widget.sharedPreferences,
           ),
-      (id) => AddChoreButton(familyId: id),
-      (id) => SpendBankButton(
+      (id, _) => AddChoreButton(familyId: id),
+      (id, _) => SpendBankButton(
             familyId: id,
             sharedPreferences: widget.sharedPreferences,
           )
@@ -94,6 +95,7 @@ class _FamilyDetailViewState extends State<FamilyDetailView> with SingleTickerPr
       bottomNavigationBar: _buildBottomNavigationBar(context),
       floatingActionButton: _bottomNavViewsActionButtons().elementAt(_selectedIndex).call(
             arguments.family.id ?? '',
+            arguments.family.pin ?? '',
           ),
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../dependency_injection_container.dart';
 import '../models/family_member.dart';
-import '../view_models/family/family_member_view_model.dart';
+import '../view_models/family/create_family_member_view_model.dart';
 import 'family_member_tile.dart';
 
 class FamilyMemberListView extends StatelessWidget {
@@ -11,7 +11,7 @@ class FamilyMemberListView extends StatelessWidget {
 
   final String familyId;
 
-  final _familyMemberViewModel = getIt.get<FamilyMemberViewModel>();
+  final _familyMemberViewModel = getIt.get<CreateFamilyMemberViewModel>();
 
   @override
   Widget build(BuildContext context) {

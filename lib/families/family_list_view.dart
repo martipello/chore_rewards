@@ -70,7 +70,7 @@ class _FamilyListViewState extends State<FamilyListView> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height / 10,
+          height: 90,
         ),
         Center(
           child: CircleImage(
@@ -111,47 +111,49 @@ class _FamilyListViewState extends State<FamilyListView> {
   }
 
   Widget _buildFamilyList() {
-    return StreamBuilder<QuerySnapshot<Family>>(
-        stream: _familyViewModel.getFamilies(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data!.docs.isNotEmpty) {
-              return ListView.separated(
-                itemCount: snapshot.data!.docs.length,
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                itemBuilder: (context, index) {
-                  return FamilyTile(family: snapshot.data!.docs[index].data());
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(
-                    height: 4,
-                  );
-                },
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.only(
-                  left: 48.0,
-                  right: 48,
-                  top: 96,
-                ),
-                child: Text(
-                  'No Families, please create one to get started.',
-                  style: ChoresAppText.subtitle2Style,
-                  textAlign: TextAlign.center,
-                ),
-              );
-            }
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('${snapshot.error}'),
+    return StreamBuilder<List<QueryDocumentSnapshot<Family>?>>(
+      stream: _familyViewModel.getFamilies(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final familyList = snapshot.data!.where((e) => e?.data() != null).toList();
+          if (familyList.isNotEmpty) {
+            return ListView.separated(
+              itemCount: familyList.length,
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              itemBuilder: (context, index) {
+                return FamilyTile(family: familyList[index]!.data());
+              },
+              separatorBuilder: (context, index) {
+                return SizedBox(
+                  height: 4,
+                );
+              },
             );
           } else {
-            return Center(
-              child: CircularProgressIndicator(),
+            return Padding(
+              padding: const EdgeInsets.only(
+                left: 48.0,
+                right: 48,
+                top: 96,
+              ),
+              child: Text(
+                'No Families, please create one to get started.',
+                style: ChoresAppText.subtitle2Style,
+                textAlign: TextAlign.center,
+              ),
             );
           }
-        });
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text('${snapshot.error}'),
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
   }
 
   void _navigateToAddFamilyView(BuildContext context) {

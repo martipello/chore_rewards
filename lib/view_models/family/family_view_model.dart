@@ -23,7 +23,7 @@ class FamilyViewModel {
   final FamilyMembersRepository familyMemberRepository;
   final ImageRepository imageRepository;
 
-  Stream<QuerySnapshot<Family>> getFamilies() {
+  Stream<List<QueryDocumentSnapshot<Family>?>> getFamilies() {
     return familyRepository.getFamilies();
   }
 

@@ -23,7 +23,7 @@ class CircleImage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data == null || snapshot.data?.isEmpty == true) {
-              return _buildLoadingImage();
+              return _buildEmptyImage();
             }
             return ClipRRect(
                 borderRadius: BorderRadius.circular(180),
@@ -58,6 +58,19 @@ class CircleImage extends StatelessWidget {
       width: height,
       child: Center(
         child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _buildEmptyImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(180),
+      child: Container(
+        color: Colors.white,
+        child: Icon(
+          Icons.person,
+          size: height,
+        ),
       ),
     );
   }

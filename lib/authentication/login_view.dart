@@ -237,7 +237,7 @@ class _LoginViewState extends State<LoginView> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          errorMessage ?? 'Error message',
+          errorMessage ?? 'Oops that\'s an error.',
           style: ChoresAppText.captionStyle.copyWith(color: colors(context).error),
           textAlign: TextAlign.start,
         ),

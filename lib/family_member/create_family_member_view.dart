@@ -9,27 +9,32 @@ import 'package:wave/wave.dart';
 
 import '../api/utils/api_response.dart';
 import '../dependency_injection_container.dart';
+import '../extensions/string_extension.dart';
 import '../models/family_member.dart';
 import '../models/family_member_type.dart';
 import '../shared_widgets/image_picker_bottom_sheet.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
 import '../utils/log.dart';
-import '../view_models/family/family_member_view_model.dart';
+import '../view_models/authentication/authentication_view_model.dart';
+import '../view_models/family/create_family_member_view_model.dart';
 
-class AddFamilyMemberView extends StatefulWidget {
-  AddFamilyMemberView({required this.familyId});
+class CreateFamilyMemberView extends StatefulWidget {
+  CreateFamilyMemberView({required this.familyId});
 
   final String familyId;
 
   @override
-  _AddFamilyMemberViewState createState() => _AddFamilyMemberViewState();
+  _CreateFamilyMemberViewState createState() => _CreateFamilyMemberViewState();
 }
 
-class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
-  final _familyMemberViewModel = getIt.get<FamilyMemberViewModel>();
+class _CreateFamilyMemberViewState extends State<CreateFamilyMemberView> {
+  final _familyMemberViewModel = getIt.get<CreateFamilyMemberViewModel>();
+  final _authenticationViewModel = getIt.get<AuthenticationViewModel>();
   final _nameTextController = TextEditingController();
   final _lastNameTextController = TextEditingController();
+  final _userNameTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _imagePicker = getIt.get<ImagePicker>();
   final _profileImageHeight = 150.0;
@@ -39,7 +44,7 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
   @override
   void initState() {
     super.initState();
-    _familyMemberViewModel.saveFamilyMemberResult.listen((value) {
+    _familyMemberViewModel.createFamilyMemberResult.listen((value) {
       logger(value);
       if (value.status == Status.COMPLETED) {
         Navigator.of(context).pop();
@@ -49,12 +54,20 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
   }
 
   void _addTextListeners() {
+    _userNameTextController.addListener(() {
+      _authenticationViewModel.setEmail(_userNameTextController.text);
+    });
+    _passwordTextController.addListener(() {
+      _authenticationViewModel.setPassword(_passwordTextController.text);
+      if (_authenticationViewModel.password.isValidPassword()) {
+        _authenticationViewModel.isPasswordValid.add(true);
+      }
+    });
     _nameTextController.addListener(() {
       _familyMemberViewModel.setFamilyMemberName(
         _nameTextController.text,
       );
     });
-
     _lastNameTextController.addListener(() {
       _familyMemberViewModel.setFamilyMemberLastName(
         _lastNameTextController.text,
@@ -64,6 +77,9 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
 
   @override
   void dispose() {
+    _authenticationViewModel.dispose();
+    _userNameTextController.dispose();
+    _passwordTextController.dispose();
     _nameTextController.dispose();
     _lastNameTextController.dispose();
     _familyMemberViewModel.dispose();
@@ -74,10 +90,10 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Family Member'),
+        title: Text('Create Family Member'),
       ),
       body: StreamBuilder<ApiResponse>(
-          stream: _familyMemberViewModel.saveFamilyMemberResult,
+          stream: _familyMemberViewModel.createFamilyMemberResult,
           builder: (context, snapshot) {
             return Stack(
               children: [
@@ -107,6 +123,15 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
                                       _buildProfileImage(context),
                                       SizedBox(
                                         height: 36,
+                                      ),
+                                      _buildValidPasswordMessage(),
+                                      _buildUserName(context),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      _buildPasswordInput(),
+                                      SizedBox(
+                                        height: 16,
                                       ),
                                       _buildName(context),
                                       SizedBox(
@@ -230,10 +255,11 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
         if (_formKey.currentState!.validate()) {
           String? profileImageUrl;
           _familyMemberViewModel.createFamilyMember(
-            imageFile: _imageFile,
-            familyId: widget.familyId,
-            imageUrl: profileImageUrl,
-          );
+              imageFile: _imageFile,
+              familyId: widget.familyId,
+              imageUrl: profileImageUrl,
+              username: _userNameTextController.text,
+              password: _passwordTextController.text);
         }
       },
       tooltip: 'Save family',
@@ -274,6 +300,82 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
         return null;
       },
       controller: _lastNameTextController,
+    );
+  }
+
+  Widget _buildUserName(BuildContext context) {
+    return TextFormField(
+      maxLines: 1,
+      style: ChoresAppText.body4Style,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.zero,
+        labelText: 'Username',
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter a username';
+        }
+        return null;
+      },
+      controller: _userNameTextController,
+    );
+  }
+
+  Widget _buildPasswordInput() {
+    return StreamBuilder<bool>(
+        stream: _authenticationViewModel.isPasswordValid,
+        builder: (context, snapshot) {
+          return TextFormField(
+            obscureText: true,
+            maxLines: 1,
+            style: ChoresAppText.body4Style,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.zero,
+              labelText: 'Password',
+              suffixIcon: Icon(
+                Icons.lock_outline,
+                color: colors(context).textOnForeground,
+              ),
+            ),
+            autovalidateMode: snapshot.data == true ? AutovalidateMode.onUserInteraction : null,
+            validator: (value) {
+              if (!value.isValidPassword()) {
+                _authenticationViewModel.isPasswordValid.add(false);
+                return 'Please enter a valid password.';
+              }
+              return null;
+            },
+            controller: _passwordTextController,
+          );
+        });
+  }
+
+  Widget _buildValidPasswordMessage() {
+    return StreamBuilder<bool>(
+        stream: _authenticationViewModel.isPasswordValid,
+        builder: (context, snapshot) {
+          if (snapshot.data == false) {
+            return _buildErrorMessage(
+              'Password must contain a minimum of 8 characters, and include at least 3 of the following: \n1) Must contain a lowercase letter (a-z).\n2) Must contain an uppercase letter (A-Z).\n3) Must contain a number (0-9).\n4) Must contain a special character (\$@!%*#?&).',
+            );
+          } else {
+            return SizedBox();
+          }
+        });
+  }
+
+  Widget _buildErrorMessage(String? errorMessage) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          errorMessage ?? 'Error message',
+          style: ChoresAppText.captionStyle.copyWith(color: colors(context).error),
+          textAlign: TextAlign.start,
+        ),
+        // _buildSmallMargin(),
+      ],
     );
   }
 

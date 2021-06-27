@@ -178,6 +178,7 @@ class _SpendBankDialogState extends State<SpendBankDialog> {
             ),
             if(reward > memberBalance || memberBalance.isNegative)
             Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   'This will make you overdrawn',

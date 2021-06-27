@@ -9,7 +9,7 @@ import '../models/transaction.dart' as t;
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
 import '../utils/constants.dart';
-import '../view_models/family/family_member_view_model.dart';
+import '../view_models/family/create_family_member_view_model.dart';
 import '../view_models/piggy_bank_view_model.dart';
 import 'balance_tile.dart';
 import 'transaction_tile.dart';
@@ -22,7 +22,7 @@ class BankListView extends StatelessWidget {
   final String familyId;
 
   final _piggyBankViewModel = getIt.get<PiggyBankViewModel>();
-  final _familyMemberViewModel = getIt.get<FamilyMemberViewModel>();
+  final _familyMemberViewModel = getIt.get<CreateFamilyMemberViewModel>();
   final sharedPreferences = getIt.get<SharedPreferences>();
 
   @override

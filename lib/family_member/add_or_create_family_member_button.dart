@@ -5,22 +5,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../dependency_injection_container.dart';
 import '../models/family_member.dart';
 import '../models/family_member_type.dart';
-import '../shared_widgets/chores_app_dialog.dart';
 import '../shared_widgets/rounded_button.dart';
 import '../utils/constants.dart';
-import '../view_models/family/family_member_view_model.dart';
-import 'add_family_member_view.dart';
+import '../view_models/family/create_family_member_view_model.dart';
+import 'add_or_create_family_member_dialog.dart';
+import 'create_family_member_view.dart';
 
-class AddFamilyMemberButton extends StatelessWidget {
-  AddFamilyMemberButton({
+class AddOrCreateFamilyMemberButton extends StatelessWidget {
+  AddOrCreateFamilyMemberButton({
     Key? key,
     required this.familyId,
+    required this.pin,
     required this.sharedPreferences,
   }) : super(key: key);
 
   final String familyId;
+  final String pin;
   final SharedPreferences sharedPreferences;
-  final _familyViewModel = getIt.get<FamilyMemberViewModel>();
+  final _familyViewModel = getIt.get<CreateFamilyMemberViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class AddFamilyMemberButton extends StatelessWidget {
             return RoundedButton(
               label: 'Add Family Member',
               onPressed: () {
-                _showAddOrCreateFamilyDialog(context);
+                _showAddOrCreateFamilyDialog(context, pin);
               },
               leadingIcon: Icons.add_circle_outline_rounded,
             );
@@ -55,30 +57,24 @@ class AddFamilyMemberButton extends StatelessWidget {
     );
   }
 
-  void _showAddOrCreateFamilyDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return ChoresAppDialog(
-          title: 'Add or Create',
-          content: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              'Would you like to add an existing family member, or create a new one?',
-            ),
-          ),
-          dialogActions: [
-            DialogAction(
-              actionText: 'ADD',
-              actionVoidCallback: () {
-                Navigator.of(context).pop();
-                _navigateToAddFamilyMemberView(context, familyId);
-              },
-            ),
-            DialogAction(actionText: 'CREATE', actionVoidCallback: () {}),
-          ],
-        );
-      },
+  void _showAddOrCreateFamilyDialog(BuildContext context, String pin) async {
+    final isNavigate = await AddOrCreateFamilyMemberDialog.show(context, pin, familyId);
+    if (isNavigate == AddOrCreateFamilyMemberDialogNavigationOptions.create) {
+      _navigateToCreateFamilyMemberView(context, familyId);
+    } else if (isNavigate == AddOrCreateFamilyMemberDialogNavigationOptions.add){
+      _navigateToAddFamilyMemberView(context, familyId);
+    }
+  }
+
+  void _navigateToCreateFamilyMemberView(BuildContext context, String familyId) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return CreateFamilyMemberView(
+            familyId: familyId,
+          );
+        },
+      ),
     );
   }
 
@@ -86,7 +82,7 @@ class AddFamilyMemberButton extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return AddFamilyMemberView(
+          return CreateFamilyMemberView(
             familyId: familyId,
           );
         },

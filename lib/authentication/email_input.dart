@@ -20,7 +20,7 @@ class EmailInput extends StatelessWidget {
       style: ChoresAppText.body4Style,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.zero,
-        labelText: 'Email',
+        labelText: 'Username',
         suffixIcon: Icon(
           Icons.email_outlined,
           color: colors(context).textOnForeground,
@@ -28,7 +28,7 @@ class EmailInput extends StatelessWidget {
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter a valid email...';
+          return 'Please enter a valid username...';
         }
         return null;
       },

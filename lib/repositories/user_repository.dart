@@ -22,6 +22,15 @@ class UserRepository {
     return firebaseFirestore.doc('/users/$userId');
   }
 
+  Future<ApiResponse> setUserForId(User user) async {
+    try {
+      firebaseFirestore.collection('/users').doc(user.id).set(user.toJson());
+      return ApiResponse.completed(null);
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
   Future<ApiResponse> setUser(User user) async {
     try {
       final userId = sharedPreferences.getString(Constants.USER_ID);

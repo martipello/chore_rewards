@@ -6,7 +6,7 @@ import '../dependency_injection_container.dart';
 import '../models/family_member.dart';
 import '../models/family_member_type.dart';
 import '../utils/constants.dart';
-import '../view_models/family/family_member_view_model.dart';
+import '../view_models/family/create_family_member_view_model.dart';
 import 'spend_bank_dialog.dart';
 
 class SpendBankButton extends StatelessWidget {
@@ -18,7 +18,7 @@ class SpendBankButton extends StatelessWidget {
 
   final String familyId;
   final SharedPreferences sharedPreferences;
-  final _familyViewModel = getIt.get<FamilyMemberViewModel>();
+  final _familyViewModel = getIt.get<CreateFamilyMemberViewModel>();
 
   @override
   Widget build(BuildContext context) {

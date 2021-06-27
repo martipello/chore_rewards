@@ -79,7 +79,7 @@ class AuthenticationViewModel {
       if (e.code == 'weak-password') {
         registerStream.add(ApiResponse.error('Password is too weak.'));
       } else if (e.code == 'email-already-in-use') {
-        registerStream.add(ApiResponse.error('The account already exists for this email.'));
+        registerStream.add(ApiResponse.error('An account already exists for this username.'));
       }
     } catch (e) {
       registerStream.add(ApiResponse.error(e.toString()));
