@@ -1,17 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/utils/api_response.dart';
-import '../dependency_injection_container.dart';
 import '../extensions/string_extension.dart';
 import '../shared_widgets/rounded_button.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
-import '../utils/constants.dart';
 import '../view_models/authentication/authentication_view_model.dart';
 import 'email_input.dart';
 import 'login_page.dart';
@@ -40,20 +35,10 @@ class _LoginViewState extends State<LoginView> {
   @override
   void initState() {
     super.initState();
-    _checkForBiometrics();
     _addEmailEditTextListener();
     _addPasswordEditTextListener();
     _emailEditingController.text = widget.authenticationViewModel.email;
     _passwordEditingController.text = widget.authenticationViewModel.password;
-  }
-
-  Future<void> _checkForBiometrics() async {
-    final sharedPreferences = await getIt.getAsync<SharedPreferences>();
-    if (sharedPreferences.containsKey(Constants.USE_BIOMETRICS)) {
-      if (sharedPreferences.getBool(Constants.USE_BIOMETRICS) == true) {
-        _authenticateUsingBiometrics();
-      }
-    }
   }
 
   void _addEmailEditTextListener() {
@@ -246,17 +231,4 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Future<void> _authenticateUsingBiometrics() async {
-    try {
-      final auth = LocalAuthentication();
-      final onAuthenticated = await auth.authenticate(localizedReason: 'Please authenticate to sign in.');
-      if (onAuthenticated) {
-        widget.authenticationViewModel.signIn(autoAuthenticate: true);
-      } else {
-        widget.authenticationViewModel.signOut();
-      }
-    } on PlatformException catch (e) {
-      print('There was an error $e');
-    }
-  }
 }

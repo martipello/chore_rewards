@@ -47,7 +47,7 @@ class AuthenticationViewModel {
       final userCredential = await firebaseAuth.signInWithEmailAndPassword(
           email: authenticateRequest.email ?? '', password: authenticateRequest.password ?? '');
       if (!autoAuthenticate) {
-        _saveUserInformation(userCredential);
+        await _saveUserInformation(userCredential);
       }
       loginStream.add(ApiResponse.completed(userCredential));
     } on FirebaseAuthException catch (e) {
@@ -73,7 +73,7 @@ class AuthenticationViewModel {
         email: authenticateRequest.email ?? '',
         password: authenticateRequest.password ?? '',
       );
-      _saveUserInformation(userCredential);
+      await _saveUserInformation(userCredential);
       registerStream.add(ApiResponse.completed(userCredential));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../dependency_injection_container.dart';
@@ -9,6 +11,7 @@ import '../models/user.dart';
 import '../shared_widgets/biometric_request_dialog.dart';
 import '../user/create_user_view.dart';
 import '../utils/constants.dart';
+import '../utils/log.dart';
 import '../view_models/authentication/authentication_view_model.dart';
 import '../view_models/user_view_model.dart';
 import 'forgot_password_view.dart';
@@ -30,11 +33,21 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _checkForBiometrics();
     _authenticationViewModel.authState.listen((user) async {
       if (user != null) {
         await _handleBioMetricsPermission();
       }
     });
+  }
+
+  Future<void> _checkForBiometrics() async {
+    final sharedPreferences = await getIt.getAsync<SharedPreferences>();
+    if (sharedPreferences.containsKey(Constants.USE_BIOMETRICS)) {
+      if (sharedPreferences.getBool(Constants.USE_BIOMETRICS) == true) {
+        _authenticateUsingBiometrics();
+      }
+    }
   }
 
   Future<void> _handleBioMetricsPermission() async {
@@ -51,11 +64,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<bool?> _showUseBiometricDialog() {
-    return showDialog<bool>(context: context, barrierDismissible: false, builder: _buildUseBiometricsDialog);
-  }
-
-  Widget _buildUseBiometricsDialog(BuildContext context) {
-    return BiometricRequestDialog();
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => BiometricRequestDialog(),
+    );
   }
 
   @override
@@ -90,6 +103,8 @@ class _LoginPageState extends State<LoginPage> {
                 stream: _userViewModel.userDocumentStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    logger('SNAPSHOT ${snapshot.data}');
+                    logger('SNAPSHOT ${snapshot.data?.data()}');
                     if (snapshot.data?.data() != null) {
                       return FamilyListView();
                     } else {
@@ -112,4 +127,20 @@ class _LoginPageState extends State<LoginPage> {
           currentView = switchView;
         });
       };
+
+  Future<void> _authenticateUsingBiometrics() async {
+    try {
+      final auth = LocalAuthentication();
+      final onAuthenticated = await auth.authenticate(
+        localizedReason: 'Please authenticate to sign in.',
+      );
+      if (onAuthenticated) {
+        _authenticationViewModel.signIn(autoAuthenticate: true);
+      } else {
+        _authenticationViewModel.signOut();
+      }
+    } on PlatformException catch (e) {
+      print('There was an error $e');
+    }
+  }
 }
