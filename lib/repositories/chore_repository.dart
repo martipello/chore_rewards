@@ -6,7 +6,6 @@ import '../models/allocated_family_member.dart';
 import '../models/allocation.dart';
 import '../models/chore.dart';
 import '../models/family_member.dart';
-import '../utils/constants.dart';
 import '../utils/log.dart';
 import 'family_repository.dart';
 
@@ -22,13 +21,11 @@ class ChoreRepository {
   final FirebaseFirestore firebaseFirestore;
 
   Future<CollectionReference> _choresCollection(String familyId) async {
-    final userId = sharedPreferences.getString(Constants.USER_ID);
-    return firebaseFirestore.collection('/users/$userId/families/$familyId/chores');
+    return firebaseFirestore.collection('/families/$familyId/chores');
   }
 
   Future<DocumentReference> _choreDocument(String? familyId, String? choreId) async {
-    final userId = sharedPreferences.getString(Constants.USER_ID);
-    return firebaseFirestore.doc('/users/$userId/families/$familyId/chores/$choreId');
+    return firebaseFirestore.doc('/families/$familyId/chores/$choreId');
   }
 
   Stream<DocumentSnapshot<Chore>> getChore(String? familyId, String? choreId) async* {

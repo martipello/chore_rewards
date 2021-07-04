@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wave/config.dart';
+import 'package:wave/wave.dart';
 
 import '../dependency_injection_container.dart';
 import '../extensions/family_member_extension.dart';
@@ -30,13 +32,24 @@ class FamilyMemberDetailView extends StatelessWidget {
       appBar: AppBar(
         title: Text(arguments.familyMember.name?.capitalize() ?? 'Family Member'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: SingleChildScrollView(
+        child: Stack(
           children: [
-            _buildProfileHeader(arguments.familyMember),
-            _buildFamilyMemberInformationTable(context, arguments.familyMember),
+            SizedBox(
+              height: 160,
+              width: double.infinity,
+              child: _buildWave(context),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildProfileHeader(arguments.familyMember),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: _buildFamilyMemberInformationTable(context, arguments.familyMember),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -109,6 +122,7 @@ class FamilyMemberDetailView extends StatelessWidget {
   Widget _buildFamilyMemberInformationTable(BuildContext context, FamilyMember familyMember) {
     final dob = _buildDateTime(familyMember.dateOfBirth);
     final name = familyMember.name?.capitalize() ?? '';
+    final userName = familyMember.userName?.capitalize() ?? '';
     final familyMemberType = familyMember.familyMemberType?.name ?? '';
     final familyMemberPiggyBankBalance = familyMember.piggyBank?.balance ?? '';
     return Table(
@@ -121,8 +135,15 @@ class FamilyMemberDetailView extends StatelessWidget {
         if (name.isNotEmpty)
           _buildTableRow(
             context,
-            name.toString(),
+            name,
             'Name :',
+            Icons.person,
+          ),
+        if (userName.isNotEmpty)
+          _buildTableRow(
+            context,
+            userName,
+            'User Name :',
             Icons.person,
           ),
         if (dob.isNotEmpty)
@@ -214,5 +235,24 @@ class FamilyMemberDetailView extends StatelessWidget {
       return DateFormat('dd-MM-yyyy').format(dateTime);
     }
     return '';
+  }
+
+  Widget _buildWave(BuildContext context) {
+    return WaveWidget(
+      config: CustomConfig(
+        colors: [
+          Colors.white70,
+          Colors.white54,
+          Colors.white30,
+          Colors.white24,
+        ],
+        durations: [32000, 21000, 18000, 5000],
+        heightPercentages: [0.52, 0.53, 0.55, 0.58],
+        // blur: _blurs[3],
+      ),
+      backgroundColor: colors(context).primary,
+      size: Size(double.infinity, double.infinity),
+      waveAmplitude: 0,
+    );
   }
 }

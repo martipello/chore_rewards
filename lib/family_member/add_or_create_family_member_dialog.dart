@@ -20,7 +20,8 @@ class AddOrCreateFamilyMemberDialog extends StatefulWidget {
   final String pin;
   final String familyId;
 
-  static Future<AddOrCreateFamilyMemberDialogNavigationOptions?> show(BuildContext context, String pin, String familyId) {
+  static Future<AddOrCreateFamilyMemberDialogNavigationOptions?> show(
+      BuildContext context, String pin, String familyId) {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -123,9 +124,6 @@ class _AddOrCreateFamilyMemberDialogState extends State<AddOrCreateFamilyMemberD
               },
               inputDecoration: _pinInputDecoration(),
             ),
-            SizedBox(
-              height: 24,
-            ),
           ],
         ),
       ),
@@ -164,7 +162,10 @@ class _AddOrCreateFamilyMemberDialogState extends State<AddOrCreateFamilyMemberD
               'Add',
               isLoading,
               () {
-                _validatePin(context, AddOrCreateFamilyMemberDialogNavigationOptions.add);
+                _validatePin(
+                  context,
+                  AddOrCreateFamilyMemberDialogNavigationOptions.add,
+                );
               },
             ),
           ),
@@ -177,7 +178,10 @@ class _AddOrCreateFamilyMemberDialogState extends State<AddOrCreateFamilyMemberD
               context,
               'Create',
               () {
-                _validatePin(context, AddOrCreateFamilyMemberDialogNavigationOptions.create);
+                _validatePin(
+                  context,
+                  AddOrCreateFamilyMemberDialogNavigationOptions.create,
+                );
               },
             ),
           ),
@@ -189,7 +193,7 @@ class _AddOrCreateFamilyMemberDialogState extends State<AddOrCreateFamilyMemberD
 
   void _validatePin(
     BuildContext context,
-      AddOrCreateFamilyMemberDialogNavigationOptions option,
+    AddOrCreateFamilyMemberDialogNavigationOptions option,
   ) {
     final _pinSuccess = _formKey.currentState!.validate();
     setState(

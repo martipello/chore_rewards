@@ -16,6 +16,8 @@ abstract class FamilyMember implements Built<FamilyMember, FamilyMemberBuilder> 
 
   String? get name;
 
+  String? get userName;
+
   String? get lastName;
 
   DateTime? get dateOfBirth;

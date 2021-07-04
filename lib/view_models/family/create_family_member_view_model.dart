@@ -32,7 +32,7 @@ class CreateFamilyMemberViewModel {
 
   final BehaviorSubject<ApiResponse> createFamilyMemberResult = BehaviorSubject();
 
-  // final BehaviorSubject<ApiResponse> addFamilyMemberResult = BehaviorSubject();
+  final BehaviorSubject<ApiResponse> addFamilyMemberResult = BehaviorSubject();
 
   final BehaviorSubject<FamilyMember> familyMemberStream = BehaviorSubject.seeded(FamilyMember((b) => b
     ..familyMemberType = FamilyMemberType.child
@@ -69,11 +69,9 @@ class CreateFamilyMemberViewModel {
         final _familyMemberWithImage = familyMember.rebuild((b) => b..image = uploadResult.data);
         final _userWithImage = _user.rebuild((b) => b.image = uploadResult.data);
         await userRepository.setUserForId(_userWithImage);
-        await _addFamilyToFamilyMember(familyId, _familyMemberWithImage.id ?? '');
         await _addFamilyMemberToFamily(_familyMemberWithImage, familyId);
       } else {
         await userRepository.setUserForId(_user);
-        await _addFamilyToFamilyMember(familyId, familyMember.id ?? '');
         await _addFamilyMemberToFamily(familyMember, familyId);
       }
     }
@@ -105,19 +103,17 @@ class CreateFamilyMemberViewModel {
     createFamilyMemberResult.add(_createFamilyResult);
   }
 
-  Future<void> _addFamilyToFamilyMember(String familyId, String familyMemberId) async {
-    final _family = await getFamilyAsync(familyId);
-    if (_family.data() != null) {
-      familyRepository.addFamilyToFamilyMember(_family.data()!, familyMemberId);
-    }
-  }
-
   Stream<DocumentSnapshot<FamilyMember>> getFamilyMember(String familyId, String familyMemberId) {
     return familyMembersRepository.getFamilyMember(familyId, familyMemberId);
   }
 
   void setFamilyMemberName(String userName) {
     final familyMember = familyMemberStream.value.rebuild((b) => b..name = userName);
+    familyMemberStream.add(familyMember);
+  }
+
+  void setFamilyMemberUserName(String userName) {
+    final familyMember = familyMemberStream.value.rebuild((b) => b..userName = userName);
     familyMemberStream.add(familyMember);
   }
 

@@ -56,6 +56,9 @@ class _CreateFamilyMemberViewState extends State<CreateFamilyMemberView> {
   void _addTextListeners() {
     _userNameTextController.addListener(() {
       _authenticationViewModel.setEmail(_userNameTextController.text);
+      _familyMemberViewModel.setFamilyMemberUserName(
+        _userNameTextController.text,
+      );
     });
     _passwordTextController.addListener(() {
       _authenticationViewModel.setPassword(_passwordTextController.text);
@@ -382,6 +385,7 @@ class _CreateFamilyMemberViewState extends State<CreateFamilyMemberView> {
   Widget _buildDateOfBirth() {
     return DateTimeField(
       format: DateFormat('MMMM d, yyyy'),
+      style: ChoresAppText.body4Style,
       decoration: InputDecoration(
         labelStyle: ChoresAppText.body4Style,
         hintStyle: ChoresAppText.body4Style,
@@ -413,14 +417,9 @@ class _CreateFamilyMemberViewState extends State<CreateFamilyMemberView> {
 
   Widget _buildFamilyMemberTypePicker(FamilyMember? familyMember) {
     return SwitchListTile.adaptive(
-      title: Padding(
-        padding: const EdgeInsets.only(
-          bottom: 8.0,
-        ),
-        child: Text(
-          'Family Member is a child?',
-          style: ChoresAppText.body1Style,
-        ),
+      title: Text(
+        'Family Member is a child?',
+        style: ChoresAppText.body3Style,
       ),
       contentPadding: EdgeInsets.zero,
       value: familyMember?.familyMemberType == FamilyMemberType.child,

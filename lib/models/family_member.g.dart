@@ -34,6 +34,13 @@ class _$FamilyMemberSerializer implements StructuredSerializer<FamilyMember> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
+    value = object.userName;
+    if (value != null) {
+      result
+        ..add('userName')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
     value = object.lastName;
     if (value != null) {
       result
@@ -92,6 +99,10 @@ class _$FamilyMemberSerializer implements StructuredSerializer<FamilyMember> {
           result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'userName':
+          result.userName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'lastName':
           result.lastName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
@@ -126,6 +137,8 @@ class _$FamilyMember extends FamilyMember {
   @override
   final String? name;
   @override
+  final String? userName;
+  @override
   final String? lastName;
   @override
   final DateTime? dateOfBirth;
@@ -142,6 +155,7 @@ class _$FamilyMember extends FamilyMember {
   _$FamilyMember._(
       {this.id,
       this.name,
+      this.userName,
       this.lastName,
       this.dateOfBirth,
       this.piggyBank,
@@ -162,6 +176,7 @@ class _$FamilyMember extends FamilyMember {
     return other is FamilyMember &&
         id == other.id &&
         name == other.name &&
+        userName == other.userName &&
         lastName == other.lastName &&
         dateOfBirth == other.dateOfBirth &&
         piggyBank == other.piggyBank &&
@@ -175,7 +190,9 @@ class _$FamilyMember extends FamilyMember {
         $jc(
             $jc(
                 $jc(
-                    $jc($jc($jc(0, id.hashCode), name.hashCode),
+                    $jc(
+                        $jc($jc($jc(0, id.hashCode), name.hashCode),
+                            userName.hashCode),
                         lastName.hashCode),
                     dateOfBirth.hashCode),
                 piggyBank.hashCode),
@@ -188,6 +205,7 @@ class _$FamilyMember extends FamilyMember {
     return (newBuiltValueToStringHelper('FamilyMember')
           ..add('id', id)
           ..add('name', name)
+          ..add('userName', userName)
           ..add('lastName', lastName)
           ..add('dateOfBirth', dateOfBirth)
           ..add('piggyBank', piggyBank)
@@ -208,6 +226,10 @@ class FamilyMemberBuilder
   String? _name;
   String? get name => _$this._name;
   set name(String? name) => _$this._name = name;
+
+  String? _userName;
+  String? get userName => _$this._userName;
+  set userName(String? userName) => _$this._userName = userName;
 
   String? _lastName;
   String? get lastName => _$this._lastName;
@@ -238,6 +260,7 @@ class FamilyMemberBuilder
     if ($v != null) {
       _id = $v.id;
       _name = $v.name;
+      _userName = $v.userName;
       _lastName = $v.lastName;
       _dateOfBirth = $v.dateOfBirth;
       _piggyBank = $v.piggyBank?.toBuilder();
@@ -267,6 +290,7 @@ class FamilyMemberBuilder
           new _$FamilyMember._(
               id: id,
               name: name,
+              userName: userName,
               lastName: lastName,
               dateOfBirth: dateOfBirth,
               piggyBank: _piggyBank?.build(),

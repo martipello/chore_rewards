@@ -8,6 +8,7 @@ import '../models/family_member_type.dart';
 import '../shared_widgets/rounded_button.dart';
 import '../utils/constants.dart';
 import '../view_models/family/create_family_member_view_model.dart';
+import 'add_family_member_view.dart';
 import 'add_or_create_family_member_dialog.dart';
 import 'create_family_member_view.dart';
 
@@ -28,7 +29,10 @@ class AddOrCreateFamilyMemberButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final familyMemberId = sharedPreferences.getString(Constants.USER_ID) ?? '';
     return StreamBuilder<DocumentSnapshot<FamilyMember>>(
-      stream: _familyViewModel.getFamilyMember(familyId, familyMemberId),
+      stream: _familyViewModel.getFamilyMember(
+        familyId,
+        familyMemberId,
+      ),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data?.data()?.familyMemberType == FamilyMemberType.parent) {
@@ -61,7 +65,7 @@ class AddOrCreateFamilyMemberButton extends StatelessWidget {
     final isNavigate = await AddOrCreateFamilyMemberDialog.show(context, pin, familyId);
     if (isNavigate == AddOrCreateFamilyMemberDialogNavigationOptions.create) {
       _navigateToCreateFamilyMemberView(context, familyId);
-    } else if (isNavigate == AddOrCreateFamilyMemberDialogNavigationOptions.add){
+    } else if (isNavigate == AddOrCreateFamilyMemberDialogNavigationOptions.add) {
       _navigateToAddFamilyMemberView(context, familyId);
     }
   }
@@ -82,7 +86,7 @@ class AddOrCreateFamilyMemberButton extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return CreateFamilyMemberView(
+          return AddFamilyMemberView(
             familyId: familyId,
           );
         },

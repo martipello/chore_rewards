@@ -13,7 +13,6 @@ import '../models/family_member_type.dart';
 import '../shared_widgets/image_picker_bottom_sheet.dart';
 import '../theme/base_theme.dart';
 import '../theme/chores_app_text.dart';
-import '../utils/log.dart';
 import '../view_models/family/family_view_model.dart';
 import '../view_models/user_view_model.dart';
 
@@ -76,7 +75,7 @@ class _AddFamilyViewState extends State<AddFamilyView> {
                             children: [
                               _buildProfileHeader(),
                               SizedBox(
-                                height: 36,
+                                height: 16,
                               ),
                               _buildName(context),
                               SizedBox(

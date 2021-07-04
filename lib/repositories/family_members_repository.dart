@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/utils/api_response.dart';
 import '../models/family_member.dart';
-import '../utils/constants.dart';
 import '../utils/log.dart';
 
 class FamilyMembersRepository {
@@ -17,17 +16,14 @@ class FamilyMembersRepository {
   final SharedPreferences sharedPreferences;
 
   Future<CollectionReference> _familyMembersCollection(String familyId) async {
-    final userId = sharedPreferences.getString(Constants.USER_ID);
     return firebaseFirestore.collection('/families/$familyId/members');
   }
 
   Future<DocumentReference> _familyMemberDocument(String familyId, String memberId) async {
-    final userId = sharedPreferences.getString(Constants.USER_ID);
     return firebaseFirestore.doc('/families/$familyId/members/$memberId');
   }
 
   Future<DocumentReference> familyMemberDocument(String familyId, String memberId) async {
-    final userId = sharedPreferences.getString(Constants.USER_ID);
     return firebaseFirestore.doc('/families/$familyId/members/$memberId');
   }
 
