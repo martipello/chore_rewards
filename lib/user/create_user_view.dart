@@ -39,9 +39,11 @@ class _CreateUserViewState extends State<CreateUserView> {
     _userViewModel.createUserStream.listen((value) {
       logger(value);
       if (value.status == Status.COMPLETED) {
-        Navigator.of(context).pushReplacementNamed(
-          FamilyListView.routeName,
-        );
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed(
+            FamilyListView.routeName,
+          );
+        }
       }
     });
     _addTextListeners();

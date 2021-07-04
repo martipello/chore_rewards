@@ -37,9 +37,8 @@ class _AddFamilyViewState extends State<AddFamilyView> {
   void initState() {
     super.initState();
     _familyViewModel.saveFamilyResult.listen((value) {
-      logger(value);
       if (value.status == Status.COMPLETED) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       }
     });
   }

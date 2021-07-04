@@ -53,16 +53,17 @@ class _FamilyListViewState extends State<FamilyListView> {
 
   Widget _buildProfileHeaderState() {
     return StreamBuilder<DocumentSnapshot<User?>>(
-        stream: _userViewModel.userDocumentStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _buildProfileHeader(snapshot.data?.data());
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+      stream: _userViewModel.userDocumentStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _buildProfileHeader(snapshot.data?.data());
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
   }
 
   Widget _buildProfileHeader(User? user) {
@@ -103,7 +104,11 @@ class _FamilyListViewState extends State<FamilyListView> {
   Widget _buildAddFamilyButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () async {
-        _navigateToAddFamilyView(context);
+        final refresh = await _navigateToAddFamilyView(context);
+        if (refresh == true) {
+          //TODO refresh
+          setState(() {});
+        }
       },
       tooltip: 'Add family',
       child: Icon(Icons.add),
@@ -156,8 +161,8 @@ class _FamilyListViewState extends State<FamilyListView> {
     );
   }
 
-  void _navigateToAddFamilyView(BuildContext context) {
-    Navigator.of(context).push(
+  Future<bool?> _navigateToAddFamilyView(BuildContext context) {
+    return Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
           return AddFamilyView();
