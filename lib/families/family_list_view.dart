@@ -52,7 +52,7 @@ class _FamilyListViewState extends State<FamilyListView> {
   }
 
   Widget _buildProfileHeaderState() {
-    return StreamBuilder<DocumentSnapshot<User>>(
+    return StreamBuilder<DocumentSnapshot<User?>>(
         stream: _userViewModel.userDocumentStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {

@@ -18,7 +18,6 @@ class UserRepository {
   final SharedPreferences sharedPreferences;
 
   Future<DocumentReference> get _userDocument async {
-    final sharedPreferences = await SharedPreferences.getInstance();
     final userId = sharedPreferences.getString(Constants.USER_ID);
     return firebaseFirestore.doc('/users/$userId');
   }
@@ -42,7 +41,7 @@ class UserRepository {
     }
   }
 
-  Stream<DocumentSnapshot<User>> getUser() async* {
+  Stream<DocumentSnapshot<User?>> getUser() async* {
     final userDocument = await _userDocument;
     yield* userDocument
         .withConverter<User>(

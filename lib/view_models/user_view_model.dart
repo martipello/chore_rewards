@@ -21,7 +21,7 @@ class UserViewModel {
   final SharedPreferences sharedPreferences;
   final ImageRepository imageRepository;
 
-  Stream<DocumentSnapshot<User>> get userDocumentStream => userRepository.getUser();
+  Stream<DocumentSnapshot<User?>> get userDocumentStream => userRepository.getUser();
 
   Future<DocumentSnapshot<User>> get userDocument => userRepository.getUserDocument();
 

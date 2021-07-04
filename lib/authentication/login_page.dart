@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../api/utils/api_response.dart';
 import '../dependency_injection_container.dart';
 import '../families/family_list_view.dart';
 import '../models/user.dart';
 import '../shared_widgets/biometric_request_dialog.dart';
 import '../user/create_user_view.dart';
 import '../utils/constants.dart';
-import '../utils/log.dart';
 import '../view_models/authentication/authentication_view_model.dart';
 import '../view_models/user_view_model.dart';
 import 'forgot_password_view.dart';
@@ -80,32 +81,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-          stream: _authenticationViewModel.authState,
-          builder: (context, snapshot) {
-            if (snapshot.data == null) {
-              switch (currentView) {
-                case SwitchView.loginView:
-                  return LoginView(
-                    switchViewCallback: switchViewCallback,
-                    authenticationViewModel: _authenticationViewModel,
-                  );
-                case SwitchView.forgotPasswordView:
-                  return ForgotPasswordView(switchViewCallback: switchViewCallback);
-                case SwitchView.signUp:
-                  return SignUpView(
-                    switchViewCallback: switchViewCallback,
-                    authenticationViewModel: _authenticationViewModel,
-                  );
-              }
-            } else {
-              return StreamBuilder<DocumentSnapshot<User>>(
+        body: StreamBuilder<ApiResponse<auth.UserCredential>>(
+      stream: _authenticationViewModel.registerStream,
+      builder: (context, registerSnapshot) {
+        return StreamBuilder<ApiResponse<auth.UserCredential>>(
+          stream: _authenticationViewModel.loginStream,
+          builder: (context, signInSnapshot) {
+            if (signInSnapshot.data?.status == Status.COMPLETED || registerSnapshot.data?.status == Status.COMPLETED) {
+              return StreamBuilder<DocumentSnapshot<User?>>(
                 stream: _userViewModel.userDocumentStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    logger('SNAPSHOT ${snapshot.data}');
-                    logger('SNAPSHOT ${snapshot.data?.data()}');
-                    if (snapshot.data?.data() != null) {
+                builder: (context, userSnapshot) {
+                  if (userSnapshot.hasData) {
+                    if (userSnapshot.data?.data() != null) {
                       return FamilyListView();
                     } else {
                       return CreateUserView();
@@ -117,9 +104,30 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
               );
+            } else {
+              return _showAuthScreen();
             }
-          }),
-    );
+          },
+        );
+      },
+    ));
+  }
+
+  Widget _showAuthScreen() {
+    switch (currentView) {
+      case SwitchView.loginView:
+        return LoginView(
+          switchViewCallback: switchViewCallback,
+          authenticationViewModel: _authenticationViewModel,
+        );
+      case SwitchView.forgotPasswordView:
+        return ForgotPasswordView(switchViewCallback: switchViewCallback);
+      case SwitchView.signUp:
+        return SignUpView(
+          switchViewCallback: switchViewCallback,
+          authenticationViewModel: _authenticationViewModel,
+        );
+    }
   }
 
   ValueChanged<SwitchView> get switchViewCallback => (switchView) {
