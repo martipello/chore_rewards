@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -28,12 +27,12 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
   @override
   void initState() {
     super.initState();
-    _familyMemberViewModel.addFamilyMemberResult.listen((value) {
-      logger(value);
-      if (value.status == Status.COMPLETED) {
-        Navigator.of(context).pop();
-      }
-    });
+    // _familyMemberViewModel.addFamilyMemberResult.listen((value) {
+    //   logger(value);
+    //   if (value.status == Status.COMPLETED) {
+    //     Navigator.of(context).pop();
+    //   }
+    // });
     _addTextListeners();
   }
 
@@ -42,6 +41,8 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
       _familyMemberViewModel.setFamilyMemberName(
         _nameTextController.text,
       );
+      _authenticationViewModel.setEmail(_nameTextController.text);
+      _authenticationViewModel.setPassword(_nameTextController.text);
     });
   }
 
@@ -60,46 +61,47 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
         title: Text('Add Family Member'),
       ),
       body: StreamBuilder<ApiResponse>(
-          stream: _familyMemberViewModel.createFamilyMemberResult,
-          builder: (context, snapshot) {
-            return Stack(
-              children: [
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          SizedBox(
-                            height: 16,
-                          ),
-                          _buildValidUserMessage(),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          _buildUserName(),
-                          SizedBox(
-                            height: 72,
-                          )
-                        ],
-                      ),
+        stream: _familyMemberViewModel.createFamilyMemberResult,
+        builder: (context, snapshot) {
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: 16,
+                        ),
+                        _buildValidUserMessage(),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        _buildUserName(),
+                        SizedBox(
+                          height: 72,
+                        )
+                      ],
                     ),
                   ),
                 ),
-                if (snapshot.hasData && snapshot.data!.status == Status.LOADING)
-                  Positioned.fill(
-                    child: Container(
-                      color: Colors.black12,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+              ),
+              if (snapshot.hasData && snapshot.data!.status == Status.LOADING)
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.black12,
+                    child: Center(
+                      child: CircularProgressIndicator(),
                     ),
                   ),
-              ],
-            );
-          }),
+                ),
+            ],
+          );
+        },
+      ),
       floatingActionButton: _buildSaveFamilyButton(context),
     );
   }
@@ -108,6 +110,7 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
     return FloatingActionButton(
       onPressed: () async {
         if (_formKey.currentState!.validate()) {
+          _authenticationViewModel.signIn();
         }
       },
       tooltip: 'Add family member',
@@ -138,10 +141,14 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
       stream: _authenticationViewModel.loginStream,
       builder: (context, snapshot) {
         //TODO check the error is the user doesnt exist error
-        if (snapshot.hasError) {
-          return _buildErrorMessage(
-            'User must exist to add them',
-          );
+        if (snapshot.data?.status == Status.ERROR) {
+          if (snapshot.data?.code == 'user-not-found') {
+            return _buildErrorMessage(
+              'User must exist to add them',
+            );
+          } else {
+            return Text('SUCCESS');
+          }
         } else {
           return SizedBox();
         }
@@ -163,5 +170,4 @@ class _AddFamilyMemberViewState extends State<AddFamilyMemberView> {
       ],
     );
   }
-
 }

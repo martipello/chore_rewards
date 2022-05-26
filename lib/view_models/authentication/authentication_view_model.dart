@@ -52,7 +52,7 @@ class AuthenticationViewModel {
       loginStream.add(ApiResponse.completed(userCredential));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        loginStream.add(ApiResponse.error('No user found for that email.'));
+        loginStream.add(ApiResponse.error('No user found for that email.', code: 'user-not-found'));
       } else if (e.code == 'wrong-password') {
         loginStream.add(ApiResponse.error('Invalid password.'));
       } else {

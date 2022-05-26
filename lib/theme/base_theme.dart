@@ -10,13 +10,19 @@ class BaseTheme extends InheritedWidget {
 
   final AppTheme appTheme;
 
-  BaseThemeColors get colors => appTheme.colors;
+  BaseThemeColors get colors => appTheme.baseColors;
 
-  IconThemeData get iconThemeData => appTheme.iconThemeData.iconThemeData;
+  BaseColorScheme get colorScheme => appTheme.colorScheme;
 
-  InputDecorationTheme get inputDecorationTheme => appTheme.inputDecorationTheme.inputDecorationTheme;
+  IconThemeData get iconThemeData => appTheme.baseIconThemeData.iconThemeData;
+
+  InputDecorationTheme get inputDecorationTheme => appTheme.baseInputDecorationTheme.inputDecorationTheme;
+
+  AppBarTheme get appBarTheme => appTheme.baseAppBarTheme.appBarTheme;
 
   Widget get logo => appTheme.logo;
+
+  String? get font => appTheme.baseFont;
 
   static BaseTheme of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<BaseTheme>()!;
@@ -34,19 +40,46 @@ BaseThemeColors colors(BuildContext context) {
 
 class AppTheme {
   AppTheme({
-    this.inputDecorationTheme = const BaseInputDecorationTheme(),
-    this.colors = const BaseThemeColors(),
-    this.iconThemeData = const BaseIconThemeData(),
+    this.colorScheme = const BaseColorScheme(),
+    this.baseAppBarTheme = const BaseAppBarTheme(),
+    this.baseInputDecorationTheme = const BaseInputDecorationTheme(),
+    this.baseColors = const BaseThemeColors(),
+    this.baseIconThemeData = const BaseIconThemeData(),
+    this.baseFont,
     required this.logo,
   });
 
-  final BaseThemeColors colors;
+  final BaseThemeColors baseColors;
 
-  final BaseInputDecorationTheme inputDecorationTheme;
+  final BaseColorScheme colorScheme;
 
-  final BaseIconThemeData iconThemeData;
+  final BaseInputDecorationTheme baseInputDecorationTheme;
+
+  final BaseIconThemeData baseIconThemeData;
+
+  final BaseAppBarTheme baseAppBarTheme;
+
+  final String? baseFont;
 
   final Widget logo;
+}
+
+class BaseAppBarTheme {
+  const BaseAppBarTheme({
+    this.appBarTheme = const AppBarTheme(
+      color: Color(0xFF006CC7),
+      iconTheme: IconThemeData(
+        color: Color(0xFFFFFFFF),
+      ),
+      actionsIconTheme: IconThemeData(
+        color: Color(0xFFFFFFFF),
+      ),
+      titleTextStyle: TextStyle(fontSize: 18, color: Colors.white),
+      toolbarTextStyle: TextStyle(fontSize: 18, color: Colors.white),
+    ),
+  });
+
+  final AppBarTheme appBarTheme;
 }
 
 class BaseInputDecorationTheme {
@@ -71,12 +104,35 @@ class BaseIconThemeData {
   final IconThemeData iconThemeData;
 }
 
+class BaseColorScheme {
+  const BaseColorScheme({
+    this.colorScheme = const ColorScheme(
+      primary: Color(0xFF006CC7),
+      primaryVariant: Color(0xFF5b9afb),
+      secondary: Color(0xFF003399),
+      secondaryVariant: Color(0xFF006CC7),
+      surface: Color(0xFFFFFFFF),
+      background: Color(0xFFFFFFFF),
+      error: Color(0xFFBA2F00),
+      onPrimary: Color(0xFF006CC7),
+      onSecondary: Color(0xFF003399),
+      onSurface: Color(0xFF006CC7),
+      onBackground: Color(0xFF006CC7),
+      onError: Color(0xFFBA2F00),
+      brightness: Brightness.light,
+    ),
+  });
+
+  final ColorScheme colorScheme;
+}
+
 class BaseThemeColors {
   const BaseThemeColors({
     this.primary = const Color(0xFF006CC7),
     this.primaryLight = const Color(0xFF5b9afb),
     this.primaryDark = const Color(0xFF004296),
     this.secondary = const Color(0xFF003399),
+    this.onSecondary = const Color(0xFF003399),
     this.secondaryLight = const Color(0xFF505ccb),
     this.secondaryDark = const Color(0xFF00106a),
     this.foreground = const Color(0xFFFFFFFF),
@@ -96,12 +152,23 @@ class BaseThemeColors {
     this.black = const Color(0xFF000000),
     this.white = const Color(0xFFFFFFFF),
     this.background = const Color(0xFFEEEEEE),
+    this.statusCompleted = const Color(0xFFA6CE39),
+    this.statusAllocation = const Color(0xFFffb933),
+    this.statusInProgress = const Color(0xFF419bf9),
+    this.statusRejected = const Color(0xFFf96a58),
+    this.statusConfirmedLinguist = const Color(0xFF53c4cf),
+    this.serviceTelephone = const Color(0xFFA6CE39),
+    this.serviceLive = const Color(0xFFA6CE39),
+    this.serviceVideo = const Color(0xFFA6CE39),
+    this.serviceFace2Face = const Color(0xFFA6CE39),
+    this.serviceTranslation = const Color(0xFFA6CE39),
   });
 
   final Color primary;
   final Color primaryLight;
   final Color primaryDark;
   final Color secondary;
+  final Color onSecondary;
   final Color secondaryLight;
   final Color secondaryDark;
   final Color foreground;
@@ -125,4 +192,16 @@ class BaseThemeColors {
   final Color black;
   final Color white;
   final Color background;
+
+  final Color statusCompleted;
+  final Color statusAllocation;
+  final Color statusInProgress;
+  final Color statusRejected;
+  final Color statusConfirmedLinguist;
+
+  final Color serviceTelephone;
+  final Color serviceLive;
+  final Color serviceVideo;
+  final Color serviceFace2Face;
+  final Color serviceTranslation;
 }

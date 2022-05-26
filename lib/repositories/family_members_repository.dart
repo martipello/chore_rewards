@@ -7,9 +7,11 @@ import '../models/family_member.dart';
 import '../utils/log.dart';
 
 class FamilyMembersRepository {
-  FamilyMembersRepository(this.firebaseFirestore,
-      this.firebaseStorage,
-      this.sharedPreferences,);
+  FamilyMembersRepository(
+    this.firebaseFirestore,
+    this.firebaseStorage,
+    this.sharedPreferences,
+  );
 
   final FirebaseFirestore firebaseFirestore;
   final FirebaseStorage firebaseStorage;
@@ -31,9 +33,9 @@ class FamilyMembersRepository {
     final membersCollection = await _familyMembersCollection(familyId);
     yield* membersCollection
         .withConverter<FamilyMember>(
-      fromFirestore: (snapshots, _) => FamilyMember.fromJson(snapshots.data()!) ?? FamilyMember(),
-      toFirestore: (member, _) => member.toJson(),
-    )
+          fromFirestore: (snapshots, _) => FamilyMember.fromJson(snapshots.data()!) ?? FamilyMember(),
+          toFirestore: (member, _) => member.toJson(),
+        )
         .snapshots();
   }
 
@@ -41,23 +43,28 @@ class FamilyMembersRepository {
     final membersCollection = await _familyMembersCollection(familyId);
     return membersCollection
         .withConverter<FamilyMember>(
-      fromFirestore: (snapshots, _) => FamilyMember.fromJson(snapshots.data()!) ?? FamilyMember(),
-      toFirestore: (member, _) => member.toJson(),
-    ).get();
+          fromFirestore: (snapshots, _) => FamilyMember.fromJson(snapshots.data()!) ?? FamilyMember(),
+          toFirestore: (member, _) => member.toJson(),
+        )
+        .get();
   }
 
   Future<DocumentSnapshot<FamilyMember>> getFamilyMemberAsync(String familyId, String memberId) async {
     final documentReference = await _familyMemberDocument(familyId, memberId);
-    return documentReference.withConverter<FamilyMember>(
-        fromFirestore: (doc, _) => FamilyMember.fromJson(doc.data()!) ?? FamilyMember(),
-        toFirestore: (member, _) => member.toJson()).get();
+    return documentReference
+        .withConverter<FamilyMember>(
+            fromFirestore: (doc, _) => FamilyMember.fromJson(doc.data()!) ?? FamilyMember(),
+            toFirestore: (member, _) => member.toJson())
+        .get();
   }
 
   Stream<DocumentSnapshot<FamilyMember>> getFamilyMember(String familyId, String memberId) async* {
     final documentReference = await _familyMemberDocument(familyId, memberId);
-    yield* documentReference.withConverter<FamilyMember>(
-        fromFirestore: (doc, _) => FamilyMember.fromJson(doc.data()!) ?? FamilyMember(),
-        toFirestore: (member, _) => member.toJson()).snapshots();
+    yield* documentReference
+        .withConverter<FamilyMember>(
+            fromFirestore: (doc, _) => FamilyMember.fromJson(doc.data()!) ?? FamilyMember(),
+            toFirestore: (member, _) => member.toJson())
+        .snapshots();
   }
 
   Future<ApiResponse> addFamilyMember(FamilyMember familyMember, String familyId) async {
@@ -81,5 +88,4 @@ class FamilyMembersRepository {
       return ApiResponse.error(e.toString());
     }
   }
-
 }

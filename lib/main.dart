@@ -22,20 +22,22 @@ void main() async {
   await di.init();
   final logger = Logger();
   setLogger(logger.d);
-  GetIt.I.isReady<SharedPreferences>().then((_) {
-    runApp(
-      BaseTheme(
-        appTheme: choresAppTheme,
-        child: Builder(
-          builder: (context) {
-            return MyApp(
-              theme: BaseTheme.of(context),
-            );
-          },
+  GetIt.I.isReady<SharedPreferences>().then(
+    (_) {
+      runApp(
+        BaseTheme(
+          appTheme: choresAppTheme,
+          child: Builder(
+            builder: (context) {
+              return MyApp(
+                theme: BaseTheme.of(context),
+              );
+            },
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -46,22 +48,24 @@ class MyApp extends StatelessWidget {
 
   final BaseTheme theme;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chores App',
       theme: ThemeData(
-          primaryColor: theme.colors.primary,
-          accentColor: theme.colors.secondary,
-          iconTheme: theme.iconThemeData,
-          inputDecorationTheme: theme.inputDecorationTheme,
-          textSelectionTheme: TextSelectionThemeData(
-            cursorColor: colors(context).secondary,
-            selectionColor: colors(context).secondary,
-            selectionHandleColor: colors(context).secondary,
-          ),
-          brightness: Brightness.light),
+        primaryColor: theme.colors.primary,
+        iconTheme: theme.iconThemeData,
+        colorScheme: theme.colorScheme.colorScheme,
+        inputDecorationTheme: theme.inputDecorationTheme,
+        brightness: Brightness.light,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: colors(context).secondary,
+          selectionColor: colors(context).secondary,
+          selectionHandleColor: colors(context).secondary,
+        ),
+        fontFamily: theme.font,
+        appBarTheme: theme.appBarTheme,
+      ),
       initialRoute: LoginView.routeName,
       routes: {
         LoginView.routeName: (context) => LoginPage(),
